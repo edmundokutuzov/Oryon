@@ -13,6 +13,8 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 import { MessageData } from 'genkit/ai';
+import { googleAI } from '@genkit-ai/google-genai';
+
 
 // Define the schema for a single chat message part (Genkit can have multiple parts, like text and images)
 const ChatMessageContentSchema = z.object({
@@ -64,16 +66,14 @@ const chatFlow = ai.defineFlow(
     if (!process.env.GEMINI_API_KEY) {
       throw new Error("GEMINI_API_KEY environment variable not set. Please check your .env file.");
     }
-
-    const model = ai.model('googleai/gemini-2.5-flash');
-
+    
     // Convert the incoming history to the format Genkit's model expects
     const genkitMessages: MessageData[] = history ? history.map(msg => ({
         role: msg.role,
         content: msg.content.map(c => ({ text: c.text })),
     })) : [];
     
-    const response = await model.generate({
+    const response = await ai.generate({
       history: genkitMessages,
       prompt: prompt,
     });

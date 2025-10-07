@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { users } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Target, Users, Folder, TrendingUp, DollarSign, CheckCircle } from "lucide-react";
+import Link from "next/link";
 
 type Department = {
     id: number;
@@ -47,24 +48,28 @@ export default function DepartmentPageLayout({ department, members, projects }: 
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                <Card className="gradient-surface border-0 rounded-2xl">
-                    <CardHeader className="flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-white/80">Membros</CardTitle>
-                        <Users className="w-5 h-5 text-primary/70" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{department.memberCount}</div>
-                    </CardContent>
-                </Card>
-                 <Card className="gradient-surface border-0 rounded-2xl">
-                    <CardHeader className="flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-white/80">Projetos Ativos</CardTitle>
-                        <Folder className="w-5 h-5 text-primary/70" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{department.projects}</div>
-                    </CardContent>
-                </Card>
+                <Link href="/dashboard/team">
+                    <Card className="gradient-surface border-0 rounded-2xl hover:bg-white/5 transition-colors h-full">
+                        <CardHeader className="flex-row items-center justify-between pb-2">
+                            <CardTitle className="text-sm font-medium text-white/80">Membros</CardTitle>
+                            <Users className="w-5 h-5 text-primary/70" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{department.memberCount}</div>
+                        </CardContent>
+                    </Card>
+                </Link>
+                 <Link href="/dashboard/projects">
+                    <Card className="gradient-surface border-0 rounded-2xl hover:bg-white/5 transition-colors h-full">
+                        <CardHeader className="flex-row items-center justify-between pb-2">
+                            <CardTitle className="text-sm font-medium text-white/80">Projetos Ativos</CardTitle>
+                            <Folder className="w-5 h-5 text-primary/70" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{department.projects}</div>
+                        </CardContent>
+                    </Card>
+                </Link>
                  <Card className="gradient-surface border-0 rounded-2xl">
                     <CardHeader className="flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-white/80">Orçamento Anual</CardTitle>
@@ -84,13 +89,15 @@ export default function DepartmentPageLayout({ department, members, projects }: 
                         </CardHeader>
                         <CardContent className="space-y-6">
                             {projects.map(p => (
-                                <div key={p.id}>
-                                    <div className="flex justify-between items-center mb-1">
-                                        <h3 className="font-semibold text-white">{p.name}</h3>
-                                        <Badge variant={p.status === 'active' ? 'default' : 'secondary'} className={p.status === 'active' ? 'bg-green-500/20 text-green-300' : 'bg-yellow-500/20 text-yellow-300'}>{p.status === 'active' ? 'Ativo' : 'Planeamento'}</Badge>
+                                <Link href={`/dashboard/projects/${p.id}`} key={p.id}>
+                                    <div className="p-4 rounded-lg hover:bg-white/10 transition-colors">
+                                        <div className="flex justify-between items-center mb-1">
+                                            <h3 className="font-semibold text-white">{p.name}</h3>
+                                            <Badge variant={p.status === 'active' ? 'default' : 'secondary'} className={p.status === 'active' ? 'bg-green-500/20 text-green-300' : 'bg-yellow-500/20 text-yellow-300'}>{p.status === 'active' ? 'Ativo' : 'Planeamento'}</Badge>
+                                        </div>
+                                        <Progress value={p.progress} className="h-2"/>
                                     </div>
-                                    <Progress value={p.progress} className="h-2"/>
-                                </div>
+                                </Link>
                             ))}
                         </CardContent>
                     </Card>
@@ -113,20 +120,22 @@ export default function DepartmentPageLayout({ department, members, projects }: 
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2"><Users className="text-primary"/>Membros da Equipa</CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-4">
+                        <CardContent className="space-y-1">
                             {members.map(member => {
                                  const avatar = PlaceHolderImages.find(p => p.id === `user-avatar-${member.id}`)?.imageUrl;
                                 return (
-                                <div key={member.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10">
-                                    <Avatar className="h-10 w-10">
-                                        <AvatarImage src={avatar} alt={member.name} data-ai-hint="person portrait"/>
-                                        <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
-                                    </Avatar>
-                                    <div>
-                                        <p className="font-medium text-white">{member.name}</p>
-                                        <p className="text-xs text-white/70">{member.role}</p>
+                                <Link href={`/dashboard/team/${member.id}`} key={member.id}>
+                                    <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                                        <Avatar className="h-10 w-10">
+                                            <AvatarImage src={avatar} alt={member.name} data-ai-hint="person portrait"/>
+                                            <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+                                        </Avatar>
+                                        <div>
+                                            <p className="font-medium text-white">{member.name}</p>
+                                            <p className="text-xs text-white/70">{member.role}</p>
+                                        </div>
                                     </div>
-                                </div>
+                                </Link>
                             )})}
                         </CardContent>
                     </Card>

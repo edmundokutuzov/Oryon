@@ -5,14 +5,16 @@ import { Card, CardContent } from '@/components/ui/card';
 import { integrations as initialIntegrations } from '@/lib/data';
 import { useState } from 'react';
 
-// Fake icons for now
 const iconMap: {[key:string]: string} = {
-    "fab fa-slack": "💬",
-    "fab fa-google-drive": "📁",
-    "fab fa-salesforce": "☁️",
-    "fab fa-trello": "📋",
-    "fab fa-github": "💻",
-    "fab fa-figma": "🎨"
+    "Slack": "💬",
+    "Salesforce": "☁️",
+    "GitHub": "💻",
+    "Figma": "🎨",
+    "Zoom": "📹",
+    "Asana": "✅",
+    "Zendesk": "🎧",
+    "Stripe": "💳",
+    "Mailchimp": "🐵"
 }
 
 export default function IntegrationsPage() {
@@ -33,7 +35,7 @@ export default function IntegrationsPage() {
             {integrations.map(int => (
                 <Card key={int.id} className="gradient-surface border-0 rounded-2xl p-6 text-center">
                     <CardContent className="p-0 flex flex-col items-center justify-center">
-                        <div className="text-4xl mb-4">{iconMap[int.icon] || '🧩'}</div>
+                        <div className="text-4xl mb-4">{iconMap[int.name] || '🧩'}</div>
                         <h3 className="text-lg font-bold text-white">{int.name}</h3>
                         <div className="my-4">
                             <span className={`text-xs font-semibold py-1 px-3 rounded-full ${int.connected ? 'bg-green-500/20 text-green-300' : 'bg-gray-500/20 text-gray-300'}`}>

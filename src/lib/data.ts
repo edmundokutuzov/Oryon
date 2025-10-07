@@ -443,12 +443,15 @@ export const automations = [
 ];
 
 export const integrations = [
-    { id: 1, name: "Slack", icon: "fab fa-slack", connected: true },
-    { id: 2, name: "Google Drive", icon: "fab fa-google-drive", connected: true },
-    { id: 3, name: "Salesforce", icon: "fab fa-salesforce", connected: false },
-    { id: 4, name: "Trello", icon: "fab fa-trello", connected: true },
-    { id: 5, name: "GitHub", icon: "fab fa-github", connected: false },
-    { id: 6, name: "Figma", icon: "fab fa-figma", connected: true },
+    { id: 1, name: "Slack", icon: "💬", connected: true },
+    { id: 2, name: "Salesforce", icon: "☁️", connected: false },
+    { id: 3, name: "GitHub", icon: "💻", connected: false },
+    { id: 4, name: "Figma", icon: "🎨", connected: true },
+    { id: 5, name: "Zoom", icon: "📹", connected: false },
+    { id: 6, name: "Asana", icon: "✅", connected: true },
+    { id: 7, name: "Zendesk", icon: "🎧", connected: false },
+    { id: 8, name: "Stripe", icon: "💳", connected: false },
+    { id: 9, name: "Mailchimp", icon: "🐵", connected: true }
 ];
 
 export const calendarEvents = [
@@ -489,4 +492,5 @@ export const getDepartmentProjects = (deptName: string) => projects.filter(p => 
 export const getCalendarEventsForUser = (userId: number) => calendarEvents.filter(event => event.participants.includes(userId) || event.createdBy === userId);
 
     
+
 

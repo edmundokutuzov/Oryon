@@ -16,7 +16,7 @@ export const users = [
         bio: "Administrador do sistema Oryon, garantindo a segurança e a operacionalidade da plataforma.",
         phone: "+258 84 123 4567",
         location: "Maputo, Moçambique",
-        permissions: ["all"],
+        permissions: ["all", "2fa"],
     },
     {
         id: 2,
@@ -44,7 +44,7 @@ export const users = [
         bio: "Chefe de Departamento de Marketing com 10 anos de experiência em estratégia digital e gestão de equipas.",
         phone: "+258 84 345 6789",
         location: "Maputo, Moçambique",
-        permissions: ["read", "write", "comment", "manage", "approve"],
+        permissions: ["read", "write", "comment", "manage", "approve", "2fa"],
     },
     {
         id: 4,
@@ -492,5 +492,6 @@ export const getDepartmentProjects = (deptName: string) => projects.filter(p => 
 export const getCalendarEventsForUser = (userId: number) => calendarEvents.filter(event => event.participants.includes(userId) || event.createdBy === userId);
 
     
+
 
 

@@ -6,6 +6,14 @@ import { getCurrentUser, users } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { MessageSquare } from "lucide-react";
 
+const statusClasses: { [key: string]: string } = {
+  online: 'bg-green-500',
+  away: 'bg-yellow-500',
+  busy: 'bg-red-500',
+  dnd: 'bg-purple-500',
+  offline: 'bg-slate-500',
+};
+
 export default function DirectMessagesPage() {
     const currentUser = getCurrentUser();
     const otherUsers = users.filter(u => u.id !== currentUser.id);
@@ -24,10 +32,13 @@ export default function DirectMessagesPage() {
                             return (
                                 <div key={user.id} className="flex items-center justify-between p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
                                     <div className="flex items-center space-x-3">
-                                        <Avatar>
-                                            <AvatarImage src={avatar} alt={user.name} data-ai-hint="person portrait" />
-                                            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                                        </Avatar>
+                                        <div className="relative">
+                                            <Avatar>
+                                                <AvatarImage src={avatar} alt={user.name} data-ai-hint="person portrait" />
+                                                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                                            </Avatar>
+                                            <span className={`absolute bottom-0 right-0 block h-3 w-3 rounded-full ${statusClasses[user.status]} ring-2 ring-background`}></span>
+                                        </div>
                                         <div>
                                             <p className="font-medium text-white">{user.name}</p>
                                             <p className="text-xs text-white/60">{user.role}</p>

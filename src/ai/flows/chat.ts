@@ -61,12 +61,16 @@ const chatFlow = ai.defineFlow(
   },
   async ({ prompt, history }) => {
 
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error("GEMINI_API_KEY environment variable not set. Please check your .env file.");
+    }
+
     const model = ai.model('googleai/gemini-2.5-flash');
 
     // Convert the incoming history to the format Genkit's model expects
     const genkitMessages: MessageData[] = history ? history.map(msg => ({
         role: msg.role,
-        content: msg.content,
+        content: msg.content.map(c => ({ text: c.text })),
     })) : [];
     
     const response = await model.generate({

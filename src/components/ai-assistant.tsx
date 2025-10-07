@@ -48,13 +48,13 @@ export default function AiAssistant({
     
     // Add user message to history for immediate feedback
     const userMessage: ChatMessage = { role: 'user', content: [{ text: currentPrompt }] };
-    const newHistory: ChatHistory = [...history, userMessage];
-    setHistory(newHistory);
+    const newHistoryWithUserMessage: ChatHistory = [...history, userMessage];
+    setHistory(newHistoryWithUserMessage);
     setPrompt('');
 
     try {
       const response = await chat({
-        history: history, // Pass the existing history before adding the user's prompt
+        history: history, // Pass the history *before* the new user message
         prompt: currentPrompt,
       });
 
@@ -62,13 +62,15 @@ export default function AiAssistant({
       const modelMessage: ChatMessage = { role: 'model', content: [{ text: response.response }] };
       setHistory(prevHistory => [...prevHistory, modelMessage]);
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error with chat flow:', error);
-      const modelErrorMessage: ChatMessage = { role: 'model', content: [{ text: 'Desculpe, ocorreu um erro ao contactar a IA. Por favor, verifique a sua chave de API e tente novamente.' }] };
+      const errorMessage = error.message || 'Ocorreu um erro desconhecido.';
+      const modelErrorMessage: ChatMessage = { role: 'model', content: [{ text: `Desculpe, ocorreu um erro ao contactar a IA. Por favor, verifique a sua chave de API e tente novamente.\n\nDetalhes: ${errorMessage}` }] };
+      // Replace the loading state with the error message
       setHistory(prevHistory => [...prevHistory, modelErrorMessage]);
        toast({
         title: 'Erro de IA',
-        description: 'Não foi possível obter uma resposta da IA. Tente novamente.',
+        description: 'Não foi possível obter uma resposta da IA. Verifique a consola para mais detalhes.',
         variant: 'destructive',
       });
     } finally {

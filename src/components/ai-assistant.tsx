@@ -36,16 +36,17 @@ export default function AiAssistant({
       return;
     }
     setLoading(true);
-    const userMessage: ChatMessage = { role: 'user', content: [{ text: prompt }] };
+    const currentPrompt = prompt;
     
     // Add user message to history for immediate feedback
+    const userMessage: ChatMessage = { role: 'user', content: [{ text: currentPrompt }] };
     setHistory(prevHistory => [...prevHistory, userMessage]);
     setPrompt('');
 
     try {
       const response = await chat({
-        history: [...history, userMessage],
-        prompt,
+        history: history, // Pass the existing history
+        prompt: currentPrompt,
       });
       setHistory(response.history);
     } catch (error) {

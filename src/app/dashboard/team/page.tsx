@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { users } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { Briefcase, Mail, MapPin, Phone, MessageSquare, Video } from "lucide-react";
+import { Mail, MapPin, Phone, MessageSquare, Video } from "lucide-react";
 import { useState } from "react";
 
 const statusClasses: { [key: string]: { bg: string, text: string, ring: string } } = {
@@ -47,9 +47,18 @@ export default function TeamPage() {
                             <Badge variant="secondary" className="mt-2 bg-primary/10 text-primary/90">{user.department}</Badge>
                         </CardHeader>
                         <CardContent className="p-0 mt-4 text-left text-sm text-white/70 space-y-2 w-full">
-                            <div className="flex items-center gap-3"><Mail className="w-4 h-4 text-white/50" /><span>{user.email}</span></div>
-                            <div className="flex items-center gap-3"><Phone className="w-4 h-4 text-white/50" /><span>{user.phone}</span></div>
-                            <div className="flex items-center gap-3"><MapPin className="w-4 h-4 text-white/50" /><span>{user.location}</span></div>
+                            <div className="flex items-start gap-3">
+                                <Mail className="w-4 h-4 text-white/50 shrink-0 mt-1" />
+                                <span>{user.email}</span>
+                            </div>
+                            <div className="flex items-start gap-3">
+                                <Phone className="w-4 h-4 text-white/50 shrink-0 mt-1" />
+                                <span>{user.phone}</span>
+                            </div>
+                            <div className="flex items-start gap-3">
+                                <MapPin className="w-4 h-4 text-white/50 shrink-0 mt-1" />
+                                <span>{user.location}</span>
+                            </div>
                         </CardContent>
                         <div className="mt-6 flex space-x-3">
                             <Button variant="outline" size="icon" className="bg-white/10 border-white/20 hover:bg-white/20 rounded-full h-11 w-11">

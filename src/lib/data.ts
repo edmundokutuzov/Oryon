@@ -1,3 +1,4 @@
+
 // This file mocks a database.
 // In a real application, you would fetch this data from a server.
 
@@ -78,7 +79,7 @@ export const users = [
         email: "sofia.ribeiro@standardbank.com",
         role: "Controller",
         department: "Financeiro",
-        avatar: "",
+        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxibGFjayUyMHdvbWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzU5Nzg4NTA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
         status: "online" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
         bio: "Controller experiente com foco em relatórios financeiros e controlo de gestão.",
@@ -92,7 +93,7 @@ export const users = [
         email: "joao.almeida@standardbank.com",
         role: "Analista de Risco",
         department: "Financeiro",
-        avatar: "",
+        avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxibGFjayUyMG1hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1OTc4ODQ4OHww&ixlib=rb-4.1.0&q=80&w=1080",
         status: "online" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
         bio: "Especialista em análise e mitigação de riscos financeiros e de crédito.",
@@ -106,7 +107,7 @@ export const users = [
         email: "beatriz.martins@standardbank.com",
         role: "Tesoureira",
         department: "Financeiro",
-        avatar: "",
+        avatar: "https://images.unsplash.com/photo-1591461974026-614a0b6af24d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxibGFjayUyMHdvbWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzU5Nzg4NTA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
         status: "offline" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
         bio: "Responsável pela gestão de tesouraria, fluxo de caixa e investimentos do banco.",

@@ -52,10 +52,10 @@ const TaskPreviewCard = ({ task }: { task: (typeof tasks)[0] }) => {
   return (
     <div className="p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
       <div className="flex justify-between items-start mb-2">
-        <h3 className="font-semibold text-white text-sm">{task.title}</h3>
+        <h3 className="font-semibold text-white text-sm" dangerouslySetInnerHTML={{ __html: task.title }}></h3>
         <Badge variant="outline" className={`text-xs ${priorityStyles[task.priority]}`}>{task.priority}</Badge>
       </div>
-      <p className="text-white/60 text-sm mb-3 line-clamp-2">{task.description}</p>
+      <p className="text-white/60 text-sm mb-3 line-clamp-2" dangerouslySetInnerHTML={{ __html: task.description }}></p>
       <div className="flex items-center justify-between text-xs text-white/60">
         <span>Vence: {new Date(task.dueDate).toLocaleDateString('pt-BR')}</span>
         <span className="capitalize">{task.status === 'completed' ? 'Concluído' : task.status === 'in-progress' ? 'Em Progresso' : 'Pendente'}</span>
@@ -67,12 +67,12 @@ const TaskPreviewCard = ({ task }: { task: (typeof tasks)[0] }) => {
 const MeetingPreviewCard = ({ meeting }: { meeting: (typeof meetings)[0] }) => (
   <div className="p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
     <div className="flex justify-between items-start mb-2">
-      <h3 className="font-semibold text-white text-sm">{meeting.title}</h3>
+      <h3 className="font-semibold text-white text-sm" dangerouslySetInnerHTML={{ __html: meeting.title }}></h3>
       <Button size="icon" variant="ghost" className="h-8 w-8 bg-green-500/20 text-green-300 hover:bg-green-500/30">
         <Video className="h-4 w-4" />
       </Button>
     </div>
-    <p className="text-white/60 text-sm mb-3 line-clamp-2">{meeting.description}</p>
+    <p className="text-white/60 text-sm mb-3 line-clamp-2" dangerouslySetInnerHTML={{ __html: meeting.description }}></p>
     <div className="flex items-center justify-between text-xs text-white/60">
       <span>{new Date(`${meeting.date}T${meeting.time}`).toLocaleString('pt-BR')}</span>
       <span>{meeting.duration} min</span>

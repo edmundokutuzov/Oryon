@@ -34,7 +34,7 @@ export default function LoginPage() {
                 className="pl-10 p-3 h-auto rounded-xl bg-white/10 border-white/20 focus:border-primary placeholder-white/50"
                 placeholder="seu.email@standardbank.com"
                 required
-                defaultValue="andre.xavier@standardbank.com"
+                defaultValue="edmundo.kutuzov@standardbank.com"
               />
             </div>
           </div>

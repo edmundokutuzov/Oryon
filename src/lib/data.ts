@@ -6,7 +6,6 @@ export const users = [
         id: 1,
         name: "Admin Sistema",
         email: "admin@standardbank.com",
-        password: "...", // Not stored on client
         role: "Administrador",
         department: "Administração",
         avatar: "https://picsum.photos/seed/1/256/256",
@@ -14,9 +13,8 @@ export const users = [
     },
     {
         id: 2,
-        name: "André Xavier",
-        email: "andre.xavier@standardbank.com",
-        password: "...",
+        name: "Edmundo Kutuzov",
+        email: "edmundo.kutuzov@standardbank.com",
         role: "Designer",
         department: "Marketing",
         avatar: "https://picsum.photos/seed/2/256/256",
@@ -26,7 +24,6 @@ export const users = [
         id: 3,
         name: "Maria Silva",
         email: "maria.silva@standardbank.com",
-        password: "...",
         role: "Chefe de Dept.",
         department: "Marketing",
         avatar: "https://picsum.photos/seed/3/256/256",
@@ -36,7 +33,6 @@ export const users = [
         id: 4,
         name: "Carlos Santos",
         email: "carlos.santos@standardbank.com",
-        password: "...",
         role: "Analista",
         department: "Financeiro",
         avatar: "https://picsum.photos/seed/4/256/256",
@@ -46,7 +42,6 @@ export const users = [
         id: 5,
         name: "Ana Costa",
         email: "ana.costa@standardbank.com",
-        password: "...",
         role: "Gestora",
         department: "Recursos Humanos",
         avatar: "https://picsum.photos/seed/5/256/256",
@@ -191,7 +186,7 @@ export const menuItems = [
             { id: 'knowledge-base', title: 'Base de Conhecimento' },
             { id: 'documents', title: 'Documentos' },
             { id: 'reports', title: 'Relatórios' },
-            { id 'analytics', title: 'Analytics' },
+            { id: 'analytics', title: 'Analytics' },
         ],
     },
     {
@@ -214,6 +209,6 @@ export const menuItems = [
 ];
 
 // Mock functions to simulate a backend
-export const getCurrentUser = () => users.find(u => u.email === 'andre.xavier@standardbank.com')!;
+export const getCurrentUser = () => users.find(u => u.email === 'edmundo.kutuzov@standardbank.com')!;
 export const getTasksForUser = (userId: number) => tasks.filter(t => t.assignedTo === userId);
 export const getUpcomingMeetings = (userId: number) => meetings.filter(m => m.participants.includes(userId) && m.status === 'scheduled');

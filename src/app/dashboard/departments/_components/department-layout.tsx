@@ -48,7 +48,7 @@ export default function DepartmentPageLayout({ department, members, projects }: 
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                <Link href="/dashboard/team">
+                <Link href={`/dashboard/departments/${department.slug}/team`}>
                     <Card className="gradient-surface border-0 rounded-2xl hover:bg-white/5 transition-colors h-full">
                         <CardHeader className="flex-row items-center justify-between pb-2">
                             <CardTitle className="text-sm font-medium text-white/80">Membros</CardTitle>

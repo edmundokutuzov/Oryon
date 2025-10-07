@@ -1,18 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { summarizePage, SummarizePageOutput } from '@/ai/flows/summarize-page';
+import { chat, ChatMessage, ChatHistory } from '@/ai/flows/chat';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Bot, Loader2, Link as LinkIcon, Wand2 } from 'lucide-react';
+import { Bot, Loader2, User, Wand2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function AiAssistant({
@@ -22,32 +21,42 @@ export default function AiAssistant({
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
 }) {
-  const [url, setUrl] = useState('');
+  const [prompt, setPrompt] = useState('');
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<SummarizePageOutput | null>(null);
+  const [history, setHistory] = useState<ChatHistory>([]);
   const { toast } = useToast();
 
-  const handleSummarize = async () => {
-    if (!url) {
+  const handleSendPrompt = async () => {
+    if (!prompt) {
       toast({
-        title: 'URL Inválida',
-        description: 'Por favor, insira uma URL para resumir.',
-        variant: 'destructive'
+        title: 'Prompt Vazio',
+        description: 'Por favor, insira uma pergunta ou instrução.',
+        variant: 'destructive',
       });
       return;
     }
     setLoading(true);
-    setResult(null);
+    const userMessage: ChatMessage = { role: 'user', content: [{ text: prompt }] };
+    
+    // Add user message to history for immediate feedback
+    setHistory(prevHistory => [...prevHistory, userMessage]);
+    setPrompt('');
+
     try {
-      const summary = await summarizePage({ url });
-      setResult(summary);
-    } catch (error) {
-      console.error('Error summarizing page:', error);
-      toast({
-        title: 'Erro ao Resumir',
-        description: 'Não foi possível resumir a página. Tente novamente.',
-        variant: 'destructive'
+      const response = await chat({
+        history: [...history, userMessage],
+        prompt,
       });
+      setHistory(response.history);
+    } catch (error) {
+      console.error('Error with chat flow:', error);
+      toast({
+        title: 'Erro de IA',
+        description: 'Não foi possível obter uma resposta da IA. Tente novamente.',
+        variant: 'destructive',
+      });
+       // remove the optimistic user message
+       setHistory(prevHistory => prevHistory.slice(0, prevHistory.length - 1));
     } finally {
       setLoading(false);
     }
@@ -55,50 +64,61 @@ export default function AiAssistant({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="gradient-surface border-primary/50 max-w-lg p-8">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-2xl">
+      <DialogContent className="gradient-surface border-primary/50 max-w-2xl p-0 flex flex-col h-[70vh]">
+        <DialogHeader className="p-6 pb-4">
+          <DialogTitle className="flex items-center gap-3 text-2xl">
             <Bot className="h-8 w-8 text-yellow-300" />
             OryonAI Assistant
           </DialogTitle>
           <DialogDescription>
-            Resuma o conteúdo de qualquer página da web.
+            Converse com a IA. Faça perguntas, peça resumos e muito mais.
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4 py-4">
-          <div className="relative">
-            <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/50" />
-            <Input
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://example.com/artigo-interessante"
-              className="pl-10 p-3 h-auto rounded-xl bg-white/10 border-white/20 focus:border-primary placeholder-white/50"
-            />
-          </div>
-          <Button onClick={handleSummarize} disabled={loading} className="w-full btn-primary-gradient py-3 h-auto text-base font-semibold">
-            {loading ? (
-              <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                A resumir...
-              </>
-            ) : (
-              <>
-                <Wand2 className="mr-2 h-5 w-5" />
-                Gerar Resumo
-              </>
-            )}
-          </Button>
+
+        <div className="flex-grow overflow-y-auto custom-scrollbar px-6 space-y-6">
+          {history.length === 0 && !loading && (
+            <div className="text-center text-muted-foreground pt-10">
+              <Wand2 className="mx-auto h-12 w-12 text-primary/50" />
+              <p className="mt-4">Comece a conversa com a OryonAI.</p>
+            </div>
+          )}
+          {history.map((message, index) => (
+            <div key={index} className={`flex items-start gap-4 ${message.role === 'user' ? 'justify-end' : ''}`}>
+               {message.role === 'model' && <Bot className="h-6 w-6 text-yellow-300 flex-shrink-0" />}
+               <div className={`max-w-xl p-4 rounded-xl whitespace-pre-wrap text-sm ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-card/50'}`}>
+                 {message.content.map(part => part.text).join('')}
+               </div>
+               {message.role === 'user' && <User className="h-6 w-6 text-foreground flex-shrink-0" />}
+            </div>
+          ))}
+          {loading && (
+             <div className="flex items-start gap-4">
+                <Bot className="h-6 w-6 text-yellow-300 flex-shrink-0" />
+                <div className="max-w-xl p-4 rounded-xl bg-card/50">
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                </div>
+            </div>
+          )}
         </div>
-        {(loading || result) && (
-          <div className="mt-4 p-4 bg-black/20 rounded-lg max-h-60 overflow-y-auto custom-scrollbar">
-            <h3 className="font-semibold mb-2 flex items-center gap-2">
-              <Bot className="h-5 w-5" />
-              Resumo Gerado
-            </h3>
-            {loading && <p className="text-sm text-white/70 animate-pulse">A gerar o resumo da página...</p>}
-            {result && <p className="text-sm text-white/90 whitespace-pre-wrap">{result.summary}</p>}
+
+        <div className="p-6 border-t border-border mt-auto">
+          <div className="relative">
+             <Input
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && !loading && handleSendPrompt()}
+              placeholder="Pergunte qualquer coisa à OryonAI..."
+              className="pr-20 p-3 h-auto rounded-xl bg-card/80 border-border focus:border-primary placeholder-muted-foreground"
+              disabled={loading}
+            />
+            <Button onClick={handleSendPrompt} disabled={loading} className="absolute right-2 top-1/2 -translate-y-1/2 btn-primary-gradient py-2 h-auto text-sm font-semibold">
+              {loading ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : "Enviar"}
+            </Button>
           </div>
-        )}
+        </div>
+
       </DialogContent>
     </Dialog>
   );

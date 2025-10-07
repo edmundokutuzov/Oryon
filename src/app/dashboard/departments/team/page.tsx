@@ -11,10 +11,10 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 
 const statusClasses: { [key: string]: { bg: string, text: string, ring: string } } = {
-  online: { bg: 'bg-green-500', text: 'text-green-300', ring: 'ring-green-500/50' },
-  away: { bg: 'bg-yellow-500', text: 'text-yellow-300', ring: 'ring-yellow-500/50' },
-  busy: { bg: 'bg-red-500', text: 'text-red-300', ring: 'ring-red-500/50' },
-  dnd: { bg: 'bg-purple-500', text: 'text-purple-300', ring: 'ring-purple-500/50' },
+  online: { bg: 'bg-green-500', text: 'text-green-400', ring: 'ring-green-500/50' },
+  away: { bg: 'bg-yellow-500', text: 'text-yellow-400', ring: 'ring-yellow-500/50' },
+  busy: { bg: 'bg-red-500', text: 'text-red-400', ring: 'ring-red-500/50' },
+  dnd: { bg: 'bg-purple-500', text: 'text-purple-400', ring: 'ring-purple-500/50' },
   offline: { bg: 'bg-slate-500', text: 'text-slate-400', ring: 'ring-slate-500/50' },
 };
 
@@ -58,29 +58,29 @@ export default function DepartmentTeamPage() {
                                 </Avatar>
                                 <span className={`absolute bottom-1 right-1 block h-4 w-4 rounded-full ${statusStyle.bg} ring-4 ring-background`}></span>
                             </div>
-                            <CardTitle className="text-lg font-bold">{user.name}</CardTitle>
+                            <CardTitle className="text-lg font-bold text-foreground">{user.name}</CardTitle>
                             <p className={`text-sm font-medium ${statusStyle.text}`}>{user.role}</p>
                             <Badge variant="secondary" className="mt-2 bg-primary/10 text-primary/90">{user.department}</Badge>
                         </CardHeader>
                         <CardContent className="p-0 mt-4 text-left text-sm text-muted-foreground space-y-2 w-full">
                             <div className="flex items-start gap-3">
-                                <Mail className="w-4 h-4 text-muted-foreground/50 shrink-0 mt-1" />
+                                <Mail className="w-4 h-4 text-muted-foreground/80 shrink-0 mt-1" />
                                 <span>{user.email}</span>
                             </div>
                             <div className="flex items-start gap-3">
-                                <Phone className="w-4 h-4 text-muted-foreground/50 shrink-0 mt-1" />
+                                <Phone className="w-4 h-4 text-muted-foreground/80 shrink-0 mt-1" />
                                 <span>{user.phone}</span>
                             </div>
                             <div className="flex items-start gap-3">
-                                <MapPin className="w-4 h-4 text-muted-foreground/50 shrink-0 mt-1" />
+                                <MapPin className="w-4 h-4 text-muted-foreground/80 shrink-0 mt-1" />
                                 <span>{user.location}</span>
                             </div>
                         </CardContent>
                         <div className="mt-6 flex space-x-3">
-                            <Button variant="outline" size="icon" className="bg-card/10 border-border hover:bg-card/20 rounded-full h-11 w-11">
+                            <Button variant="outline" size="icon" className="bg-card/50 border-border hover:bg-card rounded-full h-11 w-11">
                                 <MessageSquare />
                             </Button>
-                             <Button variant="outline" size="icon" className="bg-card/10 border-border hover:bg-card/20 rounded-full h-11 w-11">
+                             <Button variant="outline" size="icon" className="bg-card/50 border-border hover:bg-card rounded-full h-11 w-11">
                                 <Video />
                             </Button>
                         </div>

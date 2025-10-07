@@ -133,25 +133,25 @@ export default function DepartmentChatPage() {
                             </Button>
                         </div>
                     </PopoverAnchor>
-                    <PopoverContent className="w-[calc(100%-48px)] lg:w-[400px] bg-slate-800 border-primary/50 text-white p-2" align="start" side="top">
-                       <div className="text-sm font-bold p-2">Mencionar Membro</div>
+                    <PopoverContent className="w-[calc(100%-48px)] lg:w-[400px] bg-card border-border p-2" align="start" side="top">
+                       <div className="text-sm font-bold p-2 text-foreground">Mencionar Membro</div>
                        <div className="max-h-60 overflow-y-auto custom-scrollbar">
                          {filteredMembers.length > 0 ? filteredMembers.map(member => {
                             const avatar = PlaceHolderImages.find(p => p.id === `user-avatar-${member.id}`)?.imageUrl;
                              return (
-                                <div key={member.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 cursor-pointer" onClick={() => handleMentionSelect(member.name)}>
+                                <div key={member.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted cursor-pointer" onClick={() => handleMentionSelect(member.name)}>
                                      <Avatar className="w-8 h-8">
                                          <AvatarImage src={avatar} alt={member.name} data-ai-hint="person portrait" />
                                          <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
                                      </Avatar>
                                      <div>
-                                         <p className="font-medium text-white text-sm">{member.name}</p>
-                                         <p className="text-xs text-white/70">{member.role}</p>
+                                         <p className="font-medium text-foreground text-sm">{member.name}</p>
+                                         <p className="text-xs text-muted-foreground">{member.role}</p>
                                      </div>
                                  </div>
                              )
                          }) : (
-                            <p className="p-4 text-center text-sm text-white/60">Nenhum membro encontrado.</p>
+                            <p className="p-4 text-center text-sm text-muted-foreground">Nenhum membro encontrado.</p>
                          )}
                        </div>
                     </PopoverContent>

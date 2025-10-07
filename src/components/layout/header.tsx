@@ -19,6 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from '@/hooks/use-toast';
+import StartCallDialog from '../start-call-dialog';
 
 const getBreadcrumb = (pathname: string) => {
   const pathParts = pathname.split('/').filter(p => p);
@@ -30,6 +31,10 @@ const getBreadcrumb = (pathname: string) => {
     const item = section.items.find(i => i.id === pageId);
     if (item) return item.title;
   }
+
+  // Handle dynamic routes like /call/[userId]
+  if (pathParts[1] === 'call' && pathParts.length > 2) return 'Chamada';
+
 
   return 'Dashboard';
 }
@@ -44,15 +49,8 @@ export default function Header() {
   const pathname = usePathname();
   const breadcrumb = getBreadcrumb(pathname);
   const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false);
-  const { toast } = useToast();
+  const [isStartCallOpen, setIsStartCallOpen] = useState(false);
   
-  const handleQuickMeeting = () => {
-    toast({
-      title: "Reunião Rápida Iniciada",
-      description: "O convite para a sua reunião foi enviado.",
-    });
-  };
-
   return (
     <>
       <header className="flex-shrink-0 p-4 gradient-surface z-10 rounded-bl-2xl flex items-center justify-between">
@@ -117,7 +115,7 @@ export default function Header() {
               </PopoverContent>
             </Popover>
 
-            <Button size="icon" className="rounded-full btn-primary-gradient shadow-lg hover:shadow-xl" title="Reunião Rápida" onClick={handleQuickMeeting}>
+            <Button size="icon" className="rounded-full btn-primary-gradient shadow-lg hover:shadow-xl" title="Iniciar Chamada" onClick={() => setIsStartCallOpen(true)}>
               <Video />
             </Button>
 
@@ -153,6 +151,7 @@ export default function Header() {
         </div>
       </header>
       <AiAssistant isOpen={isAiAssistantOpen} onOpenChange={setIsAiAssistantOpen} />
+      <StartCallDialog isOpen={isStartCallOpen} onOpenChange={setIsStartCallOpen} />
     </>
   );
 }

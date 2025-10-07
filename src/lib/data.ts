@@ -208,6 +208,93 @@ export const menuItems = [
     },
 ];
 
+export const knowledgeBase = [
+    {
+        id: 1,
+        title: "Guia de Boas-Vindas ao Standard Bank",
+        category: "Recursos Humanos",
+        views: 1250,
+        tags: ["onboarding", "cultura", "beneficios"]
+    },
+    {
+        id: 2,
+        title: "Política de Segurança da Informação",
+        category: "Segurança",
+        views: 890,
+        tags: ["segurança", "dados", "compliance"]
+    },
+    {
+        id: 3,
+        title: "Como Solicitar Férias no Portal do Colaborador",
+        category: "Recursos Humanos",
+        views: 2340,
+        tags: ["férias", "portal", "processo"]
+    },
+    {
+        id: 4,
+        title: "Brand Guidelines do Standard Bank",
+        category: "Marketing",
+        views: 780,
+        tags: ["marca", "design", "logo"]
+    },
+    {
+        id: 5,
+        title: "Procedimentos de Abertura de Conta para Clientes",
+        category: "Operações",
+        views: 1560,
+        tags: ["contas", "clientes", "operações"]
+    }
+];
+
+export const documents = [
+    { id: 1, title: "Relatório Financeiro Anual 2023", type: "PDF", size: "5.8 MB", lastModified: "2024-03-15" },
+    { id: 2, title: "Plano de Marketing Q4 2024", type: "DOCX", size: "1.2 MB", lastModified: "2024-10-28" },
+    { id: 3, title: "Apresentação Institucional", type: "PPTX", size: "12.3 MB", lastModified: "2024-09-05" },
+    { id: 4, title: "Formulário de Avaliação de Desempenho", type: "PDF", size: "350 KB", lastModified: "2024-01-10" },
+    { id: 5, title: "Templates para Redes Sociais", type: "ZIP", size: "25.5 MB", lastModified: "2024-11-02" },
+];
+
+export const reports = [
+    { id: 1, title: "Desempenho de Vendas - Outubro 2024", summary: "Análise detalhada das métricas de vendas, incluindo performance por região e produto.", type: "mensal" },
+    { id: 2, title: "Satisfação do Cliente - Q3 2024", summary: "Resultados da pesquisa trimestral de satisfação do cliente e principais insights.", type: "trimestral" },
+    { id: 3, title: "Análise de Risco de Crédito", summary: "Relatório sobre a carteira de crédito atual e avaliação de riscos.", type: "anual" },
+    { id: 4, title: "Performance da Campanha 'Conta Pro'", summary: "KPIs e ROI da campanha de lançamento do novo produto digital.", type: "semanal" },
+];
+
+export const analyticsData = {
+    userActivity: {
+        labels: ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"],
+        data: [65, 59, 80, 81, 56, 55, 40]
+    },
+    projectProgress: {
+        labels: ["Campanha Q4", "Identidade Visual", "Relatório Trimestral", "Otimização SEO"],
+        data: [65, 10, 40, 100]
+    }
+};
+
+export const workflows = [
+    { id: 1, name: "Onboarding de Novo Colaborador", department: "Recursos Humanos", steps: 12 },
+    { id: 2, name: "Aprovação de Proposta Comercial", department: "Financeiro", steps: 5 },
+    { id: 3, name: "Lançamento de Campanha de Marketing", department: "Marketing", steps: 8 },
+    { id: 4, name: "Solicitação de Acesso a Sistemas", department: "Tecnologia", steps: 4 },
+];
+
+export const automations = [
+    { id: 1, name: "Enviar email de boas-vindas a novos clientes", active: true },
+    { id: 2, name: "Gerar relatório de performance semanal", active: true },
+    { id: 3, name: "Notificar gestor sobre tarefas atrasadas", active: false },
+    { id: 4, name: "Criar ticket de suporte a partir de email", active: true },
+];
+
+export const integrations = [
+    { id: 1, name: "Slack", icon: "fab fa-slack", connected: true },
+    { id: 2, name: "Google Drive", icon: "fab fa-google-drive", connected: true },
+    { id: 3, name: "Salesforce", icon: "fab fa-salesforce", connected: false },
+    { id: 4, name: "Trello", icon: "fab fa-trello", connected: true },
+    { id: 5, name: "GitHub", icon: "fab fa-github", connected: false },
+    { id: 6, name: "Figma", icon: "fab fa-figma", connected: true },
+];
+
 // Mock functions to simulate a backend
 export const getCurrentUser = () => users.find(u => u.email === 'edmundo.kutuzov@standardbank.com')!;
 export const getTasksForUser = (userId: number) => tasks.filter(t => t.assignedTo === userId);

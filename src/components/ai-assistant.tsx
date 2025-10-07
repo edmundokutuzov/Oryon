@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { chat, ChatMessage, ChatHistory } from '@/ai/flows/chat';
 import {
   Dialog,
@@ -25,9 +25,17 @@ export default function AiAssistant({
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState<ChatHistory>([]);
   const { toast } = useToast();
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to the bottom of the chat window whenever history changes
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [history, loading]);
 
   const handleSendPrompt = async () => {
-    if (!prompt) {
+    if (!prompt.trim()) {
       toast({
         title: 'Prompt Vazio',
         description: 'Por favor, insira uma pergunta ou instrução.',
@@ -40,24 +48,29 @@ export default function AiAssistant({
     
     // Add user message to history for immediate feedback
     const userMessage: ChatMessage = { role: 'user', content: [{ text: currentPrompt }] };
-    setHistory(prevHistory => [...prevHistory, userMessage]);
+    const newHistory: ChatHistory = [...history, userMessage];
+    setHistory(newHistory);
     setPrompt('');
 
     try {
       const response = await chat({
-        history: history, // Pass the existing history
+        history: history, // Pass the existing history before adding the user's prompt
         prompt: currentPrompt,
       });
-      setHistory(response.history);
+
+      // Add the model's response to the history
+      const modelMessage: ChatMessage = { role: 'model', content: [{ text: response.response }] };
+      setHistory(prevHistory => [...prevHistory, modelMessage]);
+
     } catch (error) {
       console.error('Error with chat flow:', error);
-      toast({
+      const modelErrorMessage: ChatMessage = { role: 'model', content: [{ text: 'Desculpe, ocorreu um erro ao contactar a IA. Por favor, verifique a sua chave de API e tente novamente.' }] };
+      setHistory(prevHistory => [...prevHistory, modelErrorMessage]);
+       toast({
         title: 'Erro de IA',
         description: 'Não foi possível obter uma resposta da IA. Tente novamente.',
         variant: 'destructive',
       });
-       // remove the optimistic user message
-       setHistory(prevHistory => prevHistory.slice(0, prevHistory.length - 1));
     } finally {
       setLoading(false);
     }
@@ -76,7 +89,7 @@ export default function AiAssistant({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-grow overflow-y-auto custom-scrollbar px-6 space-y-6">
+        <div ref={chatContainerRef} className="flex-grow overflow-y-auto custom-scrollbar px-6 space-y-6">
           {history.length === 0 && !loading && (
             <div className="text-center text-muted-foreground pt-10">
               <Wand2 className="mx-auto h-12 w-12 text-primary/50" />

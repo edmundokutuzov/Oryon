@@ -14,12 +14,19 @@ import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 import { MessageData } from 'genkit/ai';
 
+// Define the schema for a single chat message part (Genkit can have multiple parts, like text and images)
+const ChatMessageContentSchema = z.object({
+  text: z.string(),
+});
+export type ChatMessageContent = z.infer<typeof ChatMessageContentSchema>;
+
 // Define the schema for a single chat message
 const ChatMessageSchema = z.object({
   role: z.enum(['user', 'model']),
-  content: z.array(z.object({ text: z.string() })),
+  content: z.array(ChatMessageContentSchema),
 });
 export type ChatMessage = z.infer<typeof ChatMessageSchema>;
+
 
 // Define the schema for chat history
 const ChatHistorySchema = z.array(ChatMessageSchema);
@@ -36,7 +43,7 @@ export type ChatInput = z.infer<typeof ChatInputSchema>;
 
 // Define the output schema for the chat flow
 const ChatOutputSchema = z.object({
-    history: ChatHistorySchema.describe('The full conversation history including the new response.'),
+    response: z.string().describe('The AI model\'s response text.'),
 });
 export type ChatOutput = z.infer<typeof ChatOutputSchema>;
 
@@ -56,20 +63,24 @@ const chatFlow = ai.defineFlow(
 
     const model = ai.model('googleai/gemini-2.5-flash');
 
-    const chatHistory = history ? (history as MessageData[]) : [];
+    // Convert the incoming history to the format Genkit's model expects
+    const genkitMessages: MessageData[] = history ? history.map(msg => ({
+        role: msg.role,
+        content: msg.content,
+    })) : [];
     
     const response = await model.generate({
-      history: chatHistory,
+      history: genkitMessages,
       prompt: prompt,
     });
 
-    const userMessage: ChatMessage = { role: 'user', content: [{ text: prompt }] };
-    const modelMessage: ChatMessage = { role: 'model', content: response.candidates[0].message.content };
-    
-    const updatedHistory = [...chatHistory, userMessage, modelMessage];
+    const responseText = response.text;
+    if (!responseText) {
+        throw new Error("The model did not return a text response.");
+    }
 
     return {
-        history: updatedHistory,
+        response: responseText,
     };
   }
 );

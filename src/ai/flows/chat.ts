@@ -1,9 +1,9 @@
 'use server';
 
 /**
- * @fileOverview A general-purpose chat flow that maintains conversation history.
+ * @fileOverview A general-purpose, multi-modal chat flow that maintains conversation history.
  *
- * - `chat` - A function that takes a prompt and history and returns the AI's response.
+ * - `chat` - A function that takes a prompt, optional image, and history, and returns the AI's response.
  * - `ChatInput` - The input type for the chat function.
  * - `ChatOutput` - The return type for the chat function.
  * - `ChatMessage` - A single message in the chat history.
@@ -15,10 +15,13 @@ import { z } from 'genkit';
 import { MessageData } from 'genkit/ai';
 import { googleAI } from '@genkit-ai/google-genai';
 
-
-// Define the schema for a single chat message part (Genkit can have multiple parts, like text and images)
+// Define the schema for a single chat message part (can be text or media)
 const ChatMessageContentSchema = z.object({
-  text: z.string(),
+  text: z.string().optional(),
+  media: z.object({
+    contentType: z.string(),
+    url: z.string(),
+  }).optional(),
 });
 export type ChatMessageContent = z.infer<typeof ChatMessageContentSchema>;
 
@@ -29,31 +32,44 @@ const ChatMessageSchema = z.object({
 });
 export type ChatMessage = z.infer<typeof ChatMessageSchema>;
 
-
 // Define the schema for chat history
 const ChatHistorySchema = z.array(ChatMessageSchema);
 export type ChatHistory = z.infer<typeof ChatHistorySchema>;
 
-
 // Define the input schema for the chat flow
 const ChatInputSchema = z.object({
-  prompt: z.string().describe('The user\'s latest message.'),
+  prompt: z.string().describe("The user's latest text message."),
+  imageUrl: z.string().optional().describe("A data URI of an image uploaded by the user."),
   history: ChatHistorySchema.optional().describe('The conversation history.'),
 });
 export type ChatInput = z.infer<typeof ChatInputSchema>;
 
-
 // Define the output schema for the chat flow
 const ChatOutputSchema = z.object({
-    response: z.string().describe('The AI model\'s response text.'),
+  response: z.string().describe("The AI model's response text."),
 });
 export type ChatOutput = z.infer<typeof ChatOutputSchema>;
-
 
 export async function chat(input: ChatInput): Promise<ChatOutput> {
   return chatFlow(input);
 }
 
+const systemPrompt = `Você é OryonAI, um assistente de IA especialista integrado na plataforma corporativa 'Oryon' do Standard Bank.
+
+Sua identidade:
+- Você é profissional, prestativo e conhecedor.
+- Sua função principal é ajudar os funcionários do Standard Bank a serem mais produtivos, respondendo a perguntas, fornecendo informações, resumindo textos e analisando dados e imagens.
+- Você se comunica PRIMARIAMENTE em Português. Só use outros idiomas se for explicitamente solicitado pelo usuário.
+
+Suas diretrizes de resposta:
+- Forneça respostas claras, concisas e bem estruturadas.
+- EVITE o uso excessivo de markdown. Não use '#' para cabeçalhos ou '*' para ênfase, a menos que seja para criar uma lista de itens. O objetivo é um texto limpo e legível.
+- Baseie suas respostas no contexto da conversa e nos dados fornecidos (texto e imagens).
+- Quando receber uma imagem, descreva-a ou analise-a conforme solicitado pelo usuário.
+
+Contexto da Plataforma:
+A plataforma Oryon é um hub central para todas as operações do Standard Bank, incluindo gestão de projetos, comunicação interna, análise de dados, e mais. Você tem acesso a informações sobre tarefas, projetos, reuniões e equipas. Use esse conhecimento para fornecer respostas contextuais quando apropriado.
+`;
 
 const chatFlow = ai.defineFlow(
   {
@@ -61,30 +77,48 @@ const chatFlow = ai.defineFlow(
     inputSchema: ChatInputSchema,
     outputSchema: ChatOutputSchema,
   },
-  async ({ prompt, history }) => {
-
+  async ({ prompt, history, imageUrl }) => {
     if (!process.env.GEMINI_API_KEY) {
-      throw new Error("GEMINI_API_KEY environment variable not set. Please check your .env file.");
+      throw new Error('GEMINI_API_KEY environment variable not set. Please check your .env file.');
     }
-    
+
     // Convert the incoming history to the format Genkit's model expects
-    const genkitMessages: MessageData[] = history ? history.map(msg => ({
-        role: msg.role,
-        content: msg.content.map(c => ({ text: c.text })),
-    })) : [];
-    
+    const genkitMessages: MessageData[] = history
+      ? history.map((msg) => ({
+          role: msg.role,
+          content: msg.content.map(c => {
+            if (c.media) {
+                return { media: { contentType: c.media.contentType, url: c.media.url } };
+            }
+            return { text: c.text || '' };
+          }),
+        }))
+      : [];
+      
+    const userPrompt: MessageData[] = [{
+        role: 'user',
+        content: [{text: prompt}]
+    }];
+
+    if (imageUrl) {
+        const mimeType = imageUrl.match(/data:(.*);base64,/)?.[1] || 'image/jpeg';
+        userPrompt[0].content.push({ media: { url: imageUrl, contentType: mimeType } });
+    }
+
     const response = await ai.generate({
+      model: googleAI.model('gemini-2.5-flash'),
+      system: systemPrompt,
       history: genkitMessages,
-      prompt: prompt,
+      prompt: userPrompt[0].content,
     });
 
     const responseText = response.text;
-    if (!responseText) {
-        throw new Error("The model did not return a text response.");
+    if (responseText === undefined) {
+      throw new Error("The model did not return a text response.");
     }
 
     return {
-        response: responseText,
+      response: responseText,
     };
   }
 );

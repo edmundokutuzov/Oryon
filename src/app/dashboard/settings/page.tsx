@@ -8,47 +8,139 @@ import { Switch } from '@/components/ui/switch';
 import { Languages, Palette, Accessibility, FileDown, Sun, Moon, Bell } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useTheme } from 'next-themes';
+import { useState } from 'react';
+
+const translations: any = {
+    pt: {
+        title: "Configurações",
+        generalTitle: "Geral",
+        generalDescription: "Defina o idioma e o fuso horário da aplicação.",
+        language: "Idioma",
+        languagePlaceholder: "Selecione o idioma",
+        portuguese: "Português (Brasil)",
+        english: "English (United States)",
+        timezone: "Fuso Horário",
+        timezonePlaceholder: "Selecione o fuso horário",
+        saveChanges: "Salvar Alterações",
+        appearanceTitle: "Aparência",
+        appearanceDescription: "Personalize a aparência da interface.",
+        theme: "Tema",
+        dark: "Escuro",
+        light: "Claro",
+        fontSize: "Tamanho da Fonte",
+        fontSizePlaceholder: "Selecione o tamanho",
+        small: "Pequeno",
+        medium: "Médio",
+        large: "Grande",
+        notificationsTitle: "Notificações",
+        notificationsDescription: "Escolha como e quando quer ser notificado.",
+        emailNotifications: "Notificações por Email",
+        emailNotificationsDesc: "Receba resumos e alertas importantes.",
+        pushNotifications: "Notificações no browser",
+        pushNotificationsDesc: "Alertas em tempo real.",
+        mentionsNotifications: "Apenas menções e tarefas",
+        mentionsNotificationsDesc: "Receba alertas apenas quando for mencionado.",
+        accessibilityTitle: "Acessibilidade",
+        accessibilityDescription: "Ajustes para melhorar a sua experiência.",
+        highContrast: "Modo de Alto Contraste",
+        highContrastDesc: "Aumenta o contraste das cores para melhor legibilidade.",
+        reducedMotion: "Reduzir Movimento",
+        reducedMotionDesc: "Desativa animações e transições na interface.",
+        dataPrivacyTitle: "Dados e Privacidade",
+        dataPrivacyDescription: "Faça a gestão dos seus dados pessoais.",
+        exportData: "Exportar Meus Dados",
+        exportDataDesc: "Faça o download de todos os seus dados em formato JSON.",
+        export: "Exportar",
+        toastTitle: "Configurações Salvas",
+        toastDescription: (section: string) => `As suas configurações de ${section} foram atualizadas com sucesso.`
+    },
+    en: {
+        title: "Settings",
+        generalTitle: "General",
+        generalDescription: "Set the application language and timezone.",
+        language: "Language",
+        languagePlaceholder: "Select language",
+        portuguese: "Português (Brasil)",
+        english: "English (United States)",
+        timezone: "Timezone",
+        timezonePlaceholder: "Select timezone",
+        saveChanges: "Save Changes",
+        appearanceTitle: "Appearance",
+        appearanceDescription: "Customize the interface's appearance.",
+        theme: "Theme",
+        dark: "Dark",
+        light: "Light",
+        fontSize: "Font Size",
+        fontSizePlaceholder: "Select size",
+        small: "Small",
+        medium: "Medium",
+        large: "Large",
+        notificationsTitle: "Notifications",
+        notificationsDescription: "Choose how and when you want to be notified.",
+        emailNotifications: "Email Notifications",
+        emailNotificationsDesc: "Receive important summaries and alerts.",
+        pushNotifications: "Browser Notifications",
+        pushNotificationsDesc: "Real-time alerts.",
+        mentionsNotifications: "Only mentions and tasks",
+        mentionsNotificationsDesc: "Receive alerts only when you are mentioned.",
+        accessibilityTitle: "Accessibility",
+        accessibilityDescription: "Adjustments to improve your experience.",
+        highContrast: "High Contrast Mode",
+        highContrastDesc: "Increases color contrast for better readability.",
+        reducedMotion: "Reduce Motion",
+        reducedMotionDesc: "Disables animations and transitions in the interface.",
+        dataPrivacyTitle: "Data & Privacy",
+        dataPrivacyDescription: "Manage your personal data.",
+        exportData: "Export My Data",
+        exportDataDesc: "Download all your data in JSON format.",
+        export: "Export",
+        toastTitle: "Settings Saved",
+        toastDescription: (section: string) => `Your ${section} settings have been successfully updated.`
+    }
+};
 
 export default function SettingsPage() {
     const { toast } = useToast();
     const { setTheme, theme } = useTheme();
+    const [lang, setLang] = useState('pt');
+    const t = translations[lang];
 
     const handleSaveChanges = (section: string) => {
         toast({
-            title: "Configurações Salvas",
-            description: `As suas configurações de ${section} foram atualizadas com sucesso.`,
+            title: t.toastTitle,
+            description: t.toastDescription(section),
         });
     };
 
     return (
         <div className="p-6 fade-in">
-            <h1 className="text-3xl font-bold text-foreground mb-8">Configurações</h1>
+            <h1 className="text-3xl font-bold text-foreground mb-8">{t.title}</h1>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
 
                 {/* General Settings Card */}
                 <Card className="gradient-surface border-0 rounded-2xl">
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><Languages className="text-primary"/> Geral</CardTitle>
-                        <CardDescription>Defina o idioma e o fuso horário da aplicação.</CardDescription>
+                        <CardTitle className="flex items-center gap-2"><Languages className="text-primary"/>{t.generalTitle}</CardTitle>
+                        <CardDescription>{t.generalDescription}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <div className="space-y-2">
-                            <Label htmlFor="language">Idioma</Label>
-                            <Select defaultValue="pt-br">
+                            <Label htmlFor="language">{t.language}</Label>
+                            <Select defaultValue="pt" onValueChange={setLang}>
                                 <SelectTrigger id="language" className="bg-card border-border">
-                                    <SelectValue placeholder="Selecione o idioma" />
+                                    <SelectValue placeholder={t.languagePlaceholder} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="pt-br">Português (Brasil)</SelectItem>
-                                    <SelectItem value="en-us">English (United States)</SelectItem>
+                                    <SelectItem value="pt">{t.portuguese}</SelectItem>
+                                    <SelectItem value="en">{t.english}</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="timezone">Fuso Horário</Label>
+                            <Label htmlFor="timezone">{t.timezone}</Label>
                             <Select defaultValue="africa-maputo">
                                 <SelectTrigger id="timezone" className="bg-card border-border">
-                                    <SelectValue placeholder="Selecione o fuso horário" />
+                                    <SelectValue placeholder={t.timezonePlaceholder} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="africa-maputo">(GMT+02:00) Maputo</SelectItem>
@@ -57,117 +149,117 @@ export default function SettingsPage() {
                                 </SelectContent>
                             </Select>
                         </div>
-                        <Button className="w-full btn-primary-gradient" onClick={() => handleSaveChanges('Geral')}>Salvar Alterações</Button>
+                        <Button className="w-full btn-primary-gradient" onClick={() => handleSaveChanges(t.generalTitle)}>{t.saveChanges}</Button>
                     </CardContent>
                 </Card>
 
                 {/* Appearance Settings Card */}
                 <Card className="gradient-surface border-0 rounded-2xl">
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><Palette className="text-primary"/> Aparência</CardTitle>
-                        <CardDescription>Personalize a aparência da interface.</CardDescription>
+                        <CardTitle className="flex items-center gap-2"><Palette className="text-primary"/>{t.appearanceTitle}</CardTitle>
+                        <CardDescription>{t.appearanceDescription}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <div className="space-y-2">
-                            <Label>Tema</Label>
+                            <Label>{t.theme}</Label>
                              <div className="grid grid-cols-2 gap-4">
                                 <Button variant="outline" onClick={() => setTheme('dark')} className={`h-20 flex flex-col items-center justify-center bg-card border-border ${theme === 'dark' ? 'ring-2 ring-primary border-primary' : ''}`}>
                                     <Moon className="w-6 h-6 mb-2"/>
-                                    <span>Escuro</span>
+                                    <span>{t.dark}</span>
                                 </Button>
                                 <Button variant="outline" onClick={() => setTheme('light')} className={`h-20 flex flex-col items-center justify-center bg-card border-border ${theme === 'light' ? 'ring-2 ring-primary border-primary' : ''}`}>
                                     <Sun className="w-6 h-6 mb-2"/>
-                                    <span>Claro</span>
+                                    <span>{t.light}</span>
                                 </Button>
                             </div>
                         </div>
                          <div className="space-y-2">
-                            <Label htmlFor="font-size">Tamanho da Fonte</Label>
+                            <Label htmlFor="font-size">{t.fontSize}</Label>
                             <Select defaultValue="medium">
                                 <SelectTrigger id="font-size" className="bg-card border-border">
-                                    <SelectValue placeholder="Selecione o tamanho" />
+                                    <SelectValue placeholder={t.fontSizePlaceholder} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="small">Pequeno</SelectItem>
-                                    <SelectItem value="medium">Médio</SelectItem>
-                                    <SelectItem value="large">Grande</SelectItem>
+                                    <SelectItem value="small">{t.small}</SelectItem>
+                                    <SelectItem value="medium">{t.medium}</SelectItem>
+                                    <SelectItem value="large">{t.large}</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
-                        <Button className="w-full btn-primary-gradient" onClick={() => handleSaveChanges('Aparência')}>Salvar Alterações</Button>
+                        <Button className="w-full btn-primary-gradient" onClick={() => handleSaveChanges(t.appearanceTitle)}>{t.saveChanges}</Button>
                     </CardContent>
                 </Card>
 
                  {/* Notifications Settings Card */}
                 <Card className="gradient-surface border-0 rounded-2xl lg:col-span-1">
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><Bell className="text-primary"/> Notificações</CardTitle>
-                        <CardDescription>Escolha como e quando quer ser notificado.</CardDescription>
+                        <CardTitle className="flex items-center gap-2"><Bell className="text-primary"/>{t.notificationsTitle}</CardTitle>
+                        <CardDescription>{t.notificationsDescription}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="flex items-center justify-between p-3 bg-card/50 rounded-lg">
                             <Label htmlFor="email-notifications" className="flex flex-col gap-1 cursor-pointer">
-                                <span>Notificações por Email</span>
-                                <span className="text-xs text-muted-foreground">Receba resumos e alertas importantes.</span>
+                                <span>{t.emailNotifications}</span>
+                                <span className="text-xs text-muted-foreground">{t.emailNotificationsDesc}</span>
                             </Label>
                             <Switch id="email-notifications" defaultChecked />
                         </div>
                         <div className="flex items-center justify-between p-3 bg-card/50 rounded-lg">
                             <Label htmlFor="push-notifications" className="flex flex-col gap-1 cursor-pointer">
-                                <span>Notificações no browser</span>
-                                <span className="text-xs text-muted-foreground">Alertas em tempo real.</span>
+                                <span>{t.pushNotifications}</span>
+                                <span className="text-xs text-muted-foreground">{t.pushNotificationsDesc}</span>
                             </Label>
                             <Switch id="push-notifications" defaultChecked />
                         </div>
                         <div className="flex items-center justify-between p-3 bg-card/50 rounded-lg">
                             <Label htmlFor="mentions-notifications" className="flex flex-col gap-1 cursor-pointer">
-                                <span>Apenas menções e tarefas</span>
-                                <span className="text-xs text-muted-foreground">Receba alertas apenas quando for mencionado.</span>
+                                <span>{t.mentionsNotifications}</span>
+                                <span className="text-xs text-muted-foreground">{t.mentionsNotificationsDesc}</span>
                             </Label>
                             <Switch id="mentions-notifications" />
                         </div>
-                        <Button className="w-full btn-primary-gradient mt-4" onClick={() => handleSaveChanges('Notificações')}>Salvar Alterações</Button>
+                        <Button className="w-full btn-primary-gradient mt-4" onClick={() => handleSaveChanges(t.notificationsTitle)}>{t.saveChanges}</Button>
                     </CardContent>
                 </Card>
 
                 {/* Accessibility Settings Card */}
                 <Card className="gradient-surface border-0 rounded-2xl">
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><Accessibility className="text-primary"/> Acessibilidade</CardTitle>
-                        <CardDescription>Ajustes para melhorar a sua experiência.</CardDescription>
+                        <CardTitle className="flex items-center gap-2"><Accessibility className="text-primary"/>{t.accessibilityTitle}</CardTitle>
+                        <CardDescription>{t.accessibilityDescription}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="flex items-center justify-between p-3 bg-card/50 rounded-lg">
                             <Label htmlFor="high-contrast" className="flex flex-col gap-1">
-                                <span>Modo de Alto Contraste</span>
-                                <span className="text-xs text-muted-foreground">Aumenta o contraste das cores para melhor legibilidade.</span>
+                                <span>{t.highContrast}</span>
+                                <span className="text-xs text-muted-foreground">{t.highContrastDesc}</span>
                             </Label>
                             <Switch id="high-contrast" />
                         </div>
                         <div className="flex items-center justify-between p-3 bg-card/50 rounded-lg">
                             <Label htmlFor="reduced-motion" className="flex flex-col gap-1">
-                                <span>Reduzir Movimento</span>
-                                <span className="text-xs text-muted-foreground">Desativa animações e transições na interface.</span>
+                                <span>{t.reducedMotion}</span>
+                                <span className="text-xs text-muted-foreground">{t.reducedMotionDesc}</span>
                             </Label>
                             <Switch id="reduced-motion" defaultChecked />
                         </div>
-                        <Button className="w-full btn-primary-gradient mt-4" onClick={() => handleSaveChanges('Acessibilidade')}>Salvar Alterações</Button>
+                        <Button className="w-full btn-primary-gradient mt-4" onClick={() => handleSaveChanges(t.accessibilityTitle)}>{t.saveChanges}</Button>
                     </CardContent>
                 </Card>
                 
                 {/* Data & Privacy Settings Card */}
                 <Card className="gradient-surface border-0 rounded-2xl lg:col-span-2">
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><FileDown className="text-primary"/> Dados e Privacidade</CardTitle>
-                        <CardDescription>Faça a gestão dos seus dados pessoais.</CardDescription>
+                        <CardTitle className="flex items-center gap-2"><FileDown className="text-primary"/>{t.dataPrivacyTitle}</CardTitle>
+                        <CardDescription>{t.dataPrivacyDescription}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="flex justify-between items-center p-3 bg-card/50 rounded-lg">
                            <div>
-                             <h4 className="font-semibold">Exportar Meus Dados</h4>
-                             <p className="text-sm text-muted-foreground">Faça o download de todos os seus dados em formato JSON.</p>
+                             <h4 className="font-semibold">{t.exportData}</h4>
+                             <p className="text-sm text-muted-foreground">{t.exportDataDesc}</p>
                            </div>
-                           <Button variant="outline" className="bg-card border-border">Exportar</Button>
+                           <Button variant="outline" className="bg-card border-border">{t.export}</Button>
                         </div>
                     </CardContent>
                 </Card>
@@ -176,3 +268,5 @@ export default function SettingsPage() {
         </div>
     );
 }
+
+    

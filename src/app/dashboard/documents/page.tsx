@@ -15,7 +15,7 @@ const fileIcons: { [key: string]: React.ReactNode } = {
 export default function DocumentsPage() {
   return (
     <div className="p-6 fade-in">
-        <h1 className="text-3xl font-bold text-white mb-8">Documentos Corporativos</h1>
+        <h1 className="text-3xl font-bold text-white mb-8">Documentos da Empresa</h1>
         <Card className="gradient-surface border-0 rounded-2xl">
             <CardContent className="p-6">
                 <Table>

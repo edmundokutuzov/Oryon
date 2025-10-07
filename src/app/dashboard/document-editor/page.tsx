@@ -1,3 +1,4 @@
+
 'use client';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -38,12 +39,12 @@ export default function DocumentEditorPage() {
 
     return (
         <div className="p-6 fade-in">
-            <h1 className="text-3xl font-bold text-white mb-8">Editor de Documentos Avançado</h1>
+            <h1 className="text-3xl font-bold text-foreground mb-8">Editor de Documentos Avançado</h1>
             <Card className="gradient-surface border-0 rounded-2xl overflow-hidden">
-                <div className="p-2 flex items-center flex-wrap gap-1 border-b border-white/10 bg-slate-900/50">
+                <div className="p-2 flex items-center flex-wrap gap-1 border-b border-border bg-slate-900/50">
                     <Button variant="ghost" size="icon" onClick={() => handleCommand('undo')} title="Desfazer"><Undo className="w-4 h-4" /></Button>
                     <Button variant="ghost" size="icon" onClick={() => handleCommand('redo')} title="Refazer"><Redo className="w-4 h-4" /></Button>
-                    <div className="h-6 w-px bg-white/20 mx-2"></div>
+                    <div className="h-6 w-px bg-border mx-2"></div>
                     <Button variant="ghost" size="icon" onClick={() => handleCommand('bold')} title="Negrito"><Bold className="w-4 h-4" /></Button>
                     <Button variant="ghost" size="icon" onClick={() => handleCommand('italic')} title="Itálico"><Italic className="w-4 h-4" /></Button>
                     <Button variant="ghost" size="icon" onClick={() => handleCommand('underline')} title="Sublinhado"><Underline className="w-4 h-4" /></Button>
@@ -64,24 +65,24 @@ export default function DocumentEditorPage() {
                              <input type="color" onChange={(e) => handleCommand('hiliteColor', e.target.value)} className="w-8 h-8"/>
                         </PopoverContent>
                     </Popover>
-                    <div className="h-6 w-px bg-white/20 mx-2"></div>
+                    <div className="h-6 w-px bg-border mx-2"></div>
                     <Button variant="ghost" size="icon" onClick={() => handleCommand('formatBlock', 'h1')} title="Título 1"><Heading1 className="w-4 h-4" /></Button>
                     <Button variant="ghost" size="icon" onClick={() => handleCommand('formatBlock', 'h2')} title="Título 2"><Heading2 className="w-4 h-4" /></Button>
                     <Button variant="ghost" size="icon" onClick={() => handleCommand('formatBlock', 'h3')} title="Título 3"><Heading3 className="w-4 h-4" /></Button>
                     <Button variant="ghost" size="icon" onClick={() => handleCommand('formatBlock', 'p')} title="Parágrafo"><Pilcrow className="w-4 h-4" /></Button>
                     <Button variant="ghost" size="icon" onClick={() => handleCommand('formatBlock', 'blockquote')} title="Citação"><TextQuote className="w-4 h-4" /></Button>
                      <Button variant="ghost" size="icon" onClick={() => handleCommand('formatBlock', 'pre')} title="Bloco de Código"><Code className="w-4 h-4" /></Button>
-                    <div className="h-6 w-px bg-white/20 mx-2"></div>
+                    <div className="h-6 w-px bg-border mx-2"></div>
                      <Button variant="ghost" size="icon" onClick={() => handleCommand('justifyLeft')} title="Alinhar à Esquerda"><AlignLeft className="w-4 h-4" /></Button>
                      <Button variant="ghost" size="icon" onClick={() => handleCommand('justifyCenter')} title="Centralizar"><AlignCenter className="w-4 h-4" /></Button>
                      <Button variant="ghost" size="icon" onClick={() => handleCommand('justifyRight')} title="Alinhar à Direita"><AlignRight className="w-4 h-4" /></Button>
                     <Button variant="ghost" size="icon" onClick={() => handleCommand('justifyFull')} title="Justificar"><AlignJustify className="w-4 h-4" /></Button>
-                    <div className="h-6 w-px bg-white/20 mx-2"></div>
+                    <div className="h-6 w-px bg-border mx-2"></div>
                     <Button variant="ghost" size="icon" onClick={() => handleCommand('insertUnorderedList')} title="Lista Não Ordenada"><List className="w-4 h-4" /></Button>
                     <Button variant="ghost" size="icon" onClick={() => handleCommand('insertOrderedList')} title="Lista Ordenada"><ListOrdered className="w-4 h-4" /></Button>
                      <Button variant="ghost" size="icon" onClick={() => handleCommand('superscript')} title="Sobrescrito"><Superscript className="w-4 h-4" /></Button>
                      <Button variant="ghost" size="icon" onClick={() => handleCommand('subscript')} title="Subscrito"><Subscript className="w-4 h-4" /></Button>
-                    <div className="h-6 w-px bg-white/20 mx-2"></div>
+                    <div className="h-6 w-px bg-border mx-2"></div>
                     <Button variant="ghost" size="icon" onClick={handleInsertLink} title="Inserir Link"><Link className="w-4 h-4" /></Button>
                     <Button variant="ghost" size="icon" onClick={handleInsertImage} title="Inserir Imagem"><Image className="w-4 h-4" /></Button>
                     <div className="flex-grow"></div>
@@ -90,7 +91,7 @@ export default function DocumentEditorPage() {
                 <div 
                     id="editable-doc" 
                     contentEditable="true" 
-                    className="p-8 text-white/90 bg-transparent min-h-[600px] focus:outline-none prose prose-invert prose-lg max-w-full"
+                    className="p-8 text-foreground/90 bg-transparent min-h-[600px] focus:outline-none prose prose-invert prose-lg max-w-full"
                     suppressContentEditableWarning={true}
                 >
                     Digite aqui...

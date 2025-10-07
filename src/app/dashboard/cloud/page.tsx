@@ -26,7 +26,7 @@ export default function CloudPage() {
     return (
         <div className="p-6 fade-in">
             <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold text-white">Minha Nuvem</h1>
+                <h1 className="text-3xl font-bold text-foreground">Minha Nuvem</h1>
                 <Button className="btn-primary-gradient">
                     <UploadCloud className="mr-2 h-4 w-4" /> Upload
                 </Button>
@@ -38,7 +38,7 @@ export default function CloudPage() {
                 </CardHeader>
                 <CardContent>
                     <Progress value={usedPercentage} className="h-3" />
-                    <div className="flex justify-between text-sm text-white/70 mt-2">
+                    <div className="flex justify-between text-sm text-muted-foreground mt-2">
                         <span>{usedStorage.toFixed(2)} GB de {totalStorage} GB utilizados</span>
                         <span>{usedPercentage.toFixed(1)}%</span>
                     </div>
@@ -52,7 +52,7 @@ export default function CloudPage() {
                 <CardContent>
                     <Table>
                         <TableHeader>
-                            <TableRow className="border-b-white/10 hover:bg-transparent">
+                            <TableRow className="border-b-border hover:bg-transparent">
                                 <TableHead>Nome</TableHead>
                                 <TableHead>Tamanho</TableHead>
                                 <TableHead>Última Modificação</TableHead>
@@ -62,13 +62,13 @@ export default function CloudPage() {
                         </TableHeader>
                         <TableBody>
                             {cloudFiles.map(file => (
-                                <TableRow key={file.id} className="border-b-white/5 hover:bg-white/10">
-                                    <TableCell className="font-medium text-white flex items-center gap-3">
+                                <TableRow key={file.id} className="border-b-border/50 hover:bg-muted/50">
+                                    <TableCell className="font-medium text-foreground flex items-center gap-3">
                                         {fileIcons[file.type] || fileIcons.default}
                                         {file.name}
                                     </TableCell>
-                                    <TableCell className="text-white/80">{file.size}</TableCell>
-                                    <TableCell className="text-white/80">{new Date(file.lastModified).toLocaleDateString('pt-PT')}</TableCell>
+                                    <TableCell className="text-muted-foreground">{file.size}</TableCell>
+                                    <TableCell className="text-muted-foreground">{new Date(file.lastModified).toLocaleDateString('pt-PT')}</TableCell>
                                     <TableCell>
                                         <div className="flex -space-x-2">
                                             {file.sharedWith.map(userId => {

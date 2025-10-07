@@ -1,3 +1,4 @@
+
 'use client';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -36,12 +37,12 @@ export default function DepartmentPageLayout({ department, members, projects }: 
         <div className="p-6 fade-in">
             <div className="flex justify-between items-start mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-white">{department.name}</h1>
-                    <p className="text-white/60 mt-2 max-w-prose">{department.description}</p>
+                    <h1 className="text-3xl font-bold text-foreground">{department.name}</h1>
+                    <p className="text-muted-foreground mt-2 max-w-prose">{department.description}</p>
                 </div>
                 {headUser && (
                      <div className="text-right">
-                         <p className="text-sm text-white/70">Chefe de Departamento</p>
+                         <p className="text-sm text-muted-foreground">Chefe de Departamento</p>
                          <p className="text-lg font-semibold text-primary">{headUser.name}</p>
                      </div>
                 )}
@@ -49,9 +50,9 @@ export default function DepartmentPageLayout({ department, members, projects }: 
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 <Link href={`/dashboard/departments/${department.slug}/team`}>
-                    <Card className="gradient-surface border-0 rounded-2xl hover:bg-white/5 transition-colors h-full">
+                    <Card className="gradient-surface border-0 rounded-2xl hover:bg-muted/50 transition-colors h-full">
                         <CardHeader className="flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-sm font-medium text-white/80">Membros</CardTitle>
+                            <CardTitle className="text-sm font-medium text-muted-foreground">Membros</CardTitle>
                             <Users className="w-5 h-5 text-primary/70" />
                         </CardHeader>
                         <CardContent>
@@ -60,9 +61,9 @@ export default function DepartmentPageLayout({ department, members, projects }: 
                     </Card>
                 </Link>
                  <Link href="/dashboard/projects">
-                    <Card className="gradient-surface border-0 rounded-2xl hover:bg-white/5 transition-colors h-full">
+                    <Card className="gradient-surface border-0 rounded-2xl hover:bg-muted/50 transition-colors h-full">
                         <CardHeader className="flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-sm font-medium text-white/80">Projetos Ativos</CardTitle>
+                            <CardTitle className="text-sm font-medium text-muted-foreground">Projetos Ativos</CardTitle>
                             <Folder className="w-5 h-5 text-primary/70" />
                         </CardHeader>
                         <CardContent>
@@ -72,7 +73,7 @@ export default function DepartmentPageLayout({ department, members, projects }: 
                 </Link>
                  <Card className="gradient-surface border-0 rounded-2xl">
                     <CardHeader className="flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-white/80">Orçamento Anual</CardTitle>
+                        <CardTitle className="text-sm font-medium text-muted-foreground">Orçamento Anual</CardTitle>
                         <DollarSign className="w-5 h-5 text-primary/70" />
                     </CardHeader>
                     <CardContent>
@@ -90,9 +91,9 @@ export default function DepartmentPageLayout({ department, members, projects }: 
                         <CardContent className="space-y-6">
                             {projects.map(p => (
                                 <Link href={`/dashboard/projects/${p.id}`} key={p.id}>
-                                    <div className="p-4 rounded-lg hover:bg-white/10 transition-colors">
+                                    <div className="p-4 rounded-lg hover:bg-muted/50 transition-colors">
                                         <div className="flex justify-between items-center mb-1">
-                                            <h3 className="font-semibold text-white">{p.name}</h3>
+                                            <h3 className="font-semibold text-foreground">{p.name}</h3>
                                             <Badge variant={p.status === 'active' ? 'default' : 'secondary'} className={p.status === 'active' ? 'bg-green-500/20 text-green-300' : 'bg-yellow-500/20 text-yellow-300'}>{p.status === 'active' ? 'Ativo' : 'Planeamento'}</Badge>
                                         </div>
                                         <Progress value={p.progress} className="h-2"/>
@@ -109,7 +110,7 @@ export default function DepartmentPageLayout({ department, members, projects }: 
                            {department.goals.map((goal, i) => (
                                <div key={i} className="flex items-start gap-3">
                                    <CheckCircle className="w-5 h-5 text-green-400 mt-1 shrink-0"/>
-                                   <p className="text-white/90">{goal}</p>
+                                   <p className="text-foreground/90">{goal}</p>
                                </div>
                            ))}
                         </CardContent>
@@ -125,14 +126,14 @@ export default function DepartmentPageLayout({ department, members, projects }: 
                                  const avatar = PlaceHolderImages.find(p => p.id === `user-avatar-${member.id}`)?.imageUrl;
                                 return (
                                 <Link href={`/dashboard/team/${member.id}`} key={member.id}>
-                                    <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition-colors">
+                                    <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors">
                                         <Avatar className="h-10 w-10">
                                             <AvatarImage src={avatar} alt={member.name} data-ai-hint="person portrait"/>
                                             <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
                                         </Avatar>
                                         <div>
-                                            <p className="font-medium text-white">{member.name}</p>
-                                            <p className="text-xs text-white/70">{member.role}</p>
+                                            <p className="font-medium text-foreground">{member.name}</p>
+                                            <p className="text-xs text-muted-foreground">{member.role}</p>
                                         </div>
                                     </div>
                                 </Link>

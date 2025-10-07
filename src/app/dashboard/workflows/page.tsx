@@ -18,19 +18,19 @@ export default function WorkflowsPage() {
 
   return (
     <div className="p-6 fade-in">
-        <h1 className="text-3xl font-bold text-white mb-8">Workflows da Empresa</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-8">Workflows da Empresa</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {workflows.map(wf => (
                 <Card key={wf.id} className="gradient-surface border-0 rounded-2xl">
                     <CardHeader>
-                        <CardTitle className="text-lg font-bold text-white flex items-center gap-2">
+                        <CardTitle className="text-lg font-bold text-foreground flex items-center gap-2">
                             <Workflow className="text-cyan-400 w-5 h-5"/>
                             {wf.name}
                         </CardTitle>
                         <CardDescription className="pt-2">Departamento: {wf.department}</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="border-t border-white/10 pt-4 flex justify-between items-center">
+                        <div className="border-t border-border pt-4 flex justify-between items-center">
                             <p className="text-sm font-semibold">{wf.steps} Etapas</p>
                             <Button variant="link" className="text-primary/80 hover:text-primary p-0 h-auto" onClick={() => handleStartWorkflow(wf.name)}>
                                 Iniciar Workflow <PlayCircle className="ml-2 h-4 w-4" />

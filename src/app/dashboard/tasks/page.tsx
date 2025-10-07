@@ -28,7 +28,7 @@ export default function TasksPage() {
   return (
     <div className="p-6 fade-in">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-white">Minhas Tarefas</h1>
+        <h1 className="text-3xl font-bold text-foreground">Minhas Tarefas</h1>
         <Button className="btn-primary-gradient" onClick={handleNewTask}>
           <Plus className="mr-2 h-4 w-4" /> Nova Tarefa
         </Button>
@@ -46,8 +46,8 @@ export default function TasksPage() {
 
 function TaskColumn({title, tasks}: {title: string, tasks: typeof userTasks}) {
     return (
-        <div className="bg-slate-900/50 rounded-2xl p-4">
-            <h2 className="text-lg font-bold text-white mb-4 px-2">{title} ({tasks.length})</h2>
+        <div className="bg-muted/50 rounded-2xl p-4">
+            <h2 className="text-lg font-bold text-foreground mb-4 px-2">{title} ({tasks.length})</h2>
             <div className="space-y-4 h-full overflow-y-auto custom-scrollbar pr-2">
                 {tasks.map(task => <TaskCard key={task.id} task={task} />)}
             </div>
@@ -74,17 +74,17 @@ function TaskCard({ task }: { task: (typeof userTasks)[0] }) {
              <CardTitle className="text-base font-semibold pt-2">{task.title}</CardTitle>
         </CardHeader>
       <CardContent className="p-4 pt-0">
-        <p className="text-white/60 text-sm mb-4 line-clamp-3">{task.description}</p>
+        <p className="text-muted-foreground text-sm mb-4 line-clamp-3">{task.description}</p>
         
         <div className="mb-4">
-            <div className="flex justify-between text-xs text-white/70 mb-1">
+            <div className="flex justify-between text-xs text-muted-foreground mb-1">
                 <span>Progresso</span>
                 <span>{task.progress}%</span>
             </div>
             <Progress value={task.progress} className="h-1.5" />
         </div>
 
-        <div className="flex justify-between items-center text-xs text-white/60 mb-4">
+        <div className="flex justify-between items-center text-xs text-muted-foreground mb-4">
             <div className="flex items-center gap-1.5">
                 <Calendar className="w-3.5 h-3.5" />
                 <span>Vence: {new Date(task.dueDate).toLocaleDateString('pt-BR')}</span>
@@ -98,11 +98,11 @@ function TaskCard({ task }: { task: (typeof userTasks)[0] }) {
         </div>
         
         {task.attachments && task.attachments.length > 0 && (
-             <div className="border-t border-white/10 pt-3">
-                <h4 className="text-xs font-semibold text-white/70 mb-2">Anexos</h4>
+             <div className="border-t border-border pt-3">
+                <h4 className="text-xs font-semibold text-muted-foreground mb-2">Anexos</h4>
                 <div className="flex flex-wrap gap-2">
                     {task.attachments.map(att => (
-                        <div key={att.name} className="flex items-center gap-2 text-xs bg-white/5 px-2 py-1 rounded-md">
+                        <div key={att.name} className="flex items-center gap-2 text-xs bg-muted/50 px-2 py-1 rounded-md">
                             <File className="w-3 h-3" />
                             <span>{att.name}</span>
                         </div>

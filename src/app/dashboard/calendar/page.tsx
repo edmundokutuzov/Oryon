@@ -24,7 +24,7 @@ export default function CalendarPage() {
   return (
     <div className="p-6 fade-in grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
       <div className="lg:col-span-2">
-        <h1 className="text-3xl font-bold text-white mb-8">Calendário</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-8">Calendário</h1>
         <Card className="gradient-surface border-0 rounded-2xl">
           <CardContent className="p-0">
             <Calendar
@@ -38,13 +38,13 @@ export default function CalendarPage() {
                 month: "w-full space-y-6",
                 table: "w-full border-collapse",
                 head_row: "w-full flex justify-between",
-                head_cell: "w-full text-white/60 font-normal text-sm",
+                head_cell: "w-full text-muted-foreground font-normal text-sm",
                 row: "w-full flex justify-between mt-2",
                 cell: "h-24 w-full text-center text-sm p-1 relative flex flex-col justify-start items-center rounded-lg border border-transparent transition-colors",
                 day: "w-full h-full justify-start p-2",
-                day_selected: "bg-primary/20 border-primary/50 text-white",
+                day_selected: "bg-primary/20 border-primary/50 text-foreground",
                 day_today: "border-primary text-primary",
-                day_outside: "text-white/30",
+                day_outside: "text-muted-foreground/30",
               }}
               components={{
                 DayContent: ({ date }) => {
@@ -80,10 +80,10 @@ export default function CalendarPage() {
             <CardContent>
                 <div className="space-y-4">
                     {eventsForSelectedDay.length > 0 ? eventsForSelectedDay.map(event => (
-                        <div key={event.id} className={`p-4 rounded-xl bg-white/5 border-l-4 border-primary`}>
-                            <h3 className="font-semibold text-white">{event.title}</h3>
-                            <p className="text-white/70 text-sm mt-1">{event.description}</p>
-                            <div className="text-xs text-white/60 mt-3 space-y-1">
+                        <div key={event.id} className={`p-4 rounded-xl bg-card/5 border-l-4 border-primary`}>
+                            <h3 className="font-semibold text-foreground">{event.title}</h3>
+                            <p className="text-muted-foreground text-sm mt-1">{event.description}</p>
+                            <div className="text-xs text-muted-foreground mt-3 space-y-1">
                                 <p className="flex items-center gap-2"><Clock className="w-3.5 h-3.5" />{new Date(event.start).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - {new Date(event.end).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
                                 <p className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5" />{event.location}</p>
                             </div>
@@ -94,7 +94,7 @@ export default function CalendarPage() {
                             )}
                         </div>
                     )) : (
-                        <p className="text-white/60 text-center py-8">Nenhum evento para este dia.</p>
+                        <p className="text-muted-foreground text-center py-8">Nenhum evento para este dia.</p>
                     )}
                 </div>
             </CardContent>

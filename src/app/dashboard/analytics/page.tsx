@@ -7,7 +7,7 @@ import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recha
 export default function AnalyticsPage() {
   return (
     <div className="p-6 fade-in">
-        <h1 className="text-3xl font-bold text-white mb-8">Analytics</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-8">Analytics</h1>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <Card className="gradient-surface border-0 rounded-2xl">
                 <CardHeader>
@@ -40,10 +40,10 @@ export default function AnalyticsPage() {
                         {analyticsData.projectProgress.labels.map((label, i) => (
                             <div key={label}>
                                 <div className="flex justify-between text-sm mb-1">
-                                    <span className="font-medium text-white">{label}</span>
-                                    <span className="text-white/80">{analyticsData.projectProgress.data[i]}%</span>
+                                    <span className="font-medium text-foreground">{label}</span>
+                                    <span className="text-foreground/80">{analyticsData.projectProgress.data[i]}%</span>
                                 </div>
-                                <div className="w-full bg-white/10 rounded-full h-2">
+                                <div className="w-full bg-foreground/10 rounded-full h-2">
                                     <div className="bg-green-500 h-2 rounded-full" style={{ width: `${analyticsData.projectProgress.data[i]}%` }}></div>
                                 </div>
                             </div>

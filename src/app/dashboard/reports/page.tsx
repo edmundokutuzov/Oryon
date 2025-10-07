@@ -8,13 +8,13 @@ import { ArrowRight } from 'lucide-react';
 export default function ReportsPage() {
   return (
     <div className="p-6 fade-in">
-        <h1 className="text-3xl font-bold text-white mb-8">Relatórios</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-8">Relatórios</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {reports.map(report => (
                 <Card key={report.id} className="gradient-surface border-0 rounded-2xl">
                     <CardHeader>
-                        <CardTitle className="text-lg font-bold text-white">{report.title}</CardTitle>
-                        <CardDescription className="text-sm text-white/70 pt-2">{report.summary}</CardDescription>
+                        <CardTitle className="text-lg font-bold text-foreground">{report.title}</CardTitle>
+                        <CardDescription className="text-sm text-muted-foreground pt-2">{report.summary}</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="flex justify-between items-center">

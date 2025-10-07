@@ -80,8 +80,8 @@ export default function DepartmentChatPage() {
                         )}
                     </div>
                     <div>
-                        <h1 className="text-2xl font-bold text-white">Chat do Departamento de {department?.name}</h1>
-                        <p className="text-white/60 text-sm">Canal de comunicação para a equipa.</p>
+                        <h1 className="text-2xl font-bold text-foreground">Chat do Departamento de {department?.name}</h1>
+                        <p className="text-muted-foreground text-sm">Canal de comunicação para a equipa.</p>
                     </div>
                 </div>
             </div>
@@ -98,10 +98,10 @@ export default function DepartmentChatPage() {
                                 <AvatarFallback>{user?.name.charAt(0)}</AvatarFallback>
                             </Avatar>
                             <div className="max-w-xl">
-                                <div className={`p-4 rounded-3xl ${isSelf ? 'bg-primary text-primary-foreground rounded-br-none' : 'bg-white/10 rounded-bl-none'}`}>
+                                <div className={`p-4 rounded-3xl ${isSelf ? 'bg-primary text-primary-foreground rounded-br-none' : 'bg-card rounded-bl-none'}`}>
                                     <div className="flex items-center justify-between mb-1">
-                                        <span className="font-bold text-sm">{user?.name}</span>
-                                        <span className="text-xs opacity-60">{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                        <span className={`font-bold text-sm ${isSelf ? 'text-primary-foreground' : 'text-foreground'}`}>{user?.name}</span>
+                                        <span className={`text-xs opacity-60 ${isSelf ? 'text-primary-foreground' : 'text-muted-foreground'}`}>{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                     </div>
                                     <p className="text-sm">{msg.content}</p>
                                 </div>
@@ -115,18 +115,18 @@ export default function DepartmentChatPage() {
                  <Popover open={isMentionPopoverOpen} onOpenChange={setMentionPopoverOpen}>
                     <PopoverAnchor asChild>
                          <div className="relative">
-                            <Paperclip className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" />
+                            <Paperclip className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
                             <Input 
                                 ref={inputRef}
                                 type="text" 
                                 placeholder="Escreva uma mensagem..." 
-                                className="w-full h-auto p-4 pl-12 pr-28 bg-white/10 border-white/20 rounded-xl focus:outline-none focus:border-primary text-white placeholder-white/50"
+                                className="w-full h-auto p-4 pl-12 pr-28 bg-card border-border rounded-xl focus:outline-none focus:border-primary text-foreground placeholder:text-muted-foreground"
                                 value={inputValue}
                                 onChange={handleInputChange}
                                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                             />
                             <Button 
-                                className="absolute right-4 top-1/2 -translate-y-1/2 btn-primary-gradient px-4 py-2 text-white font-semibold rounded-lg h-auto"
+                                className="absolute right-4 top-1/2 -translate-y-1/2 btn-primary-gradient px-4 py-2 text-primary-foreground font-semibold rounded-lg h-auto"
                                 onClick={handleSendMessage}
                             >
                                 <Send className="w-4 h-4 mr-2" /> Enviar

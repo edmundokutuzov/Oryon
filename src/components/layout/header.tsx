@@ -1,3 +1,4 @@
+
 'use client';
 import { useState } from 'react';
 import { Menu, Search, Bot, Bell, Video, Plus } from 'lucide-react';
@@ -34,12 +35,12 @@ export default function Header() {
           <Button variant="ghost" size="icon" className="md:hidden">
             <Menu />
           </Button>
-          <div className="text-lg font-light text-white/70">
-            <Link href="/dashboard" className="text-white transition-colors hover:text-primary">Dashboard</Link>
+          <div className="text-lg font-light text-muted-foreground">
+            <Link href="/dashboard" className="text-foreground transition-colors hover:text-primary">Dashboard</Link>
             {breadcrumb !== 'Dashboard' && (
               <>
                 <span className="mx-2">/</span>
-                <span className="text-white font-medium">{breadcrumb}</span>
+                <span className="text-foreground font-medium">{breadcrumb}</span>
               </>
             )}
           </div>
@@ -47,11 +48,11 @@ export default function Header() {
 
         <div className="flex items-center space-x-2 md:space-x-4">
           <div className="relative hidden md:block">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/50" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
               type="text"
               placeholder="Pesquisar no Oryon..."
-              className="pl-10 pr-4 py-2 w-64 h-auto bg-white/10 border-white/20 rounded-xl focus:outline-none focus:border-primary text-white placeholder-white/50"
+              className="pl-10 pr-4 py-2 w-64 h-auto bg-card border-border rounded-xl focus:outline-none focus:border-primary text-foreground placeholder:text-muted-foreground"
             />
           </div>
 
@@ -59,7 +60,7 @@ export default function Header() {
             <Button variant="ghost" size="icon" className="rounded-full bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30 hover:text-yellow-300" title="OryonAI" onClick={() => setIsAiAssistantOpen(true)}>
               <Bot />
             </Button>
-            <Button variant="ghost" size="icon" className="rounded-full bg-white/10 text-white hover:bg-white/20 relative" title="Notificações">
+            <Button variant="ghost" size="icon" className="rounded-full bg-card/10 text-foreground hover:bg-card/20 relative" title="Notificações">
               <Bell />
               <span className="absolute -top-1 -right-1 flex h-5 w-5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
@@ -69,7 +70,7 @@ export default function Header() {
             <Button size="icon" className="rounded-full btn-primary-gradient shadow-lg hover:shadow-xl" title="Reunião Rápida">
               <Video />
             </Button>
-            <Button variant="ghost" size="icon" className="rounded-full bg-white/10 text-white hover:bg-white/20" title="Criar Novo">
+            <Button variant="ghost" size="icon" className="rounded-full bg-card/10 text-foreground hover:bg-card/20" title="Criar Novo">
               <Plus />
             </Button>
           </div>

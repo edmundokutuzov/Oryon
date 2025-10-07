@@ -29,7 +29,7 @@ export default function MeetingsPage() {
     return (
         <div className="p-6 fade-in">
             <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold text-white">Reuniões</h1>
+                <h1 className="text-3xl font-bold text-foreground">Reuniões</h1>
                 <Button className="btn-primary-gradient" onClick={handleScheduleMeeting}>
                     <Plus className="mr-2 h-4 w-4" /> Agendar Reunião
                 </Button>
@@ -57,7 +57,7 @@ const MeetingSection = ({ title, meetings, active = false }: { title: string, me
 
     return (
         <section>
-            <h2 className="text-2xl font-bold text-white mb-4">{title}</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-4">{title}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {meetings.map(meeting => (
                     <Card key={meeting.id} className={`gradient-surface border-0 rounded-2xl ${active ? 'border-primary/50' : ''}`}>
@@ -72,10 +72,10 @@ const MeetingSection = ({ title, meetings, active = false }: { title: string, me
                                     <Badge variant="secondary" className="capitalize bg-primary/20 text-primary">{meeting.status}</Badge>
                                 )}
                             </div>
-                            <p className="text-sm text-white/70 pt-2">{meeting.description}</p>
+                            <p className="text-sm text-muted-foreground pt-2">{meeting.description}</p>
                         </CardHeader>
                         <CardContent>
-                            <div className="border-t border-white/10 pt-4 flex justify-between items-center text-sm text-white/80">
+                            <div className="border-t border-border pt-4 flex justify-between items-center text-sm text-muted-foreground">
                                 <div className="flex items-center gap-4">
                                     <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4"/> {new Date(meeting.date).toLocaleDateString('pt-PT')}</span>
                                     <span className="flex items-center gap-1.5"><Clock className="w-4 h-4"/> {meeting.time} ({meeting.duration} min)</span>

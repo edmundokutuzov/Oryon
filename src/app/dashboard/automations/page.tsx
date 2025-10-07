@@ -19,17 +19,17 @@ export default function AutomationsPage() {
 
   return (
     <div className="p-6 fade-in">
-        <h1 className="text-3xl font-bold text-white mb-8">Automações</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-8">Automações</h1>
         <Card className="gradient-surface border-0 rounded-2xl">
             <CardHeader>
                 <CardTitle>Automações Ativas e Inativas</CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="divide-y divide-white/10">
+                <div className="divide-y divide-border">
                     {automations.map(auto => (
                         <div key={auto.id} className="flex items-center justify-between py-4">
                             <div>
-                                <h3 className="font-medium text-white flex items-center gap-2">
+                                <h3 className="font-medium text-foreground flex items-center gap-2">
                                     <Bot className="text-yellow-300 w-5 h-5"/>
                                     {auto.name}
                                 </h3>

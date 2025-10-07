@@ -24,8 +24,8 @@ export default function GeneralChatPage() {
     return (
         <div className="p-6 fade-in h-full flex flex-col">
             <div className="flex-shrink-0 mb-6">
-                <h1 className="text-3xl font-bold text-white">Chat Geral</h1>
-                <p className="text-white/60">Canal de comunicação para toda a empresa.</p>
+                <h1 className="text-3xl font-bold text-foreground">Chat Geral</h1>
+                <p className="text-muted-foreground">Canal de comunicação para toda a empresa.</p>
             </div>
 
             <div id="chat-messages" className="flex-grow gradient-surface p-6 rounded-2xl overflow-y-auto custom-scrollbar flex flex-col gap-6">
@@ -40,10 +40,10 @@ export default function GeneralChatPage() {
                                 <AvatarFallback>{user?.name.charAt(0)}</AvatarFallback>
                             </Avatar>
                             <div className="max-w-xl">
-                                <div className={`p-4 rounded-3xl ${isSelf ? 'bg-primary text-primary-foreground rounded-br-none' : 'bg-white/10 rounded-bl-none'}`}>
+                                <div className={`p-4 rounded-3xl ${isSelf ? 'bg-primary text-primary-foreground rounded-br-none' : 'bg-card rounded-bl-none'}`}>
                                     <div className="flex items-center justify-between mb-1">
-                                        <span className="font-bold text-sm">{user?.name}</span>
-                                        <span className="text-xs opacity-60">{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                        <span className={`font-bold text-sm ${isSelf ? 'text-primary-foreground' : 'text-foreground'}`}>{user?.name}</span>
+                                        <span className={`text-xs opacity-60 ${isSelf ? 'text-primary-foreground' : 'text-muted-foreground'}`}>{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                     </div>
                                     <p className="text-sm">{msg.content}</p>
                                     {msg.attachments && msg.attachments.length > 0 && (
@@ -68,17 +68,17 @@ export default function GeneralChatPage() {
 
             <div className="flex-shrink-0 mt-4">
                 <div className="relative">
-                    <Paperclip className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" />
+                    <Paperclip className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
                     <Input 
                         type="text" 
                         placeholder="Escreva uma mensagem..." 
-                        className="w-full h-auto p-4 pl-12 pr-28 bg-white/10 border-white/20 rounded-xl focus:outline-none focus:border-primary text-white placeholder-white/50"
+                        className="w-full h-auto p-4 pl-12 pr-28 bg-card border-border rounded-xl focus:outline-none focus:border-primary text-foreground placeholder:text-muted-foreground"
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                     />
                     <Button 
-                        className="absolute right-4 top-1/2 -translate-y-1/2 btn-primary-gradient px-4 py-2 text-white font-semibold rounded-lg h-auto"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 btn-primary-gradient px-4 py-2 text-primary-foreground font-semibold rounded-lg h-auto"
                         onClick={handleSendMessage}
                     >
                         <Send className="w-4 h-4 mr-2" /> Enviar

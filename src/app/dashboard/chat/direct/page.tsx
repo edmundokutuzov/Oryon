@@ -21,7 +21,7 @@ export default function DirectMessagesPage() {
 
     return (
         <div className="p-6 fade-in">
-            <h1 className="text-3xl font-bold text-white mb-8">Mensagens Diretas</h1>
+            <h1 className="text-3xl font-bold text-foreground mb-8">Mensagens Diretas</h1>
             <Card className="gradient-surface border-0 rounded-2xl">
                 <CardHeader>
                     <CardTitle>Iniciar uma Conversa</CardTitle>
@@ -31,7 +31,7 @@ export default function DirectMessagesPage() {
                         {otherUsers.map(user => {
                             const avatar = PlaceHolderImages.find(p => p.id === `user-avatar-${user.id}`)?.imageUrl;
                             return (
-                                <div key={user.id} className="flex items-center justify-between p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                                <div key={user.id} className="flex items-center justify-between p-3 bg-card/5 rounded-lg hover:bg-card/10 transition-colors">
                                     <div className="flex items-center space-x-3">
                                         <div className="relative">
                                             <Avatar>
@@ -41,8 +41,8 @@ export default function DirectMessagesPage() {
                                             <span className={`absolute bottom-0 right-0 block h-3 w-3 rounded-full ${statusClasses[user.status]} ring-2 ring-background`}></span>
                                         </div>
                                         <div>
-                                            <p className="font-medium text-white">{user.name}</p>
-                                            <p className="text-xs text-white/60">{user.role}</p>
+                                            <p className="font-medium text-foreground">{user.name}</p>
+                                            <p className="text-xs text-muted-foreground">{user.role}</p>
                                         </div>
                                     </div>
                                     <Link href={`/dashboard/chat/direct/${user.id}`}>

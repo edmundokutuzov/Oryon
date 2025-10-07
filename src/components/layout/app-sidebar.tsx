@@ -1,3 +1,4 @@
+
 'use client';
 import {
   GaugeCircle,
@@ -90,8 +91,8 @@ const NavLink = ({ href, children, icon, badge }: { href: string; children: Reac
   return (
     <Link href={href}>
       <div className={cn(
-        "flex items-center p-2 rounded-lg text-sm transition-all text-white/80 hover:bg-white/10 relative",
-        isActive && "bg-primary/20 text-white font-medium"
+        "flex items-center p-2 rounded-lg text-sm transition-all text-foreground/80 hover:bg-muted/50 relative",
+        isActive && "bg-primary/20 text-primary font-medium"
       )}>
         <Icon className="mr-3 w-5 h-5 flex-shrink-0" />
         <span className="flex-grow">{children}</span>
@@ -111,20 +112,20 @@ export default function AppSidebar() {
 
   return (
     <aside className="w-64 h-full flex flex-col flex-shrink-0 gradient-surface rounded-none md:rounded-r-[1.5rem] shadow-2xl transition-all duration-300 fixed md:relative z-40 md:translate-x-0 -translate-x-full">
-      <div className="p-6 flex flex-col items-start h-24 border-b border-white/10">
+      <div className="p-6 flex flex-col items-start h-24 border-b border-border">
         <div className="flex items-center gap-2">
             <OryonLogo className="!h-8 !w-8" />
-            <h1 className="text-2xl font-extrabold text-white">Oryon</h1>
+            <h1 className="text-2xl font-extrabold text-foreground">Oryon</h1>
         </div>
-        <p className="text-xs text-white/60 mt-1">STANDARD BANK</p>
+        <p className="text-xs text-muted-foreground mt-1">STANDARD BANK</p>
       </div>
 
       <nav className="flex-grow p-4 overflow-y-auto custom-scrollbar">
         {menuItems.map((section) => (
           <div key={section.title} className="mb-6">
-            <h2 className="text-sm font-semibold mb-3 text-white/50 uppercase flex justify-between items-center">
+            <h2 className="text-sm font-semibold mb-3 text-muted-foreground uppercase flex justify-between items-center">
               <span>{section.title}</span>
-              {section.action && <button className="text-xs text-primary hover:text-white"><Plus className="w-4 h-4" /></button>}
+              {section.action && <button className="text-xs text-primary hover:text-foreground"><Plus className="w-4 h-4" /></button>}
             </h2>
             <div className="space-y-1">
               {section.items.map((item) => {
@@ -143,7 +144,7 @@ export default function AppSidebar() {
         ))}
       </nav>
 
-      <div className="p-4 border-t border-white/10">
+      <div className="p-4 border-t border-border">
         <div className="flex items-center space-x-3">
           <div className="relative">
             <Avatar className="h-10 w-10 border-2 border-primary">
@@ -153,12 +154,12 @@ export default function AppSidebar() {
             <span className={cn("absolute bottom-0 right-0 block h-3 w-3 rounded-full ring-2 ring-card", statusClasses[currentUser.status])} />
           </div>
           <div className="flex-grow overflow-hidden">
-            <p className="text-sm font-medium text-white truncate">{currentUser.name}</p>
-            <p className="text-xs text-white/60 truncate">{currentUser.role}</p>
+            <p className="text-sm font-medium text-foreground truncate">{currentUser.name}</p>
+            <p className="text-xs text-muted-foreground truncate">{currentUser.role}</p>
           </div>
            <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="p-2 rounded-full hover:bg-white/10 text-white/80">
+                <button className="p-2 rounded-full hover:bg-muted/50 text-foreground/80">
                   <MoreVertical className="h-5 w-5" />
                 </button>
               </DropdownMenuTrigger>

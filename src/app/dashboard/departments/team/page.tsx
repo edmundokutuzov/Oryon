@@ -4,9 +4,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { users } from "@/lib/data";
+import { getDepartment, getDepartmentMembers, users } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Mail, MapPin, Phone, MessageSquare, Video } from "lucide-react";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 
 const statusClasses: { [key: string]: { bg: string, text: string, ring: string } } = {
@@ -17,16 +18,31 @@ const statusClasses: { [key: string]: { bg: string, text: string, ring: string }
   offline: { bg: 'bg-slate-500', text: 'text-slate-400', ring: 'ring-slate-500/50' },
 };
 
-export default function TeamPage() {
+export default function DepartmentTeamPage() {
+    const params = useParams();
+    const departmentSlug = params.department as string;
+    const department = getDepartment(departmentSlug);
+    const departmentMembers = getDepartmentMembers(department?.name || "");
 
-    const [teamMembers] = useState([...users].sort((a, b) => {
+    const [teamMembers] = useState([...departmentMembers].sort((a, b) => {
         const statusOrder = { online: 1, away: 2, busy: 3, dnd: 4, offline: 5 };
         return statusOrder[a.status] - statusOrder[b.status];
     }));
 
+  if (!department) {
+    return (
+        <div className="p-6 fade-in">
+            <h1 className="text-3xl font-bold text-foreground mb-8">Departamento não encontrado</h1>
+             <Card className="gradient-surface border-0 rounded-2xl p-6">
+                <p className="text-muted-foreground">O departamento que procura não existe.</p>
+            </Card>
+        </div>
+    )
+  }
+
   return (
     <div className="p-6 fade-in">
-        <h1 className="text-3xl font-bold text-foreground mb-8">Equipa</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-8">Equipa de {department.name}</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {teamMembers.map(user => {
                 const avatar = PlaceHolderImages.find(p => p.id === `user-avatar-${user.id}`)?.imageUrl;

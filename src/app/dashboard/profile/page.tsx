@@ -27,7 +27,7 @@ export default function ProfilePage() {
 
   return (
     <div className="p-6 fade-in">
-        <h1 className="text-3xl font-bold text-white mb-8">Meu Perfil</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-8">Meu Perfil</h1>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             {/* Coluna Esquerda - Perfil e Segurança */}
@@ -45,7 +45,7 @@ export default function ProfilePage() {
                         </div>
                         <div>
                             <CardTitle className="text-2xl font-bold">{currentUser.name}</CardTitle>
-                            <CardDescription className="text-white/70">{currentUser.role} • {currentUser.department}</CardDescription>
+                            <CardDescription className="text-muted-foreground">{currentUser.role} • {currentUser.department}</CardDescription>
                         </div>
                     </CardHeader>
                     <CardContent>
@@ -53,16 +53,16 @@ export default function ProfilePage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="name">Nome Completo</Label>
-                                    <Input id="name" defaultValue={currentUser.name} className="bg-white/10 border-white/20"/>
+                                    <Input id="name" defaultValue={currentUser.name} className="bg-card border-border"/>
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="email">Email</Label>
-                                    <Input id="email" defaultValue={currentUser.email} disabled className="bg-white/10 border-white/20 disabled:opacity-70"/>
+                                    <Input id="email" defaultValue={currentUser.email} disabled className="bg-card border-border disabled:opacity-70"/>
                                 </div>
                             </div>
                              <div className="space-y-2">
                                 <Label htmlFor="bio">Bio</Label>
-                                <Textarea id="bio" defaultValue={currentUser.bio} className="bg-white/10 border-white/20" rows={3}/>
+                                <Textarea id="bio" defaultValue={currentUser.bio} className="bg-card border-border" rows={3}/>
                             </div>
                             <div className="flex justify-end">
                                 <Button className="btn-primary-gradient" onClick={() => handleSave('perfil')}>Salvar Alterações</Button>
@@ -77,17 +77,17 @@ export default function ProfilePage() {
                         <CardDescription>Gestão da sua password e autenticação.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg">
+                        <div className="flex justify-between items-center p-3 bg-card/50 rounded-lg">
                            <div>
                              <h4 className="font-semibold">Alterar Password</h4>
-                             <p className="text-sm text-white/60">Recomenda-se a alteração periódica.</p>
+                             <p className="text-sm text-muted-foreground">Recomenda-se a alteração periódica.</p>
                            </div>
-                           <Button variant="outline" className="bg-white/10 border-white/20">Alterar</Button>
+                           <Button variant="outline" className="bg-card border-border">Alterar</Button>
                         </div>
-                         <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg">
+                         <div className="flex justify-between items-center p-3 bg-card/50 rounded-lg">
                            <div>
                              <h4 className="font-semibold">Autenticação de 2 Fatores (2FA)</h4>
-                             <p className="text-sm text-white/60">Proteja a sua conta com uma camada extra de segurança.</p>
+                             <p className="text-sm text-muted-foreground">Proteja a sua conta com uma camada extra de segurança.</p>
                            </div>
                            <Switch defaultChecked={currentUser.permissions.includes('2fa')} aria-label="Toggle 2FA" />
                         </div>
@@ -105,21 +105,21 @@ export default function ProfilePage() {
                         <div className="flex items-center justify-between">
                             <Label htmlFor="email-notifications" className="flex flex-col">
                                 <span>Notificações por Email</span>
-                                <span className="text-xs text-white/60">Receba alertas importantes no seu email.</span>
+                                <span className="text-xs text-muted-foreground">Receba alertas importantes no seu email.</span>
                             </Label>
                             <Switch id="email-notifications" defaultChecked />
                         </div>
                         <div className="flex items-center justify-between">
                             <Label htmlFor="push-notifications" className="flex flex-col">
                                 <span>Notificações Push</span>
-                                <span className="text-xs text-white/60">Alertas em tempo real no seu browser.</span>
+                                <span className="text-xs text-muted-foreground">Alertas em tempo real no seu browser.</span>
                             </Label>
                             <Switch id="push-notifications" defaultChecked />
                         </div>
                          <div className="flex items-center justify-between">
                             <Label htmlFor="sound-notifications" className="flex flex-col">
                                 <span>Sons de Notificação</span>
-                                <span className="text-xs text-white/60">Ativar sons para novos alertas.</span>
+                                <span className="text-xs text-muted-foreground">Ativar sons para novos alertas.</span>
                             </Label>
                             <Switch id="sound-notifications" />
                         </div>
@@ -133,15 +133,15 @@ export default function ProfilePage() {
                     <CardContent className="space-y-3">
                         <div className="flex items-start gap-3 text-sm">
                             <div className="bg-blue-500/20 text-blue-300 p-2 rounded-full"><User className="w-4 h-4"/></div>
-                            <p className="text-white/80">Você atualizou a tarefa <span className="font-semibold text-white">"Criar campanha..."</span> para "Em Progresso".<span className="block text-xs text-white/60">há 2 horas</span></p>
+                            <p className="text-muted-foreground">Você atualizou a tarefa <span className="font-semibold text-foreground">"Criar campanha..."</span> para "Em Progresso".<span className="block text-xs text-muted-foreground">há 2 horas</span></p>
                         </div>
                          <div className="flex items-start gap-3 text-sm">
                             <div className="bg-green-500/20 text-green-300 p-2 rounded-full"><Key className="w-4 h-4"/></div>
-                            <p className="text-white/80">Sessão iniciada a partir de um novo dispositivo.<span className="block text-xs text-white/60">há 1 dia</span></p>
+                            <p className="text-muted-foreground">Sessão iniciada a partir de um novo dispositivo.<span className="block text-xs text-muted-foreground">há 1 dia</span></p>
                         </div>
                          <div className="flex items-start gap-3 text-sm">
                             <div className="bg-purple-500/20 text-purple-300 p-2 rounded-full"><Bell className="w-4 h-4"/></div>
-                            <p className="text-white/80">Você foi mencionado por <span className="font-semibold text-white">Maria Silva</span> no canal de Marketing.<span className="block text-xs text-white/60">há 3 dias</span></p>
+                            <p className="text-muted-foreground">Você foi mencionado por <span className="font-semibold text-foreground">Maria Silva</span> no canal de Marketing.<span className="block text-xs text-muted-foreground">há 3 dias</span></p>
                         </div>
                     </CardContent>
                 </Card>

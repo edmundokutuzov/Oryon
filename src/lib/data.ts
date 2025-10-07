@@ -8,12 +8,12 @@ export const users = [
         email: "admin@standardbank.com",
         role: "Administrador",
         department: "Administração",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        avatar: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTk3NzIxODV8MA&ixlib=rb-4.1.0&q=80&w=1080",
         status: "online" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
         bio: "Administrador do sistema Oryon, garantindo a segurança e a operacionalidade da plataforma.",
-        phone: "+351 912 345 678",
-        location: "Lisboa, Portugal",
+        phone: "+258 84 123 4567",
+        location: "Maputo, Moçambique",
         permissions: ["all"],
     },
     {
@@ -26,8 +26,8 @@ export const users = [
         status: "online" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
         bio: "Designer criativo especializado em campanhas digitais e identidade visual. Apaixonado por interfaces intuitivas.",
-        phone: "+351 923 456 789",
-        location: "Porto, Portugal",
+        phone: "+258 84 234 5678",
+        location: "Maputo, Moçambique",
         permissions: ["read", "write", "comment"],
     },
     {
@@ -40,8 +40,8 @@ export const users = [
         status: "online" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
         bio: "Chefe de Departamento de Marketing com 10 anos de experiência em estratégia digital e gestão de equipas.",
-        phone: "+351 934 567 890",
-        location: "Lisboa, Portugal",
+        phone: "+258 84 345 6789",
+        location: "Maputo, Moçambique",
         permissions: ["read", "write", "comment", "manage", "approve"],
     },
     {
@@ -54,8 +54,8 @@ export const users = [
         status: "away" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
         bio: "Analista financeiro especializado em relatórios trimestrais e análise de risco.",
-        phone: "+351 945 678 901",
-        location: "Lisboa, Portugal",
+        phone: "+258 84 456 7890",
+        location: "Maputo, Moçambique",
         permissions: ["read", "write"],
     },
     {
@@ -68,8 +68,8 @@ export const users = [
         status: "busy" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
         bio: "Gestora de RH focada em desenvolvimento organizacional, recrutamento e bem-estar dos colaboradores.",
-        phone: "+351 956 789 012",
-        location: "Porto, Portugal",
+        phone: "+258 84 567 8901",
+        location: "Maputo, Moçambique",
         permissions: ["read", "write", "manage", "approve"],
     },
     {
@@ -82,8 +82,8 @@ export const users = [
         status: "online" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
         bio: "Controller experiente com foco em relatórios financeiros e controlo de gestão.",
-        phone: "+351 967 890 123",
-        location: "Lisboa, Portugal",
+        phone: "+258 84 678 9012",
+        location: "Maputo, Moçambique",
         permissions: ["read", "write", "approve"],
     },
     {
@@ -96,8 +96,8 @@ export const users = [
         status: "online" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
         bio: "Especialista em análise e mitigação de riscos financeiros e de crédito.",
-        phone: "+351 911 223 344",
-        location: "Lisboa, Portugal",
+        phone: "+258 84 789 0123",
+        location: "Maputo, Moçambique",
         permissions: ["read", "write"],
     },
     {
@@ -110,8 +110,8 @@ export const users = [
         status: "offline" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
         bio: "Responsável pela gestão de tesouraria, fluxo de caixa e investimentos do banco.",
-        phone: "+351 933 445 566",
-        location: "Porto, Portugal",
+        phone: "+258 84 890 1234",
+        location: "Maputo, Moçambique",
         permissions: ["read", "write", "manage"],
     }
 ];
@@ -474,3 +474,5 @@ export const getDepartment = (slug: string) => departments.find(d => d.slug === 
 export const getDepartmentMembers = (deptName: string) => users.filter(u => u.department === deptName);
 export const getDepartmentProjects = (deptName: string) => projects.filter(p => p.department === deptName);
 export const getCalendarEventsForUser = (userId: number) => calendarEvents.filter(event => event.participants.includes(userId) || event.createdBy === userId);
+
+    

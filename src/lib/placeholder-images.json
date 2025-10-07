@@ -3,50 +3,50 @@
     {
       "id": "user-avatar-1",
       "description": "Admin Sistema avatar",
-      "imageUrl": "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTk3NzIxODV8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "man portrait"
+      "imageUrl": "https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxibGFjayUyMG1hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1OTc4ODQ4OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "black man portrait"
     },
     {
       "id": "user-avatar-2",
       "description": "Edmundo Kutuzov avatar",
-      "imageUrl": "https://images.unsplash.com/photo-1522556189639-b150ed9c4330?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTk3NzIxODV8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "man portrait"
+      "imageUrl": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxibGFjayUyMG1hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1OTc4ODQ4OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "black man portrait"
     },
     {
       "id": "user-avatar-3",
       "description": "Maria Silva avatar",
-      "imageUrl": "https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1OTcxODAxNHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "woman portrait"
+      "imageUrl": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxibGFjayUyMHdvbWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzU5Nzg4NTA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "black woman portrait"
     },
     {
       "id": "user-avatar-4",
       "description": "Carlos Santos avatar",
-      "imageUrl": "https://images.unsplash.com/photo-1624395213043-fa2e123b2656?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTk3NzIxODV8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "man portrait"
+      "imageUrl": "https://images.unsplash.com/photo-1583195764359-c67133f93a74?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxibGFjayUyMG1hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1OTc4ODQ4OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "black man portrait"
     },
     {
       "id": "user-avatar-5",
       "description": "Ana Costa avatar",
-      "imageUrl": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1OTcxODAxNHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "woman portrait"
+      "imageUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxibGFjayUyMHdvbWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzU5Nzg4NTA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "black woman portrait"
     },
     {
       "id": "user-avatar-6",
       "description": "Sofia Ribeiro avatar",
-      "imageUrl": "https://images.unsplash.com/photo-1580489944761-15a19d654956?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1OTcxODAxNHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "woman portrait"
+      "imageUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxibGFjayUyMHdvbWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzU5Nzg4NTA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "black woman portrait"
     },
     {
       "id": "user-avatar-7",
       "description": "João Almeida avatar",
-      "imageUrl": "https://images.unsplash.com/photo-1557862921-37829c790f19?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTk3NzIxODV8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "man portrait"
+      "imageUrl": "https://images.unsplash.com/photo-1560250097-0b93528c311a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxibGFjayUyMG1hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1OTc4ODQ4OHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "black man portrait"
     },
     {
       "id": "user-avatar-8",
       "description": "Beatriz Martins avatar",
-      "imageUrl": "https://images.unsplash.com/photo-1498551172505-8ee7ad69f235?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx3b21hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1OTcxODAxNHww&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "woman portrait"
+      "imageUrl": "https://images.unsplash.com/photo-1591461974026-614a0b6af24d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxibGFjayUyMHdvbWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzU5Nzg4NTA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "black woman portrait"
     }
   ]
 }

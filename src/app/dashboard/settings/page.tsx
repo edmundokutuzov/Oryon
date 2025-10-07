@@ -4,11 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Languages, Palette, Accessibility, FileDown, Sun, Moon } from 'lucide-react';
+import { Languages, Palette, Accessibility, FileDown, Sun, Moon, Bell } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useTheme } from 'next-themes';
 
 export default function SettingsPage() {
     const { toast } = useToast();
+    const { setTheme, theme } = useTheme();
 
     const handleSaveChanges = (section: string) => {
         toast({
@@ -20,7 +22,7 @@ export default function SettingsPage() {
     return (
         <div className="p-6 fade-in">
             <h1 className="text-3xl font-bold text-white mb-8">Configurações</h1>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
 
                 {/* General Settings Card */}
                 <Card className="gradient-surface border-0 rounded-2xl">
@@ -68,11 +70,11 @@ export default function SettingsPage() {
                         <div className="space-y-2">
                             <Label>Tema</Label>
                              <div className="grid grid-cols-2 gap-4">
-                                <Button variant="outline" className="h-20 flex flex-col items-center justify-center bg-white/20 border-primary ring-2 ring-primary">
+                                <Button variant="outline" onClick={() => setTheme('dark')} className={`h-20 flex flex-col items-center justify-center bg-white/10 border-white/20 ${theme === 'dark' ? 'ring-2 ring-primary border-primary' : ''}`}>
                                     <Moon className="w-6 h-6 mb-2"/>
                                     <span>Escuro</span>
                                 </Button>
-                                <Button variant="outline" className="h-20 flex flex-col items-center justify-center bg-white/10 border-white/20 opacity-50 cursor-not-allowed">
+                                <Button variant="outline" onClick={() => setTheme('light')} className={`h-20 flex flex-col items-center justify-center bg-white/10 border-white/20 ${theme === 'light' ? 'ring-2 ring-primary border-primary' : ''}`}>
                                     <Sun className="w-6 h-6 mb-2"/>
                                     <span>Claro</span>
                                 </Button>
@@ -92,6 +94,38 @@ export default function SettingsPage() {
                             </Select>
                         </div>
                         <Button className="w-full btn-primary-gradient" onClick={() => handleSaveChanges('Aparência')}>Salvar Alterações</Button>
+                    </CardContent>
+                </Card>
+
+                 {/* Notifications Settings Card */}
+                <Card className="gradient-surface border-0 rounded-2xl lg:col-span-1">
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2"><Bell className="text-primary"/> Notificações</CardTitle>
+                        <CardDescription>Escolha como e quando quer ser notificado.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                            <Label htmlFor="email-notifications" className="flex flex-col gap-1 cursor-pointer">
+                                <span>Notificações por Email</span>
+                                <span className="text-xs text-white/60">Receba resumos e alertas importantes.</span>
+                            </Label>
+                            <Switch id="email-notifications" defaultChecked />
+                        </div>
+                        <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                            <Label htmlFor="push-notifications" className="flex flex-col gap-1 cursor-pointer">
+                                <span>Notificações no browser</span>
+                                <span className="text-xs text-white/60">Alertas em tempo real.</span>
+                            </Label>
+                            <Switch id="push-notifications" defaultChecked />
+                        </div>
+                        <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                            <Label htmlFor="mentions-notifications" className="flex flex-col gap-1 cursor-pointer">
+                                <span>Apenas menções e tarefas</span>
+                                <span className="text-xs text-white/60">Receba alertas apenas quando for mencionado.</span>
+                            </Label>
+                            <Switch id="mentions-notifications" />
+                        </div>
+                        <Button className="w-full btn-primary-gradient mt-4" onClick={() => handleSaveChanges('Notificações')}>Salvar Alterações</Button>
                     </CardContent>
                 </Card>
 
@@ -121,7 +155,7 @@ export default function SettingsPage() {
                 </Card>
                 
                 {/* Data & Privacy Settings Card */}
-                <Card className="gradient-surface border-0 rounded-2xl">
+                <Card className="gradient-surface border-0 rounded-2xl lg:col-span-2">
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2"><FileDown className="text-primary"/> Dados e Privacidade</CardTitle>
                         <CardDescription>Faça a gestão dos seus dados pessoais.</CardDescription>

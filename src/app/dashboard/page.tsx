@@ -1,9 +1,13 @@
 
+'use client';
 import {
   Activity,
   ListTodo,
   MessagesSquare,
   Video,
+  Users,
+  Shield,
+  TrendingUp,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getTasksForUser, getUpcomingMeetings, getCurrentUser, users } from '@/lib/data';
@@ -16,6 +20,7 @@ import { Button } from '@/components/ui/button';
 const currentUser = getCurrentUser();
 const tasks = getTasksForUser(currentUser.id);
 const meetings = getUpcomingMeetings(currentUser.id);
+const hasAdminPermissions = currentUser.permissions.includes('all') || currentUser.permissions.includes('approve');
 
 const dashboardStats = [
   {
@@ -43,6 +48,43 @@ const dashboardStats = [
     color: 'bg-yellow-500/20 text-yellow-300',
   },
 ];
+
+const AdminPanel = () => (
+  <Card className="gradient-surface border-0 rounded-2xl mb-8">
+      <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-xl font-bold">
+              <Shield className="text-primary"/>
+              Painel de Administrador
+          </CardTitle>
+      </CardHeader>
+      <CardContent className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-green-500/20 text-green-300"><Users/></div>
+              <div>
+                  <p className="text-2xl font-bold">245</p>
+                  <p className="text-sm text-muted-foreground">Utilizadores Ativos</p>
+              </div>
+          </div>
+          <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-blue-500/20 text-blue-300"><TrendingUp/></div>
+              <div>
+                  <p className="text-2xl font-bold">+12%</p>
+                  <p className="text-sm text-muted-foreground">Crescimento (30d)</p>
+              </div>
+          </div>
+          <div className="flex items-center gap-3">
+              <div className="p-3 rounded-xl bg-red-500/20 text-red-300"><Activity/></div>
+              <div>
+                  <p className="text-2xl font-bold">4</p>
+                  <p className="text-sm text-muted-foreground">Alertas de Sistema</p>
+              </div>
+          </div>
+          <Link href="/dashboard/settings" className="flex items-center justify-center p-4 rounded-xl bg-primary/20 text-primary hover:bg-primary/30 transition-colors">
+              Gerir Sistema
+          </Link>
+      </CardContent>
+  </Card>
+);
 
 const TaskPreviewCard = ({ task }: { task: (typeof tasks)[0] }) => {
   const priorityStyles: { [key: string]: string } = {
@@ -136,6 +178,8 @@ export default function DashboardPage() {
             <p className="text-muted-foreground mt-1">Bem-vindo de volta, {currentUser.name}</p>
           </div>
         </div>
+
+        {hasAdminPermissions && <AdminPanel />}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {dashboardStats.map((stat) => (

@@ -1,13 +1,18 @@
 
-import { Key, Mail, Lock, ShieldCheck, LogIn } from 'lucide-react';
+'use client';
+import { Key, Mail, Lock, ShieldCheck, LogIn, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import OryonLogo from '@/components/icons/oryon-logo';
 import { handleLogin } from '@/app/actions';
+import { useSearchParams } from 'next/navigation';
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
+  const error = searchParams.get('error');
+
   return (
     <main className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="gradient-surface p-8 md:p-10 rounded-3xl w-full max-w-md mx-4 border-2 border-primary/50 bounce-in">
@@ -20,6 +25,13 @@ export default function LoginPage() {
             <span>Conexão Segura • Criptografia AES-256</span>
           </div>
         </div>
+
+        {error === 'invalid_credentials' && (
+            <div className="bg-destructive/20 text-destructive-foreground p-3 rounded-lg mb-6 flex items-center gap-3 text-sm">
+                <AlertCircle className="w-5 h-5"/>
+                <span>Email ou password inválidos. Tente novamente.</span>
+            </div>
+        )}
 
         <form action={handleLogin} className="space-y-6">
           <div className="space-y-2">
@@ -35,7 +47,7 @@ export default function LoginPage() {
                 className="pl-10 p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground"
                 placeholder="seu.email@standardbank.com"
                 required
-                defaultValue="edmundo.kutuzov@standardbank.com"
+                defaultValue="maria.silva@standardbank.com"
               />
             </div>
           </div>
@@ -51,7 +63,7 @@ export default function LoginPage() {
                 className="pl-10 p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground"
                 placeholder="••••••••"
                 required
-                defaultValue="123456"
+                defaultValue="Oryon@2024!"
               />
             </div>
           </div>

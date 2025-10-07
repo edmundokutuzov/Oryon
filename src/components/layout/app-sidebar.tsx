@@ -110,6 +110,16 @@ export default function AppSidebar() {
   const currentUser = getCurrentUser();
   const avatar = PlaceHolderImages.find(p => p.id === `user-avatar-${currentUser.id}`)?.imageUrl;
 
+  const userHasPermission = (requiredPermissions?: string[]) => {
+    if (!requiredPermissions || requiredPermissions.length === 0) {
+      return true; // No specific permissions required
+    }
+    if (currentUser.permissions.includes('all')) {
+      return true; // Admin has all permissions
+    }
+    return requiredPermissions.some(p => currentUser.permissions.includes(p));
+  }
+
   return (
     <aside className="w-64 h-full flex flex-col flex-shrink-0 gradient-surface rounded-none md:rounded-r-[1.5rem] shadow-2xl transition-all duration-300 fixed md:relative z-40 md:translate-x-0 -translate-x-full">
       <div className="p-6 flex flex-col items-start h-24 border-b border-border">
@@ -128,7 +138,7 @@ export default function AppSidebar() {
               {section.action && <button className="text-xs text-primary hover:text-foreground"><Plus className="w-4 h-4" /></button>}
             </h2>
             <div className="space-y-1">
-              {section.items.map((item) => {
+              {section.items.filter(item => userHasPermission(item.permissions)).map((item) => {
                 const department = item.department ? departments.find(d => d.slug === item.department) : null;
                 const href = item.id === 'dashboard' ? '/dashboard' : `/dashboard/${item.id}`;
                 return (

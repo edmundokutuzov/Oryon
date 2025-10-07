@@ -5,21 +5,20 @@ import { cookies } from 'next/headers';
 import { users } from '@/lib/data';
 
 export async function handleLogin(formData: FormData) {
-  // This is a simulated login.
-  // In a real application, you would validate credentials against a database.
-  const email = formData.get('email');
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
 
   const user = users.find(u => u.email === email);
 
-  if (user) {
-    // For this example, we'll assume login is always successful
-    // and redirect to the dashboard.
-    // Securely store user info in a cookie. Do not store passwords.
+  // In a real app, you'd use a secure hashing library like bcrypt to compare passwords.
+  // For this demo, we do a direct comparison.
+  if (user && user.password === password) {
     const userSession = {
       id: user.id,
       name: user.name,
       email: user.email,
       role: user.role,
+      permissions: user.permissions,
     };
     cookies().set('oryon_user_session', JSON.stringify(userSession), {
       httpOnly: true,
@@ -28,6 +27,8 @@ export async function handleLogin(formData: FormData) {
       path: '/',
     });
     redirect('/dashboard');
+  } else {
+    // Redirect back to login with an error message
+    redirect('/?error=invalid_credentials');
   }
-  // In a real app, you would handle login failure here.
 }

@@ -8,6 +8,7 @@ export const users = [
         id: 1,
         name: "Admin Sistema",
         email: "admin@standardbank.com",
+        password: "Oryon@2024!",
         role: "Administrador",
         department: "Administração",
         avatar: "https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxibGFjayUyMG1hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1OTc4ODQ4OHww&ixlib=rb-4.1.0&q=80&w=1080",
@@ -22,6 +23,7 @@ export const users = [
         id: 2,
         name: "Edmundo Kutuzov",
         email: "edmundo.kutuzov@standardbank.com",
+        password: "Oryon@2024!",
         role: "Lead Designer",
         department: "Marketing",
         avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxibGFjayUyMG1hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1OTc4ODQ4OHww&ixlib=rb-4.1.0&q=80&w=1080",
@@ -36,6 +38,7 @@ export const users = [
         id: 3,
         name: "Maria Silva",
         email: "maria.silva@standardbank.com",
+        password: "Oryon@2024!",
         role: "Chefe de Dept.",
         department: "Marketing",
         avatar: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxibGFjayUyMHdvbWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzU5Nzg4NTA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
@@ -50,6 +53,7 @@ export const users = [
         id: 4,
         name: "Carlos Santos",
         email: "carlos.santos@standardbank.com",
+        password: "Oryon@2024!",
         role: "Analista Financeiro",
         department: "Financeiro",
         avatar: "https://images.unsplash.com/photo-1583195764359-c67133f93a74?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxibGFjayUyMG1hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1OTc4ODQ4OHww&ixlib=rb-4.1.0&q=80&w=1080",
@@ -64,6 +68,7 @@ export const users = [
         id: 5,
         name: "Ana Costa",
         email: "ana.costa@standardbank.com",
+        password: "Oryon@2024!",
         role: "Gestora de RH",
         department: "Recursos Humanos",
         avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxibGFjayUyMHdvbWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzU5Nzg4NTA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
@@ -78,6 +83,7 @@ export const users = [
         id: 6,
         name: "Sofia Ribeiro",
         email: "sofia.ribeiro@standardbank.com",
+        password: "Oryon@2024!",
         role: "Controller",
         department: "Financeiro",
         avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxibGFjayUyMHdvbWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzU5Nzg4NTA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
@@ -92,6 +98,7 @@ export const users = [
         id: 7,
         name: "João Almeida",
         email: "joao.almeida@standardbank.com",
+        password: "Oryon@2024!",
         role: "Analista de Risco",
         department: "Financeiro",
         avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxibGFjayUyMG1hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1OTc4ODQ4OHww&ixlib=rb-4.1.0&q=80&w=1080",
@@ -106,6 +113,7 @@ export const users = [
         id: 8,
         name: "Beatriz Martins",
         email: "beatriz.martins@standardbank.com",
+        password: "Oryon@2024!",
         role: "Tesoureira",
         department: "Financeiro",
         avatar: "https://images.unsplash.com/photo-1591461974026-614a0b6af24d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxibGFjayUyMHdvbWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzU5Nzg4NTA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
@@ -331,7 +339,7 @@ export const menuItems = [
             { id: 'knowledge-base', title: 'Base de Conhecimento' },
             { id: 'documents', title: 'Documentos' },
             { id: 'reports', title: 'Relatórios' },
-            { id: 'analytics', title: 'Analytics' },
+            { id: 'analytics', title: 'Analytics', permissions: ['approve', 'all'] },
         ],
     },
     {
@@ -481,8 +489,26 @@ export const messages = {
     ]
 };
 
-// Mock functions to simulate a backend
-export const getCurrentUser = () => users.find(u => u.email === 'edmundo.kutuzov@standardbank.com')!;
+let currentUser: (typeof users)[0] | undefined;
+
+export const getCurrentUser = () => {
+    if (typeof window !== 'undefined') {
+        const session = document.cookie.split('; ').find(row => row.startsWith('oryon_user_session='));
+        if (session) {
+            try {
+                const userData = JSON.parse(decodeURIComponent(session.split('=')[1]));
+                currentUser = users.find(u => u.id === userData.id);
+                return currentUser!;
+            } catch (e) {
+                // Fallback for server-side or if cookie is invalid
+            }
+        }
+    }
+    // Fallback for server-side rendering or if no user is logged in
+    return users.find(u => u.id === 3)!; 
+};
+
+
 export const getTasksForUser = (userId: number) => tasks.filter(t => t.assignedTo === userId);
 export const getUpcomingMeetings = (userId: number) => meetings.filter(m => m.participants.includes(userId) && m.status === 'scheduled');
 export const getProjectsForUser = (userId: number) => projects.filter(p => p.members.includes(userId));
@@ -492,6 +518,7 @@ export const getDepartmentProjects = (deptName: string) => projects.filter(p => 
 export const getCalendarEventsForUser = (userId: number) => calendarEvents.filter(event => event.participants.includes(userId) || event.createdBy === userId);
 
     
+
 
 
 

@@ -65,7 +65,7 @@ const iconMap: { [key: string]: React.ElementType } = {
   'dept-it': Server,
   'dept-operations': SettingsIcon,
   'dept-compliance': Shield,
-od-security': UserShield,
+  'dept-security': UserShield,
   'chat-general': MessagesSquare,
   'chat-department': Users,
   'direct-messages': MessagesSquare,

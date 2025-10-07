@@ -1,13 +1,97 @@
 
-import { Card } from '@/components/ui/card';
+'use client'
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { getProjectsForUser, getCurrentUser, users } from '@/lib/data';
+import { Building, Calendar, CheckCircle, Users, DollarSign, AlertTriangle, Plus } from 'lucide-react';
+
+const currentUser = getCurrentUser();
+const userProjects = getProjectsForUser(currentUser.id);
 
 export default function ProjectsPage() {
   return (
     <div className="p-6 fade-in">
-        <h1 className="text-3xl font-bold text-white mb-8">Projetos</h1>
-        <Card className="gradient-surface border-0 rounded-2xl p-6">
-           <p className="text-white/70">Esta funcionalidade está em desenvolvimento.</p>
-        </Card>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold text-white">Meus Projetos</h1>
+        <Button className="btn-primary-gradient">
+          <Plus className="mr-2 h-4 w-4" /> Novo Projeto
+        </Button>
+      </div>
+      <div className="space-y-8">
+        {userProjects.map(project => (
+          <Card key={project.id} className="gradient-surface border-0 rounded-2xl overflow-hidden">
+            <CardHeader className="p-6">
+              <div className="flex justify-between items-start">
+                <div>
+                  <Badge variant="secondary" className="mb-2 bg-primary/20 text-primary">{project.department}</Badge>
+                  <CardTitle className="text-2xl font-bold">{project.name}</CardTitle>
+                  <CardDescription className="text-white/70 mt-2 max-w-prose">{project.description}</CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                    <span className={`text-xs font-semibold py-1 px-3 rounded-full capitalize ${project.status === 'active' ? 'bg-green-500/20 text-green-300' : 'bg-yellow-500/20 text-yellow-300'}`}>
+                        {project.status === 'active' ? 'Ativo' : 'Planeamento'}
+                    </span>
+                    <Button variant="ghost" size="icon">...</Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-6 pt-0">
+                <div className="mb-4">
+                    <div className="flex justify-between items-center text-sm text-white/80 mb-1">
+                        <span>Progresso</span>
+                        <span>{project.progress}%</span>
+                    </div>
+                    <Progress value={project.progress} className="h-2"/>
+                </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
+                <div className="flex items-center gap-3">
+                  <Calendar className="w-5 h-5 text-primary/70" />
+                  <div>
+                    <p className="text-white/60">Prazo</p>
+                    <p className="font-semibold text-white">{new Date(project.endDate).toLocaleDateString('pt-PT')}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Users className="w-5 h-5 text-primary/70" />
+                  <div>
+                    <p className="text-white/60">Equipa</p>
+                    <div className="flex -space-x-2">
+                       {project.members.map(memberId => {
+                         const user = users.find(u => u.id === memberId);
+                         return user ? (
+                           <div key={user.id} className="w-6 h-6 rounded-full bg-secondary/20 flex items-center justify-center text-secondary text-xs font-bold ring-2 ring-background" title={user.name}>
+                             {user.name.charAt(0)}
+                           </div>
+                         ) : null;
+                       })}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-primary/70" />
+                  <div>
+                    <p className="text-white/60">Tarefas</p>
+                    <p className="font-semibold text-white">{project.completedTasks} / {project.tasksCount}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <DollarSign className="w-5 h-5 text-primary/70" />
+                  <div>
+                    <p className="text-white/60">Orçamento</p>
+                    <p className="font-semibold text-white">${(project.spent / 1000)}k / ${(project.budget / 1000)}k</p>
+                  </div>
+                </div>
+              </div>
+                <div className="mt-6 border-t border-white/10 pt-4">
+                     <h4 className="text-sm font-semibold text-white/80 mb-2 flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-yellow-400"/>Riscos Principais</h4>
+                     <p className="text-sm text-white/70">{project.risks}</p>
+                </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 }

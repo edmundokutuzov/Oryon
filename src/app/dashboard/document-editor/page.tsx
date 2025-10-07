@@ -93,19 +93,7 @@ export default function DocumentEditorPage() {
                     className="p-8 text-white/90 bg-transparent min-h-[600px] focus:outline-none prose prose-invert prose-lg max-w-full"
                     suppressContentEditableWarning={true}
                 >
-                    <h1>Título do Documento</h1>
-                    <h2>Subtítulo para iniciar</h2>
-                    <p>Comece a escrever o seu documento aqui... Utilize as ferramentas acima para formatar o seu texto. Pode adicionar <b>negrito</b>, <i>itálico</i>, e <u>sublinhado</u>. Crie listas, alinhe o texto e muito mais.</p>
-                    <blockquote>Este é um bloco de citação, ideal para destacar informações importantes ou citações diretas de fontes.</blockquote>
-                    <ul>
-                        <li>Item de lista não ordenada 1</li>
-                        <li>Item de lista não ordenada 2</li>
-                    </ul>
-                    <ol>
-                        <li>Item de lista ordenada 1</li>
-                        <li>Item de lista ordenada 2</li>
-                    </ol>
-                    <p>Pode também inserir <a href="#" className="text-primary hover:underline">hiperligações</a> para fontes externas.</p>
+                    Digite aqui...
                 </div>
             </Card>
         </div>

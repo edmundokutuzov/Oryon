@@ -1,0 +1,248 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Represents a user account in the application.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The full name of the user."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The user's email address."
+        },
+        "role": {
+          "type": "string",
+          "description": "The user's job title or role within the company."
+        },
+        "department": {
+          "type": "string",
+          "description": "The department the user belongs to."
+        },
+        "avatar": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL to the user's profile picture."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["online", "away", "busy", "offline", "dnd"],
+          "description": "The user's current online status."
+        },
+        "bio": {
+          "type": "string",
+          "description": "A short biography of the user."
+        },
+        "phone": {
+          "type": "string",
+          "description": "The user's phone number."
+        },
+        "location": {
+          "type": "string",
+          "description": "The user's physical location."
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "A list of permissions granted to the user."
+        }
+      },
+      "required": ["name", "email", "role", "department", "status", "permissions"]
+    },
+    "Project": {
+      "title": "Project",
+      "description": "Represents a project within the company.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the project."
+        },
+        "department": {
+          "type": "string",
+          "description": "The department responsible for the project."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the project."
+        },
+        "progress": {
+          "type": "number",
+          "description": "The completion percentage of the project."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["active", "planning", "completed", "on-hold"],
+          "description": "The current status of the project."
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "The start date of the project."
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "The projected end date of the project."
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of user IDs who are members of the project."
+        },
+        "budget": {
+          "type": "number",
+          "description": "The total budget allocated for the project."
+        }
+      },
+      "required": ["name", "department", "status", "startDate", "endDate", "members"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "Represents a single task within a project or assigned to a user.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the task."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the task."
+        },
+        "assignedTo": {
+          "type": "string",
+          "description": "The ID of the user this task is assigned to."
+        },
+        "assignedBy": {
+          "type": "string",
+          "description": "The ID of the user who assigned the task."
+        },
+        "projectId": {
+          "type": "string",
+          "description": "The ID of the project this task belongs to."
+        },
+        "dueDate": {
+          "type": "string",
+          "format": "date",
+          "description": "The due date for the task."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "in-progress", "completed", "blocked"],
+          "description": "The current status of the task."
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["low", "medium", "high"],
+          "description": "The priority level of the task."
+        }
+      },
+      "required": ["title", "assignedTo", "dueDate", "status", "priority"]
+    },
+    "Meeting": {
+      "title": "Meeting",
+      "description": "Represents a scheduled meeting.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "time": {
+          "type": "string",
+          "format": "time"
+        },
+        "duration": {
+          "type": "number",
+          "description": "Duration of the meeting in minutes."
+        },
+        "participants": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of user IDs participating in the meeting."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["scheduled", "active", "completed"]
+        }
+      },
+      "required": ["title", "date", "time", "duration", "participants", "status"]
+    },
+    "ChatMessage": {
+      "title": "Chat Message",
+      "description": "Represents a single message in a chat channel.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "The ID of the user who sent the message."
+        },
+        "content": {
+          "type": "string",
+          "description": "The text content of the message."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "channelId": {
+          "type": "string",
+          "description": "The ID of the channel (e.g., 'general', 'marketing', or a direct message channel ID)."
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "url": { "type": "string", "format": "uri" },
+              "size": { "type": "string" }
+            }
+          }
+        }
+      },
+      "required": ["userId", "content", "timestamp", "channelId"]
+    }
+  },
+  "auth": {
+    "providers": ["password"]
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Stores public profiles for all users."
+    },
+    "/projects/{projectId}": {
+      "schema": { "$ref": "#/entities/Project" },
+      "description": "Stores information about individual projects."
+    },
+    "/projects/{projectId}/tasks/{taskId}": {
+      "schema": { "$ref": "#/entities/Task" },
+      "description": "Sub-collection for tasks within a specific project."
+    },
+    "/meetings/{meetingId}": {
+      "schema": { "$ref": "#/entities/Meeting" },
+      "description": "Stores details for all scheduled meetings."
+    },
+    "/chat/{channelId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/ChatMessage" },
+      "description": "Stores all chat messages, organized by channel."
+    }
+  }
+}

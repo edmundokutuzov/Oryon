@@ -130,8 +130,9 @@ export default function AppSidebar() {
             <div className="space-y-1">
               {section.items.map((item) => {
                 const department = item.department ? departments.find(d => d.slug === item.department) : null;
+                const href = item.id === 'dashboard' ? '/dashboard' : `/dashboard/${item.id}`;
                 return (
-                  <NavLink key={item.id} href={`/dashboard/${item.id}`} icon={iconMap[item.id] || SettingsIcon} badge={item.badge}>
+                  <NavLink key={item.id} href={href} icon={iconMap[item.id] || SettingsIcon} badge={item.badge}>
                     <div className={cn("flex items-center w-full", department && `department-${department.slug} border-dept -ml-2 pl-2`)}>
                       <span className={cn(department && `text-dept`)}>{item.title}</span>
                       {item.status && <span className={cn("ml-auto h-2 w-2 rounded-full", statusClasses[item.status])}></span>}

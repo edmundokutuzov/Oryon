@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getCurrentUser, users } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { MessageSquare } from "lucide-react";
+import Link from "next/link";
 
 const statusClasses: { [key: string]: string } = {
   online: 'bg-green-500',
@@ -44,9 +45,11 @@ export default function DirectMessagesPage() {
                                             <p className="text-xs text-white/60">{user.role}</p>
                                         </div>
                                     </div>
-                                    <Button className="btn-primary-gradient py-1 px-4 text-sm font-semibold rounded-lg">
-                                        <MessageSquare className="mr-2 h-4 w-4" /> Mensagem
-                                    </Button>
+                                    <Link href={`/dashboard/chat/direct/${user.id}`}>
+                                        <Button className="btn-primary-gradient py-1 px-4 text-sm font-semibold rounded-lg">
+                                            <MessageSquare className="mr-2 h-4 w-4" /> Mensagem
+                                        </Button>
+                                    </Link>
                                 </div>
                             )
                         })}

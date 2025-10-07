@@ -5,17 +5,28 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { getProjectsForUser, getCurrentUser, users } from '@/lib/data';
-import { Building, Calendar, CheckCircle, Users, DollarSign, AlertTriangle, Plus } from 'lucide-react';
+import { Building, Calendar, CheckCircle, Users, DollarSign, AlertTriangle, Plus, MoreVertical } from 'lucide-react';
+import Link from 'next/link';
+import { useToast } from '@/hooks/use-toast';
 
 const currentUser = getCurrentUser();
 const userProjects = getProjectsForUser(currentUser.id);
 
 export default function ProjectsPage() {
+  const { toast } = useToast();
+
+  const handleNewProject = () => {
+    toast({
+      title: "Funcionalidade em desenvolvimento",
+      description: "A criação de novos projetos estará disponível em breve.",
+    });
+  }
+
   return (
     <div className="p-6 fade-in">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-white">Meus Projetos</h1>
-        <Button className="btn-primary-gradient">
+        <Button className="btn-primary-gradient" onClick={handleNewProject}>
           <Plus className="mr-2 h-4 w-4" /> Novo Projeto
         </Button>
       </div>
@@ -33,7 +44,7 @@ export default function ProjectsPage() {
                     <span className={`text-xs font-semibold py-1 px-3 rounded-full capitalize ${project.status === 'active' ? 'bg-green-500/20 text-green-300' : 'bg-yellow-500/20 text-yellow-300'}`}>
                         {project.status === 'active' ? 'Ativo' : 'Planeamento'}
                     </span>
-                    <Button variant="ghost" size="icon">...</Button>
+                    <Button variant="ghost" size="icon"><MoreVertical className="w-5 h-5"/></Button>
                 </div>
               </div>
             </CardHeader>

@@ -6,6 +6,7 @@ import { useState }from 'react';
 import { calendarEvents, getCurrentUser } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
 import { Clock, MapPin, Video } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const currentUser = getCurrentUser();
 
@@ -87,7 +88,7 @@ export default function CalendarPage() {
                                 <p className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5" />{event.location}</p>
                             </div>
                             {event.type === "meeting" && (
-                                <Button size="sm" className="mt-4 w-full bg-primary/20 text-primary hover:bg-primary/30">
+                                <Button size="sm" className="mt-4 w-full bg-primary/20 text-primary hover:bg-primary/30" onClick={() => alert(`Joining meeting: ${event.title}`)}>
                                     <Video className="mr-2 h-4 w-4"/> Entrar na Reunião
                                 </Button>
                             )}

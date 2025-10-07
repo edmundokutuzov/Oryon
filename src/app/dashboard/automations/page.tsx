@@ -1,10 +1,22 @@
 
+'use client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { automations } from '@/lib/data';
+import { automations as initialAutomations } from '@/lib/data';
 import { Bot } from 'lucide-react';
+import { useState } from 'react';
 
 export default function AutomationsPage() {
+  const [automations, setAutomations] = useState(initialAutomations);
+
+  const toggleAutomation = (id: number) => {
+    setAutomations(prev => 
+      prev.map(auto => 
+        auto.id === id ? { ...auto, active: !auto.active } : auto
+      )
+    );
+  };
+
   return (
     <div className="p-6 fade-in">
         <h1 className="text-3xl font-bold text-white mb-8">Automações</h1>
@@ -28,6 +40,7 @@ export default function AutomationsPage() {
                                 </span>
                                 <Switch
                                     checked={auto.active}
+                                    onCheckedChange={() => toggleAutomation(auto.id)}
                                     aria-label={`Toggle automation ${auto.name}`}
                                 />
                             </div>

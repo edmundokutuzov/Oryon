@@ -1,7 +1,9 @@
 
+'use client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { integrations } from '@/lib/data';
+import { integrations as initialIntegrations } from '@/lib/data';
+import { useState } from 'react';
 
 // Fake icons for now
 const iconMap: {[key:string]: string} = {
@@ -14,6 +16,16 @@ const iconMap: {[key:string]: string} = {
 }
 
 export default function IntegrationsPage() {
+  const [integrations, setIntegrations] = useState(initialIntegrations);
+
+  const toggleConnection = (id: number) => {
+    setIntegrations(prev =>
+      prev.map(int =>
+        int.id === id ? { ...int, connected: !int.connected } : int
+      )
+    );
+  };
+
   return (
     <div className="p-6 fade-in">
         <h1 className="text-3xl font-bold text-white mb-8">Integrações</h1>
@@ -28,7 +40,10 @@ export default function IntegrationsPage() {
                                 {int.connected ? 'Conectado' : 'Disponível'}
                             </span>
                         </div>
-                        <Button className={`${int.connected ? 'bg-white/10 hover:bg-white/20' : 'btn-primary-gradient'} w-full py-2 rounded-lg font-semibold transition-colors h-auto`}>
+                        <Button 
+                            className={`${int.connected ? 'bg-white/10 hover:bg-white/20' : 'btn-primary-gradient'} w-full py-2 rounded-lg font-semibold transition-colors h-auto`}
+                            onClick={() => toggleConnection(int.id)}
+                        >
                             {int.connected ? 'Gerir' : 'Conectar'}
                         </Button>
                     </CardContent>

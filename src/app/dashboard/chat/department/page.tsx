@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { getCurrentUser, getDepartment, getDepartmentMembers, messages, users } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Paperclip, Send } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 const currentUser = getCurrentUser();
 const department = getDepartment(currentUser.department.toLowerCase());
@@ -16,8 +16,15 @@ const channelMessages = channel ? messages[channel as keyof typeof messages] || 
 
 
 export default function DepartmentChatPage() {
-
+    const [inputValue, setInputValue] = useState('');
     const otherMembers = useMemo(() => departmentMembers.filter(m => m.id !== currentUser.id), [departmentMembers]);
+
+    const handleSendMessage = () => {
+        if(inputValue.trim()){
+            console.log("Sending message:", inputValue);
+            setInputValue('');
+        }
+    }
 
     return (
         <div className="p-6 fade-in h-full flex flex-col">
@@ -72,8 +79,18 @@ export default function DepartmentChatPage() {
             <div className="flex-shrink-0 mt-4">
                 <div className="relative">
                     <Paperclip className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50" />
-                    <Input type="text" placeholder="Escreva uma mensagem..." className="w-full h-auto p-4 pl-12 pr-28 bg-white/10 border-white/20 rounded-xl focus:outline-none focus:border-primary text-white placeholder-white/50" />
-                    <Button className="absolute right-4 top-1/2 -translate-y-1/2 btn-primary-gradient px-4 py-2 text-white font-semibold rounded-lg h-auto">
+                    <Input 
+                        type="text" 
+                        placeholder="Escreva uma mensagem..." 
+                        className="w-full h-auto p-4 pl-12 pr-28 bg-white/10 border-white/20 rounded-xl focus:outline-none focus:border-primary text-white placeholder-white/50"
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                    />
+                    <Button 
+                        className="absolute right-4 top-1/2 -translate-y-1/2 btn-primary-gradient px-4 py-2 text-white font-semibold rounded-lg h-auto"
+                        onClick={handleSendMessage}
+                    >
                         <Send className="w-4 h-4 mr-2" /> Enviar
                     </Button>
                 </div>

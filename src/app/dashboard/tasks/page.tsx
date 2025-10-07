@@ -6,11 +6,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { getTasksForUser, getCurrentUser, users } from '@/lib/data';
 import { Calendar, Check, Clock, File, Plus, User } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const currentUser = getCurrentUser();
 const userTasks = getTasksForUser(currentUser.id);
 
 export default function TasksPage() {
+    const { toast } = useToast();
+
+    const handleNewTask = () => {
+        toast({
+            title: "Funcionalidade em desenvolvimento",
+            description: "A criação de novas tarefas estará disponível em breve.",
+        });
+    }
 
     const tasksPending = userTasks.filter(t => t.status === 'pending');
     const tasksInProgress = userTasks.filter(t => t.status === 'in-progress');
@@ -20,7 +29,7 @@ export default function TasksPage() {
     <div className="p-6 fade-in">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-white">Minhas Tarefas</h1>
-        <Button className="btn-primary-gradient">
+        <Button className="btn-primary-gradient" onClick={handleNewTask}>
           <Plus className="mr-2 h-4 w-4" /> Nova Tarefa
         </Button>
       </div>

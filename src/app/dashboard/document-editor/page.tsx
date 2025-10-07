@@ -6,8 +6,10 @@ import {
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 
 export default function DocumentEditorPage() {
+    const { toast } = useToast();
 
     const handleCommand = (command: string, value?: string) => {
         document.execCommand(command, false, value);
@@ -25,6 +27,13 @@ export default function DocumentEditorPage() {
         if (url) {
             handleCommand('insertImage', url);
         }
+    }
+
+    const handleSave = () => {
+        toast({
+            title: "Documento Salvo",
+            description: "O seu documento foi salvo com sucesso.",
+        });
     }
 
     return (
@@ -76,7 +85,7 @@ export default function DocumentEditorPage() {
                     <Button variant="ghost" size="icon" onClick={handleInsertLink} title="Inserir Link"><Link className="w-4 h-4" /></Button>
                     <Button variant="ghost" size="icon" onClick={handleInsertImage} title="Inserir Imagem"><Image className="w-4 h-4" /></Button>
                     <div className="flex-grow"></div>
-                    <Button className="btn-primary-gradient px-4 py-1 text-sm font-semibold rounded-lg h-auto">Salvar Documento</Button>
+                    <Button className="btn-primary-gradient px-4 py-1 text-sm font-semibold rounded-lg h-auto" onClick={handleSave}>Salvar Documento</Button>
                 </div>
                 <div 
                     id="editable-doc" 

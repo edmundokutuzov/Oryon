@@ -7,11 +7,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { meetings, getCurrentUser, users } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Video, Calendar, Plus, Clock, Users } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const currentUser = getCurrentUser();
 const userMeetings = meetings.filter(m => m.participants.includes(currentUser.id));
 
 export default function MeetingsPage() {
+    const { toast } = useToast();
+
+    const handleScheduleMeeting = () => {
+        toast({
+            title: "Funcionalidade em desenvolvimento",
+            description: "Agendar novas reuniões estará disponível em breve.",
+        });
+    }
 
     const scheduledMeetings = userMeetings.filter(m => m.status === 'scheduled');
     const activeMeetings = userMeetings.filter(m => m.status === 'active');
@@ -21,7 +30,7 @@ export default function MeetingsPage() {
         <div className="p-6 fade-in">
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold text-white">Reuniões</h1>
-                <Button className="btn-primary-gradient">
+                <Button className="btn-primary-gradient" onClick={handleScheduleMeeting}>
                     <Plus className="mr-2 h-4 w-4" /> Agendar Reunião
                 </Button>
             </div>
@@ -36,7 +45,16 @@ export default function MeetingsPage() {
 }
 
 const MeetingSection = ({ title, meetings, active = false }: { title: string, meetings: typeof userMeetings, active?: boolean }) => {
+    const { toast } = useToast();
     if (meetings.length === 0) return null;
+
+    const handleJoinMeeting = (meetingTitle: string) => {
+        toast({
+            title: `A entrar na reunião: ${meetingTitle}`,
+            description: "A funcionalidade de videochamada está em desenvolvimento.",
+        });
+    }
+
     return (
         <section>
             <h2 className="text-2xl font-bold text-white mb-4">{title}</h2>
@@ -47,7 +65,7 @@ const MeetingSection = ({ title, meetings, active = false }: { title: string, me
                              <div className="flex justify-between items-start">
                                 <CardTitle className="text-lg font-bold">{meeting.title}</CardTitle>
                                 {active ? (
-                                     <Button size="sm" className="bg-green-500/20 text-green-300 hover:bg-green-500/30 animate-pulse">
+                                     <Button size="sm" className="bg-green-500/20 text-green-300 hover:bg-green-500/30 animate-pulse" onClick={() => handleJoinMeeting(meeting.title)}>
                                         <Video className="mr-2 h-4 w-4" /> Entrar
                                     </Button>
                                 ) : (

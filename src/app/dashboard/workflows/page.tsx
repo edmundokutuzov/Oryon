@@ -1,10 +1,21 @@
 
+'use client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
 import { workflows } from '@/lib/data';
 import { PlayCircle, Workflow } from 'lucide-react';
 
 export default function WorkflowsPage() {
+  const { toast } = useToast();
+
+  const handleStartWorkflow = (workflowName: string) => {
+    toast({
+        title: `Iniciando Workflow: ${workflowName}`,
+        description: "Esta funcionalidade está em desenvolvimento.",
+    });
+  }
+
   return (
     <div className="p-6 fade-in">
         <h1 className="text-3xl font-bold text-white mb-8">Workflows da Empresa</h1>
@@ -21,7 +32,7 @@ export default function WorkflowsPage() {
                     <CardContent>
                         <div className="border-t border-white/10 pt-4 flex justify-between items-center">
                             <p className="text-sm font-semibold">{wf.steps} Etapas</p>
-                            <Button variant="link" className="text-primary/80 hover:text-primary p-0 h-auto">
+                            <Button variant="link" className="text-primary/80 hover:text-primary p-0 h-auto" onClick={() => handleStartWorkflow(wf.name)}>
                                 Iniciar Workflow <PlayCircle className="ml-2 h-4 w-4" />
                             </Button>
                         </div>

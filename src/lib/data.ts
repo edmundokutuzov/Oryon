@@ -1,4 +1,5 @@
 
+
 // This file mocks a database.
 // In a real application, you would fetch this data from a server.
 
@@ -9,7 +10,7 @@ export const users = [
         email: "admin@standardbank.com",
         role: "Administrador",
         department: "Administração",
-        avatar: "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxtYW4lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTk3NzIxODV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+        avatar: "https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxibGFjayUyMG1hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1OTc4ODQ4OHww&ixlib=rb-4.1.0&q=80&w=1080",
         status: "online" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
         bio: "Administrador do sistema Oryon, garantindo a segurança e a operacionalidade da plataforma.",
@@ -23,7 +24,7 @@ export const users = [
         email: "edmundo.kutuzov@standardbank.com",
         role: "Lead Designer",
         department: "Marketing",
-        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxibGFjayUyMG1hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1OTc4ODQ4OHww&ixlib=rb-4.1.0&q=80&w=1080",
         status: "online" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
         bio: "Designer criativo especializado em campanhas digitais e identidade visual. Apaixonado por interfaces intuitivas.",
@@ -37,7 +38,7 @@ export const users = [
         email: "maria.silva@standardbank.com",
         role: "Chefe de Dept.",
         department: "Marketing",
-        avatar: "https://images.unsplash.com/photo-1494790108375-2616b612b786?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        avatar: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxibGFjayUyMHdvbWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzU5Nzg4NTA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
         status: "online" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
         bio: "Chefe de Departamento de Marketing com 10 anos de experiência em estratégia digital e gestão de equipas.",
@@ -51,7 +52,7 @@ export const users = [
         email: "carlos.santos@standardbank.com",
         role: "Analista Financeiro",
         department: "Financeiro",
-        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        avatar: "https://images.unsplash.com/photo-1583195764359-c67133f93a74?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxibGFjayUyMG1hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1OTc4ODQ4OHww&ixlib=rb-4.1.0&q=80&w=1080",
         status: "away" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
         bio: "Analista financeiro especializado em relatórios trimestrais e análise de risco.",
@@ -65,7 +66,7 @@ export const users = [
         email: "ana.costa@standardbank.com",
         role: "Gestora de RH",
         department: "Recursos Humanos",
-        avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxibGFjayUyMHdvbWFuJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzU5Nzg4NTA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
         status: "busy" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
         bio: "Gestora de RH focada em desenvolvimento organizacional, recrutamento e bem-estar dos colaboradores.",
@@ -425,9 +426,20 @@ export const workflows = [
 
 export const automations = [
     { id: 1, name: "Enviar email de boas-vindas a novos clientes", active: true },
-    { id: 2, name: "Gerar relatório de performance semanal", active: true },
-    { id: 3, name: "Notificar gestor sobre tarefas atrasadas", active: false },
-    { id: 4, name: "Criar ticket de suporte a partir de email", active: true },
+    { id: 2, name: "Gerar relatório de performance semanal automaticamente", active: true },
+    { id: 3, name: "Notificar gestor sobre tarefas com prazo iminente", active: true },
+    { id: 4, name: "Criar ticket de suporte TI a partir de email para 'suporte@oryon.com'", active: true },
+    { id: 5, name: "Arquivar projetos concluídos há mais de 90 dias", active: false },
+    { id: 6, name: "Solicitar aprovação para despesas acima de €1000", active: true },
+    { id: 7, name: "Lembrete de preenchimento de timesheet semanal", active: true },
+    { id: 8, name: "Sincronizar eventos do calendário com o Google Calendar", active: false },
+    { id: 9, name: "Criar relatório de despesas mensal para cada departamento", active: true },
+    { id: 10, name: "Revogar acessos de ex-colaboradores automaticamente", active: true },
+    { id: 11, name: "Alertar sobre baixo stock de material de escritório", active: false },
+    { id: 12, name: "Publicar atualizações importantes no canal #geral do chat", active: true },
+    { id: 13, name: "Backup diário da base de dados de clientes", active: true },
+    { id: 14, name: "Análise de sentimento em feedback de clientes", active: true },
+    { id: 15, name: "Lembrete de formação de compliance obrigatória", active: true }
 ];
 
 export const integrations = [
@@ -477,3 +489,4 @@ export const getDepartmentProjects = (deptName: string) => projects.filter(p => 
 export const getCalendarEventsForUser = (userId: number) => calendarEvents.filter(event => event.participants.includes(userId) || event.createdBy === userId);
 
     
+

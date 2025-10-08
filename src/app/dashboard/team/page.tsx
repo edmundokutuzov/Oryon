@@ -28,6 +28,7 @@ const roleHierarchy = [
     "Chefe de Compliance",
     "Chefe de Operações",
     "Controller",
+    "Tesoureira",
     "Gestora de RH",
     "Gestora de Projetos de Operações",
     "Oficial de Compliance Sénior",
@@ -37,7 +38,6 @@ const roleHierarchy = [
     "Engenheiro de DevOps",
     "Administradora de Sistemas",
     "Engenheiro de Software Sénior",
-    "Tesoureira",
     "Auditor de Compliance",
     "Especialista em Cibersegurança",
     "Analista de Risco",
@@ -157,5 +157,7 @@ export default function TeamPage() {
 
 
   
+
+    
 
     

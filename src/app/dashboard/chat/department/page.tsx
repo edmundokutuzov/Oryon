@@ -194,7 +194,9 @@ export default function DepartmentChatPage() {
                                                 <Button variant="ghost" className="w-full justify-start" onClick={() => handlePinMessage(msg)}>
                                                     <Pin className="mr-2 h-4 w-4"/> {pinnedMessages.find(pm => pm.id === msg.id) ? 'Desfixar' : 'Fixar'}
                                                 </Button>
-                                                <Button variant="ghost" className="w-full justify-start" onClick={() => handleReply(msg)}><Reply className="mr-2 h-4 w-4"/> Responder</Button>
+                                                <Button variant="ghost" className="w-full justify-start" onClick={() => handleReply(msg)}>
+                                                    <Reply className="mr-2 h-4 w-4"/> Responder
+                                                </Button>
                                                 {!isSelf && user && (
                                                     <Link href={`/dashboard/chat/direct/${user.id}`} className="w-full">
                                                         <Button variant="ghost" className="w-full justify-start">
@@ -202,8 +204,12 @@ export default function DepartmentChatPage() {
                                                         </Button>
                                                     </Link>
                                                 )}
-                                                <Button variant="ghost" className="w-full justify-start" onClick={() => setForwardingMessage(msg)}><Forward className="mr-2 h-4 w-4"/> Reencaminhar</Button>
-                                                <Button variant="ghost" className="w-full justify-start" onClick={() => setViewingDetails(msg)}><UserCheck className="mr-2 h-4 w-4"/> Ver Detalhes</Button>
+                                                <Button variant="ghost" className="w-full justify-start" onClick={() => setForwardingMessage(msg)}>
+                                                    <Forward className="mr-2 h-4 w-4"/> Reencaminhar
+                                                </Button>
+                                                <Button variant="ghost" className="w-full justify-start" onClick={() => setViewingDetails(msg)}>
+                                                    <UserCheck className="mr-2 h-4 w-4"/> Ver Detalhes
+                                                </Button>
                                                 {isSelf && (
                                                     <AlertDialog>
                                                         <AlertDialogTrigger asChild>

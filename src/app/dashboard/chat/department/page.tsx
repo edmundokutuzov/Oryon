@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger, PopoverAnchor } from "@/components/ui/popover";
 import { getCurrentUser, getDepartment, getDepartmentMembers, messages as initialMessages, users, departments as allDepartments } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { Paperclip, Send, Smile, MoreHorizontal, Pin, Reply, Trash2, Forward, UserCheck, Keyboard, X, Eye, Users, Check, Search, MessageSquare } from "lucide-react";
+import { Paperclip, Send, Smile, MoreHorizontal, Pin, Reply, Trash2, Forward, UserCheck, Keyboard, X, Eye, Users, Check, Search, MessageSquare, CornerDownLeft, Delete } from "lucide-react";
 import { useMemo, useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -38,6 +38,7 @@ export default function DepartmentChatPage() {
     const [replyingTo, setReplyingTo] = useState<Message | null>(null);
     const [viewingDetails, setViewingDetails] = useState<Message | null>(null);
     const [forwardingMessage, setForwardingMessage] = useState<Message | null>(null);
+    const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
     
     const otherMembers = useMemo(() => departmentMembers.filter(m => m.id !== currentUser.id), []);
 
@@ -131,10 +132,16 @@ export default function DepartmentChatPage() {
         setInputValue(prev => prev + emoji);
         inputRef.current?.focus();
     };
-    
-    const handleVirtualKeyboard = () => {
-        console.log('Virtual keyboard toggled');
-        toast({ title: 'Teclado Virtual Ativado (Simulação)'});
+
+    const handleVirtualKeyboardKeyPress = (key: string) => {
+        if (key === 'backspace') {
+            setInputValue(prev => prev.slice(0, -1));
+        } else if (key === 'enter') {
+            handleSendMessage();
+        } else {
+            setInputValue(prev => prev + key);
+        }
+        inputRef.current?.focus();
     };
 
     return (
@@ -306,7 +313,7 @@ export default function DepartmentChatPage() {
                                                 </div>
                                             </PopoverContent>
                                         </Popover>
-                                        <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={handleVirtualKeyboard}><Keyboard /></Button>
+                                        <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => setIsKeyboardVisible(!isKeyboardVisible)}><Keyboard /></Button>
                                         <Button 
                                             className="btn-primary-gradient px-4 py-2 text-primary-foreground font-semibold rounded-lg h-auto"
                                             onClick={handleSendMessage}
@@ -340,6 +347,9 @@ export default function DepartmentChatPage() {
                         </div>
                         </PopoverContent>
                     </Popover>
+                     {isKeyboardVisible && (
+                        <VirtualKeyboard onKeyPress={handleVirtualKeyboardKeyPress} />
+                    )}
                 </div>
             </div>
             
@@ -389,7 +399,6 @@ export default function DepartmentChatPage() {
         </>
     );
 }
-
 
 function ForwardMessageDialog({ message, isOpen, onOpenChange }: { message: Message | null, isOpen: boolean, onOpenChange: (isOpen: boolean) => void }) {
     const { toast } = useToast();
@@ -459,7 +468,7 @@ function ForwardMessageDialog({ message, isOpen, onOpenChange }: { message: Mess
                             </div>
                            <Checkbox 
                                 checked={selected.some(s => s.id === recipient.id)}
-                                onCheckedChange={()={() => toggleSelection(recipient)}
+                                onCheckedChange={() => toggleSelection(recipient)}
                            />
                        </div>
                    ))}
@@ -473,7 +482,45 @@ function ForwardMessageDialog({ message, isOpen, onOpenChange }: { message: Mess
                 </DialogFooter>
             </DialogContent>
         </Dialog>
-    )
+    );
 }
 
-    
+function VirtualKeyboard({ onKeyPress }: { onKeyPress: (key: string) => void }) {
+    const keyboardLayout = [
+        ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+        ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+        ['z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.'],
+    ];
+
+    return (
+        <div className="p-4 bg-muted rounded-xl mt-2">
+            <div className="space-y-2">
+                {keyboardLayout.map((row, rowIndex) => (
+                    <div key={rowIndex} className="flex justify-center gap-2">
+                        {row.map(key => (
+                            <Button
+                                key={key}
+                                variant="outline"
+                                className="h-10 w-10 p-0 text-lg bg-card"
+                                onClick={() => onKeyPress(key)}
+                            >
+                                {key}
+                            </Button>
+                        ))}
+                    </div>
+                ))}
+                <div className="flex justify-center gap-2">
+                     <Button variant="outline" className="h-10 flex-grow bg-card" onClick={() => onKeyPress(' ')}>
+                        Barra de Espaço
+                    </Button>
+                    <Button variant="outline" className="h-10 w-10 p-0 bg-card" onClick={() => onKeyPress('backspace')}>
+                        <Delete />
+                    </Button>
+                     <Button variant="outline" className="h-10 px-4 bg-card" onClick={() => onKeyPress('enter')}>
+                        <CornerDownLeft className="w-5 h-5"/>
+                    </Button>
+                </div>
+            </div>
+        </div>
+    );
+}

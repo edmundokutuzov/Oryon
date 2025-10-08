@@ -23,22 +23,21 @@ const roleHierarchy = [
     "Conselheiro Geral",
     "Chefe de Estratégia",
     "Administrador",
-    "Assistente Executiva",
-    "Chefe de Dept.",
     "Chefe de Compliance",
     "Chefe de Operações",
+    "Chefe de Dept.",
     "Controller",
     "Tesoureira",
     "Gestora de RH",
     "Gestora de Projetos de Operações",
     "Oficial de Compliance Sénior",
     "Engenheiro de Software Sénior",
+    "Especialista em Cibersegurança",
     "Engenheiro de DevOps",
     "Administradora de Sistemas",
     "Lead Designer",
-    "Especialista em Cibersegurança",
     "Especialista de Recrutamento",
-    "Oficial de Compliance",
+    "Assistente Executiva",
     "Auditor de Compliance",
     "Analista de Risco",
     "Analista Financeiro",
@@ -123,17 +122,17 @@ export default function TeamPage() {
                                     <p className={`text-sm font-medium ${statusStyle.text}`}>{user.role}</p>
                                     <Badge variant="secondary" className="mt-2 bg-primary/10 text-primary/90">{user.department}</Badge>
                                 </CardHeader>
-                                <CardContent className="p-0 mt-4 text-left text-sm text-muted-foreground space-y-2 w-full">
-                                    <div className="flex items-start gap-3">
-                                        <Mail className="w-4 h-4 text-muted-foreground/80 shrink-0 mt-1" />
+                                <CardContent className="p-0 mt-4 text-center text-sm text-muted-foreground space-y-2 w-full">
+                                    <div className="flex items-center justify-center gap-2">
+                                        <Mail className="w-4 h-4 text-muted-foreground/80 shrink-0" />
                                         <span>{user.email}</span>
                                     </div>
-                                    <div className="flex items-start gap-3">
-                                        <Phone className="w-4 h-4 text-muted-foreground/80 shrink-0 mt-1" />
+                                    <div className="flex items-center justify-center gap-2">
+                                        <Phone className="w-4 h-4 text-muted-foreground/80 shrink-0" />
                                         <span>{user.phone}</span>
                                     </div>
-                                    <div className="flex items-start gap-3">
-                                        <MapPin className="w-4 h-4 text-muted-foreground/80 shrink-0 mt-1" />
+                                    <div className="flex items-center justify-center gap-2">
+                                        <MapPin className="w-4 h-4 text-muted-foreground/80 shrink-0" />
                                         <span>{user.location}</span>
                                     </div>
                                 </CardContent>
@@ -154,11 +153,3 @@ export default function TeamPage() {
     </div>
   );
 }
-
-
-  
-
-    
-
-    
-

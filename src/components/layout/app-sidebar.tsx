@@ -122,12 +122,14 @@ export default function AppSidebar() {
 
   return (
     <aside className="w-64 h-full flex flex-col flex-shrink-0 gradient-surface shadow-2xl transition-all duration-300 fixed md:relative z-40 md:translate-x-0 -translate-x-full">
-      <div className="p-6 flex flex-col items-start h-24 border-b border-border">
-        <div className="flex items-center gap-2">
-            <OryonLogo className="!h-8 !w-8" />
-            <h1 className="text-2xl font-extrabold text-foreground">Oryon</h1>
+      <div className="p-6 flex items-center h-24 border-b border-border">
+        <div className="flex items-center gap-3">
+          <OryonLogo />
+          <div>
+            <h1 className="text-xl font-extrabold text-foreground leading-none">Oryon</h1>
+            <p className="text-xs text-muted-foreground mt-1">STANDARD BANK</p>
+          </div>
         </div>
-        <p className="text-xs text-muted-foreground mt-1">STANDARD BANK</p>
       </div>
 
       <nav className="flex-grow p-4 overflow-y-auto custom-scrollbar">

@@ -15,7 +15,7 @@ export default function LoginPage() {
 
   return (
     <main className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="gradient-surface p-8 md:p-10 rounded-3xl w-full max-w-md mx-4 border-2 border-primary/50 bounce-in">
+      <div className="gradient-surface p-8 md:p-10 rounded-2xl w-full max-w-md mx-4 border-2 border-primary/50 bounce-in">
         <div className="text-center mb-8">
           <OryonLogo className="mx-auto mb-4" />
           <h1 className="text-4xl font-bold text-foreground mb-1">Oryon</h1>

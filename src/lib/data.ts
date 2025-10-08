@@ -245,6 +245,7 @@ export const departments = [
     { id: 5, name: "Operações", slug: "operations", head: 1, memberCount: 10, budget: 800000, projects: 6, description: "Otimização de processos operacionais bancários, gestão da qualidade, e eficiência dos serviços.", goals: ["Aumentar eficiência operacional em 20%", "Reduzir tempo de processamento de transações", "Automatizar 5 processos manuais"] },
     { id: 6, name: "Compliance", slug: "compliance", head: 1, memberCount: 5, budget: 400000, projects: 4, description: "Garantia de conformidade com regulamentações financeiras, políticas internas e prevenção de riscos.", goals: ["Implementar novo sistema de monitorização de transações (AML)", "Realizar auditorias de conformidade trimestrais", "Atualizar todas as políticas internas (RGPD, etc)"] },
     { id: 7, name: "Segurança", slug: "security", head: 1, memberCount: 4, budget: 600000, projects: 3, description: "Proteção de dados, cibersegurança, segurança física das instalações e prevenção de fraudes.", goals: ["Implementar autenticação multi-fator (MFA) para todos os sistemas críticos", "Realizar testes de penetração trimestrais", "Reduzir falsos positivos em alertas de fraude em 15%"] },
+    { id: 8, name: "Administração", slug: "administration", head: 1, memberCount: 1, budget: 100000, projects: 1, description: "Gestão geral e administrativa da plataforma Oryon.", goals: [] },
 ];
 
 export const projects = [
@@ -408,10 +409,10 @@ export const documents = [
 ];
 
 export const reports = [
-    { id: 1, title: "Desempenho de Vendas - Outubro 2024", summary: "Análise detalhada das métricas de vendas, incluindo performance por região e produto.", type: "mensal" },
-    { id: 2, title: "Satisfação do Cliente - Q3 2024", summary: "Resultados da pesquisa trimestral de satisfação do cliente e principais insights.", type: "trimestral" },
-    { id: 3, title: "Análise de Risco de Crédito", summary: "Relatório sobre a carteira de crédito atual e avaliação de riscos.", type: "anual" },
-    { id: 4, title: "Performance da Campanha 'Conta Pro'", summary: "KPIs e ROI da campanha de lançamento do novo produto digital.", type: "semanal" },
+    { id: 1, title: "Desempenho de Vendas - Outubro 2024", summary: "Análise detalhada das métricas de vendas, incluindo performance por região e produto.", type: "mensal", department: "Marketing" },
+    { id: 2, title: "Satisfação do Cliente - Q3 2024", summary: "Resultados da pesquisa trimestral de satisfação do cliente e principais insights.", type: "trimestral", department: "Operações" },
+    { id: 3, title: "Análise de Risco de Crédito", summary: "Relatório sobre a carteira de crédito atual e avaliação de riscos.", type: "anual", department: "Financeiro" },
+    { id: 4, title: "Performance da Campanha 'Conta Pro'", summary: "KPIs e ROI da campanha de lançamento do novo produto digital.", type: "semanal", department: "Marketing" },
 ];
 
 export const analyticsData = {
@@ -460,6 +461,18 @@ export const integrations = [
     { id: 7, name: "Zendesk", icon: "🎧", connected: false },
     { id: 8, name: "Stripe", icon: "💳", connected: false },
     { id: 9, name: "Mailchimp", icon: "🐵", connected: true }
+];
+
+export const nationalHolidays = [
+    { date: "2024-01-01", name: "Dia de Ano Novo" },
+    { date: "2024-02-03", name: "Dia dos Heróis Moçambicanos" },
+    { date: "2024-04-07", name: "Dia da Mulher Moçambicana" },
+    { date: "2024-05-01", name: "Dia do Trabalhador" },
+    { date: "2024-06-25", name: "Dia da Independência Nacional" },
+    { date: "2024-09-07", name: "Dia da Vitória" },
+    { date: "2024-09-25", name: "Dia das Forças Armadas de Defesa de Moçambique" },
+    { date: "2024-10-04", name: "Dia da Paz e Reconciliação" },
+    { date: "2024-12-25", name: "Dia de Natal" },
 ];
 
 export const calendarEvents = [
@@ -516,9 +529,3 @@ export const getDepartment = (slug: string) => departments.find(d => d.slug === 
 export const getDepartmentMembers = (deptName: string) => users.filter(u => u.department === deptName);
 export const getDepartmentProjects = (deptName: string) => projects.filter(p => p.department === deptName);
 export const getCalendarEventsForUser = (userId: number) => calendarEvents.filter(event => event.participants.includes(userId) || event.createdBy === userId);
-
-    
-
-
-
-

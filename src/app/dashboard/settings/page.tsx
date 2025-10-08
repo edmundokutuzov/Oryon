@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Languages, Palette, Accessibility, FileDown, Sun, Moon, Bell } from 'lucide-react';
+import { Languages, Palette, Accessibility, FileDown, Sun, Moon, Bell, Volume2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useTheme } from 'next-themes';
 import { useState } from 'react';
@@ -17,8 +17,10 @@ const translations: any = {
         generalDescription: "Defina o idioma e o fuso horário da aplicação.",
         language: "Idioma",
         languagePlaceholder: "Selecione o idioma",
-        portuguese: "Português (Brasil)",
-        english: "English (United States)",
+        portuguese: "Português",
+        english: "English",
+        french: "Français",
+        spanish: "Español",
         timezone: "Fuso Horário",
         timezonePlaceholder: "Selecione o fuso horário",
         saveChanges: "Salvar Alterações",
@@ -46,6 +48,8 @@ const translations: any = {
         highContrastDesc: "Aumenta o contraste das cores para melhor legibilidade.",
         reducedMotion: "Reduzir Movimento",
         reducedMotionDesc: "Desativa animações e transições na interface.",
+        voiceOver: "Voice Over (TTS)",
+        voiceOverDesc: "Ativa a leitura de texto em voz alta para navegação.",
         dataPrivacyTitle: "Dados e Privacidade",
         dataPrivacyDescription: "Faça a gestão dos seus dados pessoais.",
         exportData: "Exportar Meus Dados",
@@ -60,8 +64,10 @@ const translations: any = {
         generalDescription: "Set the application language and timezone.",
         language: "Language",
         languagePlaceholder: "Select language",
-        portuguese: "Português (Brasil)",
-        english: "English (United States)",
+        portuguese: "Português",
+        english: "English",
+        french: "Français",
+        spanish: "Español",
         timezone: "Timezone",
         timezonePlaceholder: "Select timezone",
         saveChanges: "Save Changes",
@@ -89,6 +95,8 @@ const translations: any = {
         highContrastDesc: "Increases color contrast for better readability.",
         reducedMotion: "Reduce Motion",
         reducedMotionDesc: "Disables animations and transitions in the interface.",
+        voiceOver: "Voice Over (TTS)",
+        voiceOverDesc: "Enables text-to-speech for navigation.",
         dataPrivacyTitle: "Data & Privacy",
         dataPrivacyDescription: "Manage your personal data.",
         exportData: "Export My Data",
@@ -103,7 +111,7 @@ export default function SettingsPage() {
     const { toast } = useToast();
     const { setTheme, theme } = useTheme();
     const [lang, setLang] = useState('pt');
-    const t = translations[lang];
+    const t = translations[lang] || translations.en;
 
     const handleSaveChanges = (section: string) => {
         toast({
@@ -117,156 +125,166 @@ export default function SettingsPage() {
             <h1 className="text-3xl font-bold text-foreground mb-8">{t.title}</h1>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
 
-                {/* General Settings Card */}
-                <Card className="gradient-surface border-0 rounded-2xl">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><Languages className="text-primary"/>{t.generalTitle}</CardTitle>
-                        <CardDescription>{t.generalDescription}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                        <div className="space-y-2">
-                            <Label htmlFor="language">{t.language}</Label>
-                            <Select defaultValue="pt" onValueChange={setLang}>
-                                <SelectTrigger id="language" className="bg-card border-border">
-                                    <SelectValue placeholder={t.languagePlaceholder} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="pt">{t.portuguese}</SelectItem>
-                                    <SelectItem value="en">{t.english}</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="timezone">{t.timezone}</Label>
-                            <Select defaultValue="africa-maputo">
-                                <SelectTrigger id="timezone" className="bg-card border-border">
-                                    <SelectValue placeholder={t.timezonePlaceholder} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="africa-maputo">(GMT+02:00) Maputo</SelectItem>
-                                    <SelectItem value="europe-lisbon">(GMT+01:00) Lisbon</SelectItem>
-                                    <SelectItem value="utc">(GMT+00:00) UTC</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <Button className="w-full btn-primary-gradient" onClick={() => handleSaveChanges(t.generalTitle)}>{t.saveChanges}</Button>
-                    </CardContent>
-                </Card>
-
-                {/* Appearance Settings Card */}
-                <Card className="gradient-surface border-0 rounded-2xl">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><Palette className="text-primary"/>{t.appearanceTitle}</CardTitle>
-                        <CardDescription>{t.appearanceDescription}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6">
-                        <div className="space-y-2">
-                            <Label>{t.theme}</Label>
-                             <div className="grid grid-cols-2 gap-4">
-                                <Button variant="outline" onClick={() => setTheme('dark')} className={`h-20 flex flex-col items-center justify-center bg-card border-border ${theme === 'dark' ? 'ring-2 ring-primary border-primary' : ''}`}>
-                                    <Moon className="w-6 h-6 mb-2"/>
-                                    <span>{t.dark}</span>
-                                </Button>
-                                <Button variant="outline" onClick={() => setTheme('light')} className={`h-20 flex flex-col items-center justify-center bg-card border-border ${theme === 'light' ? 'ring-2 ring-primary border-primary' : ''}`}>
-                                    <Sun className="w-6 h-6 mb-2"/>
-                                    <span>{t.light}</span>
-                                </Button>
+                <div className="space-y-8">
+                    {/* General Settings Card */}
+                    <Card className="gradient-surface border-0 rounded-2xl">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2"><Languages className="text-primary"/>{t.generalTitle}</CardTitle>
+                            <CardDescription>{t.generalDescription}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div className="space-y-2">
+                                <Label htmlFor="language">{t.language}</Label>
+                                <Select defaultValue="pt" onValueChange={setLang}>
+                                    <SelectTrigger id="language" className="bg-card border-border">
+                                        <SelectValue placeholder={t.languagePlaceholder} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="pt">{t.portuguese}</SelectItem>
+                                        <SelectItem value="en">{t.english}</SelectItem>
+                                        <SelectItem value="fr">{t.french}</SelectItem>
+                                        <SelectItem value="es">{t.spanish}</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
-                        </div>
-                         <div className="space-y-2">
-                            <Label htmlFor="font-size">{t.fontSize}</Label>
-                            <Select defaultValue="medium">
-                                <SelectTrigger id="font-size" className="bg-card border-border">
-                                    <SelectValue placeholder={t.fontSizePlaceholder} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="small">{t.small}</SelectItem>
-                                    <SelectItem value="medium">{t.medium}</SelectItem>
-                                    <SelectItem value="large">{t.large}</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <Button className="w-full btn-primary-gradient" onClick={() => handleSaveChanges(t.appearanceTitle)}>{t.saveChanges}</Button>
-                    </CardContent>
-                </Card>
+                            <div className="space-y-2">
+                                <Label htmlFor="timezone">{t.timezone}</Label>
+                                <Select defaultValue="africa-maputo">
+                                    <SelectTrigger id="timezone" className="bg-card border-border">
+                                        <SelectValue placeholder={t.timezonePlaceholder} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="africa-maputo">(GMT+02:00) Maputo</SelectItem>
+                                        <SelectItem value="europe-lisbon">(GMT+01:00) Lisbon</SelectItem>
+                                        <SelectItem value="utc">(GMT+00:00) UTC</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <Button className="w-full btn-primary-gradient" onClick={() => handleSaveChanges(t.generalTitle)}>{t.saveChanges}</Button>
+                        </CardContent>
+                    </Card>
 
-                 {/* Notifications Settings Card */}
-                <Card className="gradient-surface border-0 rounded-2xl lg:col-span-1">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><Bell className="text-primary"/>{t.notificationsTitle}</CardTitle>
-                        <CardDescription>{t.notificationsDescription}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="flex items-center justify-between p-3 bg-card/50 rounded-lg">
-                            <Label htmlFor="email-notifications" className="flex flex-col gap-1 cursor-pointer">
-                                <span>{t.emailNotifications}</span>
-                                <span className="text-xs text-muted-foreground">{t.emailNotificationsDesc}</span>
-                            </Label>
-                            <Switch id="email-notifications" defaultChecked />
-                        </div>
-                        <div className="flex items-center justify-between p-3 bg-card/50 rounded-lg">
-                            <Label htmlFor="push-notifications" className="flex flex-col gap-1 cursor-pointer">
-                                <span>{t.pushNotifications}</span>
-                                <span className="text-xs text-muted-foreground">{t.pushNotificationsDesc}</span>
-                            </Label>
-                            <Switch id="push-notifications" defaultChecked />
-                        </div>
-                        <div className="flex items-center justify-between p-3 bg-card/50 rounded-lg">
-                            <Label htmlFor="mentions-notifications" className="flex flex-col gap-1 cursor-pointer">
-                                <span>{t.mentionsNotifications}</span>
-                                <span className="text-xs text-muted-foreground">{t.mentionsNotificationsDesc}</span>
-                            </Label>
-                            <Switch id="mentions-notifications" />
-                        </div>
-                        <Button className="w-full btn-primary-gradient mt-4" onClick={() => handleSaveChanges(t.notificationsTitle)}>{t.saveChanges}</Button>
-                    </CardContent>
-                </Card>
+                    {/* Notifications Settings Card */}
+                    <Card className="gradient-surface border-0 rounded-2xl">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2"><Bell className="text-primary"/>{t.notificationsTitle}</CardTitle>
+                            <CardDescription>{t.notificationsDescription}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex items-center justify-between p-3 bg-card/50 rounded-lg">
+                                <Label htmlFor="email-notifications" className="flex flex-col gap-1 cursor-pointer">
+                                    <span>{t.emailNotifications}</span>
+                                    <span className="text-xs text-muted-foreground">{t.emailNotificationsDesc}</span>
+                                </Label>
+                                <Switch id="email-notifications" defaultChecked />
+                            </div>
+                            <div className="flex items-center justify-between p-3 bg-card/50 rounded-lg">
+                                <Label htmlFor="push-notifications" className="flex flex-col gap-1 cursor-pointer">
+                                    <span>{t.pushNotifications}</span>
+                                    <span className="text-xs text-muted-foreground">{t.pushNotificationsDesc}</span>
+                                </Label>
+                                <Switch id="push-notifications" defaultChecked />
+                            </div>
+                            <div className="flex items-center justify-between p-3 bg-card/50 rounded-lg">
+                                <Label htmlFor="mentions-notifications" className="flex flex-col gap-1 cursor-pointer">
+                                    <span>{t.mentionsNotifications}</span>
+                                    <span className="text-xs text-muted-foreground">{t.mentionsNotificationsDesc}</span>
+                                </Label>
+                                <Switch id="mentions-notifications" />
+                            </div>
+                            <Button className="w-full btn-primary-gradient mt-4" onClick={() => handleSaveChanges(t.notificationsTitle)}>{t.saveChanges}</Button>
+                        </CardContent>
+                    </Card>
 
-                {/* Accessibility Settings Card */}
-                <Card className="gradient-surface border-0 rounded-2xl">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><Accessibility className="text-primary"/>{t.accessibilityTitle}</CardTitle>
-                        <CardDescription>{t.accessibilityDescription}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="flex items-center justify-between p-3 bg-card/50 rounded-lg">
-                            <Label htmlFor="high-contrast" className="flex flex-col gap-1">
-                                <span>{t.highContrast}</span>
-                                <span className="text-xs text-muted-foreground">{t.highContrastDesc}</span>
-                            </Label>
-                            <Switch id="high-contrast" />
-                        </div>
-                        <div className="flex items-center justify-between p-3 bg-card/50 rounded-lg">
-                            <Label htmlFor="reduced-motion" className="flex flex-col gap-1">
-                                <span>{t.reducedMotion}</span>
-                                <span className="text-xs text-muted-foreground">{t.reducedMotionDesc}</span>
-                            </Label>
-                            <Switch id="reduced-motion" defaultChecked />
-                        </div>
-                        <Button className="w-full btn-primary-gradient mt-4" onClick={() => handleSaveChanges(t.accessibilityTitle)}>{t.saveChanges}</Button>
-                    </CardContent>
-                </Card>
-                
-                {/* Data & Privacy Settings Card */}
-                <Card className="gradient-surface border-0 rounded-2xl lg:col-span-2">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2"><FileDown className="text-primary"/>{t.dataPrivacyTitle}</CardTitle>
-                        <CardDescription>{t.dataPrivacyDescription}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="flex justify-between items-center p-3 bg-card/50 rounded-lg">
-                           <div>
-                             <h4 className="font-semibold">{t.exportData}</h4>
-                             <p className="text-sm text-muted-foreground">{t.exportDataDesc}</p>
-                           </div>
-                           <Button variant="outline" className="bg-card border-border">{t.export}</Button>
-                        </div>
-                    </CardContent>
-                </Card>
+                     {/* Data & Privacy Settings Card */}
+                    <Card className="gradient-surface border-0 rounded-2xl">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2"><FileDown className="text-primary"/>{t.dataPrivacyTitle}</CardTitle>
+                            <CardDescription>{t.dataPrivacyDescription}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex justify-between items-center p-3 bg-card/50 rounded-lg">
+                            <div>
+                                <h4 className="font-semibold">{t.exportData}</h4>
+                                <p className="text-sm text-muted-foreground">{t.exportDataDesc}</p>
+                            </div>
+                            <Button variant="outline" className="bg-card border-border">{t.export}</Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
 
+                <div className="space-y-8">
+                     {/* Appearance Settings Card */}
+                    <Card className="gradient-surface border-0 rounded-2xl">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2"><Palette className="text-primary"/>{t.appearanceTitle}</CardTitle>
+                            <CardDescription>{t.appearanceDescription}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div className="space-y-2">
+                                <Label>{t.theme}</Label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <Button variant="outline" onClick={() => setTheme('dark')} className={`h-20 flex flex-col items-center justify-center bg-card border-border ${theme === 'dark' ? 'ring-2 ring-primary border-primary' : ''}`}>
+                                        <Moon className="w-6 h-6 mb-2"/>
+                                        <span>{t.dark}</span>
+                                    </Button>
+                                    <Button variant="outline" onClick={() => setTheme('light')} className={`h-20 flex flex-col items-center justify-center bg-card border-border ${theme === 'light' ? 'ring-2 ring-primary border-primary' : ''}`}>
+                                        <Sun className="w-6 h-6 mb-2"/>
+                                        <span>{t.light}</span>
+                                    </Button>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="font-size">{t.fontSize}</Label>
+                                <Select defaultValue="medium">
+                                    <SelectTrigger id="font-size" className="bg-card border-border">
+                                        <SelectValue placeholder={t.fontSizePlaceholder} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="small">{t.small}</SelectItem>
+                                        <SelectItem value="medium">{t.medium}</SelectItem>
+                                        <SelectItem value="large">{t.large}</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <Button className="w-full btn-primary-gradient" onClick={() => handleSaveChanges(t.appearanceTitle)}>{t.saveChanges}</Button>
+                        </CardContent>
+                    </Card>
+
+                    {/* Accessibility Settings Card */}
+                    <Card className="gradient-surface border-0 rounded-2xl">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2"><Accessibility className="text-primary"/>{t.accessibilityTitle}</CardTitle>
+                            <CardDescription>{t.accessibilityDescription}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex items-center justify-between p-3 bg-card/50 rounded-lg">
+                                <Label htmlFor="high-contrast" className="flex flex-col gap-1">
+                                    <span>{t.highContrast}</span>
+                                    <span className="text-xs text-muted-foreground">{t.highContrastDesc}</span>
+                                </Label>
+                                <Switch id="high-contrast" />
+                            </div>
+                             <div className="flex items-center justify-between p-3 bg-card/50 rounded-lg">
+                                <Label htmlFor="voice-over" className="flex flex-col gap-1">
+                                    <span>{t.voiceOver}</span>
+                                    <span className="text-xs text-muted-foreground">{t.voiceOverDesc}</span>
+                                </Label>
+                                <Switch id="voice-over" />
+                            </div>
+                            <div className="flex items-center justify-between p-3 bg-card/50 rounded-lg">
+                                <Label htmlFor="reduced-motion" className="flex flex-col gap-1">
+                                    <span>{t.reducedMotion}</span>
+                                    <span className="text-xs text-muted-foreground">{t.reducedMotionDesc}</span>
+                                </Label>
+                                <Switch id="reduced-motion" defaultChecked />
+                            </div>
+                            <Button className="w-full btn-primary-gradient mt-4" onClick={() => handleSaveChanges(t.accessibilityTitle)}>{t.saveChanges}</Button>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </div>
     );
 }
-
-    

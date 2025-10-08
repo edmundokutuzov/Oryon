@@ -79,7 +79,7 @@
   }
 
   .light .gradient-surface {
-    background: hsl(var(--card));
+    background: hsla(0, 0%, 100%, 0.6);
     border-color: hsl(var(--border));
   }
 
@@ -113,19 +113,23 @@
 
 
   /* Department Colors */
-  .department-finance { --dept-color: 145 63% 49%; } /* green-500 */
-  .department-hr { --dept-color: 48 96% 53%; } /* yellow-500 */
-  .department-it { --dept-color: 221 83% 53%; } /* blue-500 */
-  .department-marketing { --dept-color: 262 83% 58%; } /* violet-500 */
-  .department-operations { --dept-color: 188 95% 42%; } /* cyan-500 */
-  .department-compliance { --dept-color: 0 84% 60%; } /* red-500 */
-  .department-security { --dept-color: 0 72% 51%; } /* red-600 */
+  .department-marketing { --dept-color: 145 63% 49%; } /* green */
+  .department-finance { --dept-color: 39 100% 50%; } /* orange */
+  .department-hr { --dept-color: 262 83% 58%; } /* violet */
+  .department-it { --dept-color: 221 83% 53%; } /* blue */
+  .department-operations { --dept-color: 188 95% 42%; } /* cyan */
+  .department-compliance { --dept-color: 0 84% 60%; } /* red */
+  .department-security { --dept-color: 48 96% 53%; } /* yellow */
+  .department-administration { --dept-color: 215 20% 65%; } /* gray */
 
   .border-dept {
     border-left: 4px solid hsl(var(--dept-color));
   }
   .text-dept {
     color: hsl(var(--dept-color));
+  }
+  .bg-dept-light {
+    background-color: hsla(var(--dept-color), 0.1);
   }
 }
 

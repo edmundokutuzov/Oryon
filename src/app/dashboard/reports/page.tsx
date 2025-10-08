@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { reports } from '@/lib/data';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Building } from 'lucide-react';
 
 export default function ReportsPage() {
   return (
@@ -18,9 +18,15 @@ export default function ReportsPage() {
                     </CardHeader>
                     <CardContent>
                         <div className="flex justify-between items-center">
-                             <Badge variant="secondary" className="capitalize bg-green-500/20 text-green-300">
-                                {report.type}
-                            </Badge>
+                            <div className="flex items-center gap-4">
+                                <Badge variant="secondary" className="capitalize bg-green-500/20 text-green-300">
+                                    {report.type}
+                                </Badge>
+                                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                                    <Building className="w-4 h-4" />
+                                    <span>{report.department}</span>
+                                </div>
+                            </div>
                             <Button variant="link" className="text-primary/80 hover:text-primary">
                                 Ver Detalhes <ArrowRight className="ml-2 h-4 w-4" />
                             </Button>

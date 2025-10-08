@@ -6,8 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger, PopoverAnchor } from "@/components/ui/popover";
 import { getCurrentUser, getDepartment, getDepartmentMembers, messages, users } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { Paperclip, Send } from "lucide-react";
+import { Paperclip, Send, Smile, MoreHorizontal, Pin, Reply, Trash2, Forward, UserCheck, Keyboard } from "lucide-react";
 import { useMemo, useState, useEffect, useRef } from "react";
+import { Badge } from "@/components/ui/badge";
 
 const currentUser = getCurrentUser();
 const department = getDepartment(currentUser.department.toLowerCase());
@@ -22,7 +23,7 @@ export default function DepartmentChatPage() {
     const [isMentionPopoverOpen, setMentionPopoverOpen] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    const otherMembers = useMemo(() => departmentMembers.filter(m => m.id !== currentUser.id), [departmentMembers]);
+    const otherMembers = useMemo(() => departmentMembers.filter(m => m.id !== currentUser.id), []);
 
     const handleSendMessage = () => {
         if(inputValue.trim()){
@@ -61,6 +62,8 @@ export default function DepartmentChatPage() {
     }, [mentionQuery, otherMembers]);
 
 
+    const pinnedMessages = channelMessages.slice(0, 2); // Mocking 2 pinned messages
+
     return (
         <div className="p-6 fade-in h-full flex flex-col">
             <div className="flex-shrink-0 mb-6">
@@ -86,25 +89,57 @@ export default function DepartmentChatPage() {
                 </div>
             </div>
 
+             {pinnedMessages.length > 0 && (
+                <div className="flex-shrink-0 mb-4 space-y-2">
+                    {pinnedMessages.map(msg => (
+                        <div key={`pinned-${msg.id}`} className="bg-primary/10 p-2 rounded-lg text-sm flex items-center gap-2">
+                            <Pin className="w-4 h-4 text-primary/80 shrink-0"/>
+                            <span className="font-semibold text-primary/90">
+                                {users.find(u => u.id === msg.userId)?.name.split(' ')[0]}:
+                            </span>
+                            <p className="text-foreground/80 truncate">{msg.content}</p>
+                        </div>
+                    ))}
+                </div>
+            )}
+
             <div id="chat-messages" className="flex-grow gradient-surface p-6 rounded-2xl overflow-y-auto custom-scrollbar flex flex-col gap-6">
                 {channelMessages.map(msg => {
                     const user = users.find(u => u.id === msg.userId);
                     const isSelf = msg.userId === currentUser.id;
                     const avatar = PlaceHolderImages.find(p => p.id === `user-avatar-${user?.id}`)?.imageUrl;
                     return (
-                        <div key={msg.id} className={`flex items-start gap-4 ${isSelf ? 'flex-row-reverse' : ''}`}>
+                        <div key={msg.id} className={`group flex items-start gap-4 ${isSelf ? 'flex-row-reverse' : ''}`}>
                             <Avatar className="w-10 h-10">
                                 <AvatarImage src={avatar} alt={user?.name} data-ai-hint="person portrait" />
                                 <AvatarFallback>{user?.name.charAt(0)}</AvatarFallback>
                             </Avatar>
-                            <div className="max-w-xl">
-                                <div className={`p-4 rounded-3xl ${isSelf ? 'bg-primary text-primary-foreground rounded-br-none' : 'bg-card rounded-bl-none'}`}>
-                                    <div className="flex items-center justify-between mb-1">
-                                        <span className={`font-bold text-sm ${isSelf ? 'text-primary-foreground' : 'text-foreground'}`}>{user?.name}</span>
-                                        <span className={`text-xs opacity-60 ${isSelf ? 'text-primary-foreground' : 'text-muted-foreground'}`}>{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                            <div className={`flex items-center gap-2 ${isSelf ? 'flex-row-reverse' : ''}`}>
+                                <div className="max-w-xl">
+                                    <div className={`p-3 rounded-xl ${isSelf ? 'bg-primary text-primary-foreground rounded-br-none' : `bg-card rounded-bl-none department-${department?.slug} bg-dept-light`}`}>
+                                        <div className="flex items-center justify-between mb-1">
+                                            <span className={`font-bold text-sm text-dept`}>{user?.name}</span>
+                                        </div>
+                                        <p className="text-sm text-foreground/90">{msg.content}</p>
+                                        <div className="text-xs opacity-60 mt-1.5 text-right">{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                                     </div>
-                                    <p className="text-sm">{msg.content}</p>
                                 </div>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <MoreHorizontal className="w-4 h-4" />
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-48 p-2">
+                                        <div className="space-y-1 text-sm">
+                                            <Button variant="ghost" className="w-full justify-start"><Pin className="mr-2"/> Fixar</Button>
+                                            <Button variant="ghost" className="w-full justify-start"><Reply className="mr-2"/> Responder</Button>
+                                            <Button variant="ghost" className="w-full justify-start"><Forward className="mr-2"/> Reencaminhar</Button>
+                                            <Button variant="ghost" className="w-full justify-start"><UserCheck className="mr-2"/> Ver Detalhes</Button>
+                                            <Button variant="ghost" className="w-full justify-start text-destructive"><Trash2 className="mr-2"/> Apagar</Button>
+                                        </div>
+                                    </PopoverContent>
+                                </Popover>
                             </div>
                         </div>
                     )
@@ -115,25 +150,29 @@ export default function DepartmentChatPage() {
                  <Popover open={isMentionPopoverOpen} onOpenChange={setMentionPopoverOpen}>
                     <PopoverAnchor asChild>
                          <div className="relative">
-                            <Paperclip className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                            <Button variant="ghost" size="icon" className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"><Paperclip /></Button>
                             <Input 
                                 ref={inputRef}
                                 type="text" 
                                 placeholder="Escreva uma mensagem..." 
-                                className="w-full h-auto p-4 pl-12 pr-28 bg-card border-border rounded-xl focus:outline-none focus:border-primary text-foreground placeholder:text-muted-foreground"
+                                className="w-full h-auto p-4 pl-14 pr-36 bg-card border-border rounded-xl focus:outline-none focus:border-primary text-foreground placeholder:text-muted-foreground"
                                 value={inputValue}
                                 onChange={handleInputChange}
                                 onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                             />
-                            <Button 
-                                className="absolute right-4 top-1/2 -translate-y-1/2 btn-primary-gradient px-4 py-2 text-primary-foreground font-semibold rounded-lg h-auto"
-                                onClick={handleSendMessage}
-                            >
-                                <Send className="w-4 h-4 mr-2" /> Enviar
-                            </Button>
+                            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                                <Button variant="ghost" size="icon" className="text-muted-foreground"><Smile /></Button>
+                                <Button variant="ghost" size="icon" className="text-muted-foreground"><Keyboard /></Button>
+                                <Button 
+                                    className="btn-primary-gradient px-4 py-2 text-primary-foreground font-semibold rounded-lg h-auto"
+                                    onClick={handleSendMessage}
+                                >
+                                    <Send className="w-4 h-4" />
+                                </Button>
+                            </div>
                         </div>
                     </PopoverAnchor>
-                    <PopoverContent className="w-[calc(100%-48px)] lg:w-[400px] bg-card border-border p-2" align="start" side="top">
+                    <PopoverContent className="w-[calc(100%-48px)] lg:w-[400px] bg-card border-border p-2 mb-2" align="start" side="top">
                        <div className="text-sm font-bold p-2 text-foreground">Mencionar Membro</div>
                        <div className="max-h-60 overflow-y-auto custom-scrollbar">
                          {filteredMembers.length > 0 ? filteredMembers.map(member => {

@@ -45,33 +45,8 @@ export default function SecurityPage() {
         <div className="p-6 fade-in">
             <h1 className="text-3xl font-bold text-foreground mb-8">Segurança</h1>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                {/* Left Column */}
                 <div className="space-y-8">
-                    {/* Password Management */}
-                    <Card className="gradient-surface border-0 rounded-2xl">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2"><Key className="text-primary"/>Alterar Password</CardTitle>
-                            <CardDescription>Para a sua segurança, use uma password forte e única.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <form className="space-y-4" onSubmit={handleSavePassword}>
-                                <div className="space-y-2">
-                                    <Label htmlFor="current-password">Password Atual</Label>
-                                    <Input id="current-password" type="password" placeholder="••••••••" className="bg-card border-border"/>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="new-password">Nova Password</Label>
-                                    <Input id="new-password" type="password" placeholder="••••••••" className="bg-card border-border"/>
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="confirm-password">Confirmar Nova Password</Label>
-                                    <Input id="confirm-password" type="password" placeholder="••••••••" className="bg-card border-border"/>
-                                </div>
-                                <Button type="submit" className="w-full btn-primary-gradient">Salvar Nova Password</Button>
-                            </form>
-                        </CardContent>
-                    </Card>
-
-                    {/* Two-Factor Authentication */}
                     <Card className="gradient-surface border-0 rounded-2xl">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2"><Shield className="text-primary"/>Autenticação de Dois Fatores (2FA)</CardTitle>
@@ -87,10 +62,7 @@ export default function SecurityPage() {
                             </div>
                         </CardContent>
                     </Card>
-                </div>
 
-                <div className="space-y-8">
-                     {/* Active Sessions */}
                     <Card className="gradient-surface border-0 rounded-2xl">
                         <CardHeader>
                             <CardTitle>Sessões Ativas</CardTitle>
@@ -117,8 +89,33 @@ export default function SecurityPage() {
                             ))}
                         </CardContent>
                     </Card>
+                </div>
+                {/* Right Column */}
+                <div className="space-y-8">
+                     <Card className="gradient-surface border-0 rounded-2xl">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2"><Key className="text-primary"/>Alterar Password</CardTitle>
+                            <CardDescription>Para a sua segurança, use uma password forte e única.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <form className="space-y-4" onSubmit={handleSavePassword}>
+                                <div className="space-y-2">
+                                    <Label htmlFor="current-password">Password Atual</Label>
+                                    <Input id="current-password" type="password" placeholder="••••••••" className="bg-card border-border"/>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="new-password">Nova Password</Label>
+                                    <Input id="new-password" type="password" placeholder="••••••••" className="bg-card border-border"/>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="confirm-password">Confirmar Nova Password</Label>
+                                    <Input id="confirm-password" type="password" placeholder="••••••••" className="bg-card border-border"/>
+                                </div>
+                                <Button type="submit" className="w-full btn-primary-gradient">Salvar Nova Password</Button>
+                            </form>
+                        </CardContent>
+                    </Card>
                     
-                    {/* Security Logs */}
                     <Card className="gradient-surface border-0 rounded-2xl">
                         <CardHeader>
                             <CardTitle>Logs de Segurança</CardTitle>

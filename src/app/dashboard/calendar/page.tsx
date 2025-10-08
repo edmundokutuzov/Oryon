@@ -1,25 +1,47 @@
 
 'use client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Calendar } from '@/components/ui/calendar';
 import { useState }from 'react';
-import { calendarEvents, getCurrentUser } from '@/lib/data';
+import { calendarEvents, getCurrentUser, nationalHolidays } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
-import { Clock, MapPin, Video } from 'lucide-react';
+import { Clock, MapPin, Video, Flag, Star, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
+
+type Note = { date: string; text: string; };
 
 const currentUser = getCurrentUser();
 
 export default function CalendarPage() {
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [newNote, setNewNote] = useState('');
+  const { toast } = useToast();
+
+  const isSameDay = (d1: Date, d2: Date) => {
+    return d1.getDate() === d2.getDate() &&
+           d1.getMonth() === d2.getMonth() &&
+           d1.getFullYear() === d2.getFullYear();
+  }
 
   const eventsForSelectedDay = date ? calendarEvents.filter(event => {
     const eventDate = new Date(event.start);
-    return eventDate.getDate() === date.getDate() &&
-           eventDate.getMonth() === date.getMonth() &&
-           eventDate.getFullYear() === date.getFullYear() &&
+    return isSameDay(eventDate, date) &&
            (event.participants.includes(currentUser.id) || event.createdBy === currentUser.id);
   }) : [];
+
+  const notesForSelectedDay = date ? notes.filter(note => isSameDay(new Date(note.date), date)) : [];
+
+  const handleAddNote = () => {
+    if (newNote.trim() && date) {
+      const formattedDate = date.toISOString().split('T')[0];
+      setNotes([...notes, { date: formattedDate, text: newNote }]);
+      setNewNote('');
+      toast({ title: 'Nota adicionada', description: 'A sua nota foi salva no calendário.'});
+    }
+  };
 
   return (
     <div className="p-6 fade-in grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
@@ -50,18 +72,26 @@ export default function CalendarPage() {
                 DayContent: ({ date }) => {
                   const dailyEvents = calendarEvents.filter(event => {
                      const eventDate = new Date(event.start);
-                     return eventDate.getDate() === date.getDate() &&
-                            eventDate.getMonth() === date.getMonth() &&
-                            eventDate.getFullYear() === date.getFullYear() &&
+                     return isSameDay(eventDate, date) &&
                              (event.participants.includes(currentUser.id) || event.createdBy === currentUser.id);
                   });
+                  const holiday = nationalHolidays.find(h => {
+                    const holidayDate = new Date(h.date);
+                    return isSameDay(holidayDate, date);
+                  });
+                   const dailyNotes = notes.filter(n => isSameDay(new Date(n.date), date));
+
                   return (
                     <>
                       <span>{date.getDate()}</span>
+                       {holiday && <Flag className="w-3 h-3 text-red-400 absolute top-2 right-2" title={holiday.name} />}
                       <div className="flex flex-col gap-1 mt-1 w-full">
                         {dailyEvents.map(event => (
                            <div key={event.id} className={`w-full h-1.5 rounded-full ${event.type === 'meeting' ? 'bg-blue-400' : event.type === 'presentation' ? 'bg-purple-400' : 'bg-green-400'}`} title={event.title}></div>
                         ))}
+                        {dailyNotes.length > 0 && (
+                            <div className="w-full h-1.5 rounded-full bg-yellow-400" title={`${dailyNotes.length} nota(s)`}></div>
+                        )}
                       </div>
                     </>
                   );
@@ -72,7 +102,7 @@ export default function CalendarPage() {
         </Card>
       </div>
 
-      <div className="lg:col-span-1 lg:mt-[76px]">
+      <div className="lg:col-span-1 lg:mt-[76px] space-y-8">
          <Card className="gradient-surface border-0 rounded-2xl">
             <CardHeader>
                 <CardTitle>Eventos de {date ? date.toLocaleDateString('pt-PT', { day: 'numeric', month: 'long'}) : 'hoje'}</CardTitle>
@@ -94,8 +124,33 @@ export default function CalendarPage() {
                             )}
                         </div>
                     )) : (
-                        <p className="text-muted-foreground text-center py-8">Nenhum evento para este dia.</p>
+                        <p className="text-muted-foreground text-center py-4">Nenhum evento para este dia.</p>
                     )}
+
+                    {notesForSelectedDay.map((note, index) => (
+                         <div key={index} className={`p-4 rounded-xl bg-yellow-500/10 border-l-4 border-yellow-500`}>
+                            <h3 className="font-semibold text-yellow-300 flex items-center gap-2"><Star className="w-4 h-4"/> Lembrete</h3>
+                            <p className="text-foreground/90 text-sm mt-1">{note.text}</p>
+                        </div>
+                    ))}
+                </div>
+            </CardContent>
+         </Card>
+          <Card className="gradient-surface border-0 rounded-2xl">
+            <CardHeader>
+                <CardTitle>Adicionar Nota/Lembrete</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="flex gap-2">
+                    <Input 
+                        placeholder="Escreva uma nota rápida..." 
+                        className="bg-card border-border"
+                        value={newNote}
+                        onChange={(e) => setNewNote(e.target.value)}
+                    />
+                    <Button onClick={handleAddNote} className="btn-primary-gradient shrink-0">
+                        <Plus className="w-4 h-4" />
+                    </Button>
                 </div>
             </CardContent>
          </Card>

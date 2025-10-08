@@ -619,8 +619,8 @@ export const tasks = [
         id: 3,
         title: "Preparar relatório trimestral de desempenho financeiro Q3",
         description: "Compilar dados de performance dos últimos 3 meses e preparar relatório para apresentação à direção. Incluir análise de KPIs e projeções.",
-        assignedTo: 4,
-        assignedBy: 1,
+        assignedTo: 1,
+        assignedBy: 26,
         department: "Financeiro",
         dueDate: "2024-11-25",
         status: "in-progress" as "in-progress" | "pending" | "completed",
@@ -648,6 +648,54 @@ export const tasks = [
         comments: [],
         timeSpent: 16,
         attachments: [{ name: "relatorio_seo_outubro.pdf", size: "1.2 MB", type: "pdf" }]
+    },
+    {
+        id: 5,
+        title: "Auditoria de Segurança dos Servidores da Cloud",
+        description: "Realizar uma auditoria completa de segurança em todos os servidores da cloud para identificar e corrigir vulnerabilidades.",
+        assignedTo: 1,
+        assignedBy: 12,
+        department: "Segurança",
+        dueDate: "2024-12-10",
+        status: "in-progress" as "in-progress" | "pending" | "completed",
+        priority: "high" as "high" | "medium" | "low",
+        progress: 30,
+        tags: ["segurança", "cloud", "auditoria"],
+        comments: [],
+        timeSpent: 20,
+        attachments: [{ name: "checklist-auditoria.docx", size: "150 KB", type: "docx" }]
+    },
+    {
+        id: 6,
+        title: "Desenvolver Dashboard de Monitorização de KPIs",
+        description: "Criar um novo dashboard em tempo real para monitorizar os principais indicadores de performance (KPIs) da plataforma.",
+        assignedTo: 1,
+        assignedBy: 28,
+        department: "Tecnologia",
+        dueDate: "2025-01-15",
+        status: "pending" as "in-progress" | "pending" | "completed",
+        priority: "medium" as "high" | "medium" | "low",
+        progress: 5,
+        tags: ["dashboard", "kpi", "bi"],
+        comments: [],
+        timeSpent: 0,
+        attachments: []
+    },
+    {
+        id: 7,
+        title: "Organizar evento de team-building de final de ano",
+        description: "Planear e organizar o evento de final de ano para todos os colaboradores, incluindo logística, catering e atividades.",
+        assignedTo: 1,
+        assignedBy: 5,
+        department: "Recursos Humanos",
+        dueDate: "2024-12-01",
+        status: "completed" as "in-progress" | "pending" | "completed",
+        priority: "medium" as "high" | "medium" | "low",
+        progress: 100,
+        tags: ["evento", "rh", "team-building"],
+        comments: [],
+        timeSpent: 25,
+        attachments: [{ name: "propostas-locais.pdf", size: "5.5 MB", type: "pdf" }]
     }
 ];
 
@@ -952,8 +1000,6 @@ export const messages = {
     ]
 };
 
-let currentUser: (typeof users)[0] | undefined;
-
 export const getCurrentUser = () => {
     if (typeof window !== 'undefined') {
         const session = document.cookie.split('; ').find(row => row.startsWith('oryon_user_session='));
@@ -963,11 +1009,12 @@ export const getCurrentUser = () => {
                 const userData = JSON.parse(decodeURIComponent(session.split('=')[1]));
                 // Find the user in the mock data array
                 const user = users.find(u => u.id === userData.id);
-                return user; // Return the found user object
+                if (user) {
+                  return user;
+                }
             } catch (e) {
                 console.error("Failed to parse user session cookie:", e);
                 // Fallback for server-side or if cookie is invalid
-                return undefined;
             }
         }
     }
@@ -990,3 +1037,4 @@ export const getCalendarEventsForUser = (userId: number) => calendarEvents.filte
 
 
   
+

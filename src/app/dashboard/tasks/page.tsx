@@ -101,8 +101,8 @@ function TaskCard({ task }: { task: (typeof userTasks)[0] }) {
              <div className="border-t border-border pt-3">
                 <h4 className="text-xs font-semibold text-muted-foreground mb-2">Anexos</h4>
                 <div className="flex flex-wrap gap-2">
-                    {task.attachments.map(att => (
-                        <div key={att.name} className="flex items-center gap-2 text-xs bg-muted/50 px-2 py-1 rounded-md">
+                    {task.attachments.map((att, index) => (
+                        <div key={index} className="flex items-center gap-2 text-xs bg-muted/50 px-2 py-1 rounded-md">
                             <File className="w-3 h-3" />
                             <span>{att.name}</span>
                         </div>

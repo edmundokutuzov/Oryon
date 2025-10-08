@@ -32,10 +32,11 @@ export async function handleLogin(
     uid: 'admin_placeholder_uid', // Placeholder UID
   };
 
-  // Set the session cookie
+  // Set the session cookie with SameSite=None and Secure=true for cross-site/iframe compatibility
   cookies().set('oryon_user_session', JSON.stringify(userSession), {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: true, // Required for SameSite=None
+    sameSite: 'none', // Allows cookie to be sent in cross-site contexts like iframes
     maxAge: 60 * 60 * 24 * 7, // 7 days
     path: '/',
   });

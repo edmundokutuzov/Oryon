@@ -5,10 +5,32 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { cloudFiles as initialFiles, users } from '@/lib/data';
-import { Download, File as FileIcon, FileArchive, FileText, FileVideo, Folder, MoreVertical, Share2, Trash2, UploadCloud, Plus, ArrowUpDown } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { Download, File as FileIcon, FileArchive, FileText, FileVideo, Folder, MoreVertical, Share2, Trash2, UploadCloud, Plus, ArrowUpDown, FolderPlus } from 'lucide-react';
+import { useState, useMemo, useRef } from 'react';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+
 
 const fileIcons: { [key: string]: React.ReactNode } = {
     pdf: <FileText className="w-5 h-5 text-red-400" />,
@@ -26,15 +48,22 @@ type File = (typeof initialFiles)[0] & { type: string };
 type Folder = { id: string, name: string, type: 'folder', lastModified: string, size: string, sharedWith: never[] };
 
 export default function CloudPage() {
+    const { toast } = useToast();
     const [filesAndFolders, setFilesAndFolders] = useState<(File | Folder)[]>([
         ...initialFiles,
-        { id: 'folder-1', name: 'Relatórios Q3', type: 'folder', lastModified: '2024-11-10T11:00:00Z', size: '--', sharedWith: [] }
+        { id: 'folder-1', name: 'Relatórios Q3', type: 'folder', lastModified: '2024-11-10T11:00:00Z', size: '--', sharedWith: [] },
+        { id: 'folder-2', name: 'Projetos 2024', type: 'folder', lastModified: '2024-10-20T09:00:00Z', size: '--', sharedWith: [] },
+        { id: 'folder-3', name: 'Recursos de Marketing', type: 'folder', lastModified: '2024-11-01T14:00:00Z', size: '--', sharedWith: [] },
+        { id: 'folder-4', name: 'Documentos Pessoais', type: 'folder', lastModified: '2024-09-05T18:00:00Z', size: '--', sharedWith: [] },
     ]);
     const [filter, setFilter] = useState('');
     const [sort, setSort] = useState({ key: 'name', order: 'asc' });
+    const [isNewFolderOpen, setIsNewFolderOpen] = useState(false);
+    const newFolderNameRef = useRef<HTMLInputElement>(null);
+    const uploadInputRef = useRef<HTMLInputElement>(null);
 
     const totalStorage = 20; // GB
-    const usedStorage = initialFiles.reduce((acc, file) => acc + parseFloat(file.size), 0) / 1024;
+    const usedStorage = useMemo(() => filesAndFolders.filter(f => f.type !== 'folder').reduce((acc, file) => acc + parseFloat(file.size), 0) / 1024, [filesAndFolders]);
     const usedPercentage = (usedStorage / totalStorage) * 100;
     
     const sortedAndFilteredItems = useMemo(() => {
@@ -43,6 +72,15 @@ export default function CloudPage() {
             .sort((a, b) => {
                 const aValue = a[sort.key as keyof typeof a] as string;
                 const bValue = b[sort.key as keyof typeof b] as string;
+
+                if (sort.key === 'size') {
+                    const sizeA = a.type === 'folder' ? -1 : parseFloat(a.size) * 1024;
+                    const sizeB = b.type === 'folder' ? -1 : parseFloat(b.size) * 1024;
+                     if (sizeA < sizeB) return sort.order === 'asc' ? -1 : 1;
+                    if (sizeA > sizeB) return sort.order === 'asc' ? 1 : -1;
+                    return 0;
+                }
+
                 if (aValue < bValue) return sort.order === 'asc' ? -1 : 1;
                 if (aValue > bValue) return sort.order === 'asc' ? 1 : -1;
                 return 0;
@@ -56,15 +94,82 @@ export default function CloudPage() {
         }));
     };
 
+    const handleCreateFolder = () => {
+        const folderName = newFolderNameRef.current?.value;
+        if (folderName?.trim()) {
+            const newFolder: Folder = {
+                id: `folder-${Date.now()}`,
+                name: folderName.trim(),
+                type: 'folder',
+                lastModified: new Date().toISOString(),
+                size: '--',
+                sharedWith: []
+            };
+            setFilesAndFolders(prev => [newFolder, ...prev]);
+            toast({ title: 'Pasta Criada', description: `A pasta "${folderName}" foi criada.` });
+            setIsNewFolderOpen(false);
+        } else {
+             toast({ title: 'Nome inválido', description: 'Por favor, insira um nome para a pasta.', variant: 'destructive' });
+        }
+    };
+
+    const handleUploadClick = () => {
+        uploadInputRef.current?.click();
+    }
+    
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            const file = e.target.files[0];
+            toast({ title: 'Upload Iniciado', description: `A carregar o ficheiro "${file.name}".`});
+            // Simulate upload
+            setTimeout(() => {
+                 toast({ title: 'Upload Concluído', description: `"${file.name}" foi carregado.`});
+            }, 2000);
+        }
+    };
+    
+    const handleDelete = (itemId: string, itemName: string) => {
+        setFilesAndFolders(prev => prev.filter(item => item.id !== itemId));
+        toast({ title: 'Item Apagado', description: `"${itemName}" foi movido para o lixo.`, variant: 'destructive'});
+    }
+
+    const handleAction = (action: string, itemName: string) => {
+        toast({ title: `${action} iniciado`, description: `A ${action.toLowerCase()} "${itemName}".`});
+    }
+
     return (
         <div className="p-6 fade-in">
+             <input type="file" ref={uploadInputRef} onChange={handleFileChange} className="hidden" />
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold text-foreground">Minha Nuvem</h1>
                 <div className="flex gap-2">
-                    <Button variant="outline" className="bg-card/80">
-                        <Folder className="mr-2 h-4 w-4" /> Nova Pasta
-                    </Button>
-                    <Button className="btn-primary-gradient">
+                    <Dialog open={isNewFolderOpen} onOpenChange={setIsNewFolderOpen}>
+                        <DialogTrigger asChild>
+                            <Button variant="outline" className="bg-card/80">
+                                <FolderPlus className="mr-2 h-4 w-4" /> Nova Pasta
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                            <DialogTitle>Criar Nova Pasta</DialogTitle>
+                            <DialogDescription>
+                                Dê um nome à sua nova pasta.
+                            </DialogDescription>
+                            </DialogHeader>
+                            <div className="grid gap-4 py-4">
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="name" className="text-right">
+                                    Nome
+                                    </Label>
+                                    <Input id="name" ref={newFolderNameRef} className="col-span-3 bg-card" placeholder="Ex: Relatórios Trimestrais" />
+                                </div>
+                            </div>
+                            <DialogFooter>
+                                <Button type="submit" onClick={handleCreateFolder} className="btn-primary-gradient">Criar Pasta</Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                    <Button className="btn-primary-gradient" onClick={handleUploadClick}>
                         <UploadCloud className="mr-2 h-4 w-4" /> Upload
                     </Button>
                 </div>
@@ -126,9 +231,25 @@ export default function CloudPage() {
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        <Button variant="ghost" size="icon"><Share2 className="w-4 h-4 text-primary/80" /></Button>
-                                        <Button variant="ghost" size="icon"><Download className="w-4 h-4 text-primary/80" /></Button>
-                                        <Button variant="ghost" size="icon"><Trash2 className="w-4 h-4 text-red-400/80" /></Button>
+                                        <Button variant="ghost" size="icon" onClick={() => handleAction('Partilhar', item.name)}><Share2 className="w-4 h-4 text-primary/80" /></Button>
+                                        <Button variant="ghost" size="icon" onClick={() => handleAction('Download', item.name)}><Download className="w-4 h-4 text-primary/80" /></Button>
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button variant="ghost" size="icon"><Trash2 className="w-4 h-4 text-red-400/80" /></Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                <AlertDialogTitle>Tem a certeza?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    Esta ação não pode ser desfeita. O ficheiro será apagado permanentemente.
+                                                </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                                <AlertDialogAction onClick={() => handleDelete(item.id, item.name)} className="bg-destructive hover:bg-destructive/90">Apagar</AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -139,3 +260,5 @@ export default function CloudPage() {
         </div>
     );
 }
+
+    

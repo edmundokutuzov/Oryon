@@ -1,6 +1,6 @@
 
 'use client';
-import { Key, Mail, ShieldCheck, LogIn, AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Mail, ShieldCheck, LogIn, AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -67,7 +67,7 @@ export default function LoginPage() {
                 type="email"
                 id="email"
                 name="email"
-                className="p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground"
+                className="p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground pl-4"
                 placeholder="seu.email@standardbank.com"
                 required
                 defaultValue="maria.silva@standardbank.com"
@@ -78,12 +78,11 @@ export default function LoginPage() {
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <div className="relative">
-              <Key className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type={showPassword ? 'text' : 'password'}
                 id="password"
                 name="password"
-                className="pl-10 pr-10 p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground"
+                className="pl-4 pr-10 p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground"
                 placeholder="••••••••"
                 required
                 defaultValue="Oryon@2024!"

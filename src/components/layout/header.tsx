@@ -1,17 +1,18 @@
 
 'use client';
-import { useState } from 'react';
-import { Menu, Search, Bot, Bell, Video, Plus, User, Key, CheckCircle, FilePlus, FolderPlus, Trash2 } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import { Menu, Search, Bot, Bell, Video, Plus, User, Key, CheckCircle, FilePlus, FolderPlus, Trash2, Folder, ListTodo, FileText as FileTextIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
-import { menuItems } from '@/lib/data';
+import { menuItems, users, projects, tasks, documents } from '@/lib/data';
 import AiAssistant from '@/components/ai-assistant';
 import Link from 'next/link';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  PopoverAnchor,
 } from "@/components/ui/popover";
 import {
   DropdownMenu,
@@ -23,6 +24,8 @@ import { useToast } from '@/hooks/use-toast';
 import StartCallDialog from '../start-call-dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
 import { Badge } from '../ui/badge';
+import { Avatar, AvatarImage, AvatarFallback } from '../ui/avatar';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const getBreadcrumb = (pathname: string) => {
   const pathParts = pathname.split('/').filter(p => p);
@@ -53,6 +56,38 @@ export default function Header() {
   const breadcrumb = getBreadcrumb(pathname);
   const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false);
   const [isStartCallOpen, setIsStartCallOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  useEffect(() => {
+    if (searchQuery.length > 0) {
+      setIsSearchOpen(true);
+    } else {
+      setIsSearchOpen(false);
+    }
+  }, [searchQuery]);
+
+  const searchResults = useMemo(() => {
+    if (searchQuery.length < 2) return null;
+
+    const lowerCaseQuery = searchQuery.toLowerCase();
+
+    const foundUsers = users.filter(u => u.name.toLowerCase().includes(lowerCaseQuery)).slice(0, 3);
+    const foundProjects = projects.filter(p => p.name.toLowerCase().includes(lowerCaseQuery)).slice(0, 3);
+    const foundTasks = tasks.filter(t => t.title.toLowerCase().includes(lowerCaseQuery)).slice(0, 3);
+    const foundDocs = documents.filter(d => d.title.toLowerCase().includes(lowerCaseQuery)).slice(0, 3);
+
+    const results = {
+      users: foundUsers,
+      projects: foundProjects,
+      tasks: foundTasks,
+      documents: foundDocs,
+    };
+
+    const total = foundUsers.length + foundProjects.length + foundTasks.length + foundDocs.length;
+
+    return total > 0 ? results : null;
+  }, [searchQuery]);
   
   return (
     <>
@@ -73,14 +108,34 @@ export default function Header() {
         </div>
 
         <div className="flex items-center space-x-2 md:space-x-4">
-          <div className="relative hidden md:block">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Pesquisar no Oryon..."
-              className="pl-10 pr-4 py-2 w-64 h-auto bg-card border-border rounded-xl focus:outline-none focus:border-primary text-foreground placeholder:text-muted-foreground"
-            />
-          </div>
+           <Popover open={isSearchOpen} onOpenChange={setIsSearchOpen}>
+             <PopoverAnchor asChild>
+                <div className="relative hidden md:block">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="Pesquisar no Oryon..."
+                    className="pl-10 pr-4 py-2 w-64 h-auto bg-card border-border rounded-xl focus:outline-none focus:border-primary text-foreground placeholder:text-muted-foreground"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+              </PopoverAnchor>
+              <PopoverContent className="w-[450px] p-2 mt-2" align="center">
+                {searchResults ? (
+                  <div className="space-y-2">
+                    {searchResults.users.length > 0 && <SearchResultsCategory title="Utilizadores" items={searchResults.users.map(u => ({ id: u.id, name: u.name, href: `/dashboard/team`, icon: <User className="w-4 h-4"/> }))} />}
+                    {searchResults.projects.length > 0 && <SearchResultsCategory title="Projetos" items={searchResults.projects.map(p => ({ id: p.id, name: p.name, href: `/dashboard/projects`, icon: <Folder className="w-4 h-4"/> }))} />}
+                    {searchResults.tasks.length > 0 && <SearchResultsCategory title="Tarefas" items={searchResults.tasks.map(t => ({ id: t.id, name: t.title, href: `/dashboard/tasks`, icon: <ListTodo className="w-4 h-4"/> }))} />}
+                    {searchResults.documents.length > 0 && <SearchResultsCategory title="Documentos" items={searchResults.documents.map(d => ({ id: d.id, name: d.title, href: `/dashboard/documents`, icon: <FileTextIcon className="w-4 h-4"/> }))} />}
+                  </div>
+                ) : (
+                  <div className="p-4 text-center text-sm text-muted-foreground">
+                    Nenhum resultado encontrado para "{searchQuery}".
+                  </div>
+                )}
+              </PopoverContent>
+            </Popover>
 
           <div className="flex items-center space-x-2">
             <Button variant="ghost" size="icon" className="rounded-full bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30 hover:text-yellow-300" title="OryonAI" onClick={() => setIsAiAssistantOpen(true)}>
@@ -178,3 +233,21 @@ const NotificationItem = ({ notification }: { notification: (typeof notification
         </div>
     );
 };
+
+const SearchResultsCategory = ({ title, items }: { title: string; items: { id: number | string; name: string; href: string; icon: React.ReactNode }[] }) => (
+    <div>
+        <h4 className="text-xs font-semibold text-muted-foreground px-2 mb-1">{title}</h4>
+        <div className="space-y-1">
+            {items.map(item => (
+                <Link href={item.href} key={item.id}>
+                    <div className="flex items-center gap-3 p-2 rounded-md hover:bg-muted/50 cursor-pointer">
+                        {item.icon}
+                        <span className="text-sm text-foreground">{item.name}</span>
+                    </div>
+                </Link>
+            ))}
+        </div>
+    </div>
+);
+
+    

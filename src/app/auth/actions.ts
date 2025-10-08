@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { initializeFirebase } from '@/firebase';
-import { users } from '@/lib/data'; // Kept for fallback until user creation is implemented
+import { users } from '@/lib/data';
 
 const { auth, firestore } = initializeFirebase();
 
@@ -31,24 +31,23 @@ export async function handleLogin(
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const firebaseUser = userCredential.user;
 
-    // In a real app, user data should be fetched from Firestore.
-    // We are temporarily falling back to mock data if Firestore doc doesn't exist.
     const userDocRef = doc(firestore, 'users', firebaseUser.uid);
     const userDoc = await getDoc(userDocRef);
-    
+
     let appUser;
 
     if (userDoc.exists()) {
       const firestoreData = userDoc.data();
+      // Combine Firestore data with a consistent ID structure from mock data if needed
       appUser = {
-        id: parseInt(firebaseUser.uid.replace(/\D/g, '').slice(0, 5)), // Create a numeric ID for consistency with mock data
+        id: users.find(u => u.email === firebaseUser.email)?.id || 0, // Fallback ID
         ...firestoreData,
       };
     } else {
       // Fallback to mock data if user is not in Firestore (for demo purposes)
       appUser = users.find((u) => u.email === firebaseUser.email);
     }
-
+    
     if (!appUser) {
       return { error: 'Utilizador não encontrado na base de dados da aplicação.' };
     }

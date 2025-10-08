@@ -38,7 +38,7 @@ export default function LoginPage() {
   }, [state, toast]);
 
   return (
-    <main className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <main className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950">
       <div className="gradient-surface p-8 md:p-10 rounded-2xl w-full max-w-md mx-4 border-2 border-primary/50 bounce-in">
         <div className="text-center mb-8">
           <OryonLogo className="mx-auto mb-4" />

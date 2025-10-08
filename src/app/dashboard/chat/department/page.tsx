@@ -22,6 +22,8 @@ const department = getDepartment(currentUser.department.toLowerCase());
 const departmentMembers = getDepartmentMembers(currentUser.department);
 const channel = department?.slug;
 
+const emojis = ['👍', '❤️', '😂', '🎉', '😢', '🙏', '🔥', '👏'];
+
 export default function DepartmentChatPage() {
     const { toast } = useToast();
     const initialChannelMessages = useMemo(() => channel ? (initialMessages[channel as keyof typeof initialMessages] || []).map(m => ({...m, isDeleted: false})) : [], []);
@@ -30,6 +32,7 @@ export default function DepartmentChatPage() {
     const [mentionQuery, setMentionQuery] = useState('');
     const [isMentionPopoverOpen, setMentionPopoverOpen] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const [channelMessages, setChannelMessages] = useState<Message[]>(initialChannelMessages);
     const [pinnedMessages, setPinnedMessages] = useState<Message[]>(initialChannelMessages.slice(0, 1));
     const [replyingTo, setReplyingTo] = useState<Message | null>(null);
@@ -114,6 +117,25 @@ export default function DepartmentChatPage() {
             m.name.toLowerCase().includes(mentionQuery.toLowerCase())
         );
     }, [mentionQuery, otherMembers]);
+    
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            toast({
+                title: 'Anexo adicionado',
+                description: `O ficheiro "${e.target.files[0].name}" está pronto para ser enviado.`,
+            });
+        }
+    };
+    
+    const handleEmojiSelect = (emoji: string) => {
+        setInputValue(prev => prev + emoji);
+        inputRef.current?.focus();
+    };
+    
+    const handleVirtualKeyboard = () => {
+        console.log('Virtual keyboard toggled');
+        toast({ title: 'Teclado Virtual Ativado (Simulação)'});
+    };
 
     return (
         <>
@@ -191,29 +213,29 @@ export default function DepartmentChatPage() {
                                         </PopoverTrigger>
                                         <PopoverContent className="w-56 p-2">
                                             <div className="space-y-1 text-sm">
-                                                <Button variant="ghost" className="w-full justify-start" onClick={() => handlePinMessage(msg)}>
+                                                <Button variant="ghost" className="w-full justify-start gap-2" onClick={() => handlePinMessage(msg)}>
                                                     <Pin className="mr-2 h-4 w-4"/> {pinnedMessages.find(pm => pm.id === msg.id) ? 'Desfixar' : 'Fixar'}
                                                 </Button>
-                                                <Button variant="ghost" className="w-full justify-start" onClick={() => handleReply(msg)}>
+                                                <Button variant="ghost" className="w-full justify-start gap-2" onClick={() => handleReply(msg)}>
                                                     <Reply className="mr-2 h-4 w-4"/> Responder
                                                 </Button>
                                                 {!isSelf && user && (
                                                     <Link href={`/dashboard/chat/direct/${user.id}`} className="w-full">
-                                                        <Button variant="ghost" className="w-full justify-start">
+                                                        <Button variant="ghost" className="w-full justify-start gap-2">
                                                             <MessageSquare className="mr-2 h-4 w-4"/> Responder no Privado
                                                         </Button>
                                                     </Link>
                                                 )}
-                                                <Button variant="ghost" className="w-full justify-start" onClick={() => setForwardingMessage(msg)}>
+                                                <Button variant="ghost" className="w-full justify-start gap-2" onClick={() => setForwardingMessage(msg)}>
                                                     <Forward className="mr-2 h-4 w-4"/> Reencaminhar
                                                 </Button>
-                                                <Button variant="ghost" className="w-full justify-start" onClick={() => setViewingDetails(msg)}>
+                                                <Button variant="ghost" className="w-full justify-start gap-2" onClick={() => setViewingDetails(msg)}>
                                                     <UserCheck className="mr-2 h-4 w-4"/> Ver Detalhes
                                                 </Button>
                                                 {isSelf && (
                                                     <AlertDialog>
                                                         <AlertDialogTrigger asChild>
-                                                            <Button variant="ghost" className="w-full justify-start text-destructive hover:text-destructive">
+                                                            <Button variant="ghost" className="w-full justify-start text-destructive hover:text-destructive gap-2">
                                                                 <Trash2 className="mr-2 h-4 w-4"/> Apagar
                                                             </Button>
                                                         </AlertDialogTrigger>
@@ -258,7 +280,8 @@ export default function DepartmentChatPage() {
                                     </div>
                                 )}
                                 <div className="relative">
-                                    <Button variant="ghost" size="icon" className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"><Paperclip /></Button>
+                                    <input type="file" ref={fileInputRef} onChange={handleFileSelect} className="hidden" />
+                                    <Button variant="ghost" size="icon" className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" onClick={() => fileInputRef.current?.click()}><Paperclip /></Button>
                                     <Input 
                                         ref={inputRef}
                                         type="text" 
@@ -269,8 +292,21 @@ export default function DepartmentChatPage() {
                                         onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
                                     />
                                     <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                                        <Button variant="ghost" size="icon" className="text-muted-foreground"><Smile /></Button>
-                                        <Button variant="ghost" size="icon" className="text-muted-foreground"><Keyboard /></Button>
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <Button variant="ghost" size="icon" className="text-muted-foreground"><Smile /></Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-2 border-border bg-card" side="top" align="end">
+                                                <div className="grid grid-cols-4 gap-2">
+                                                    {emojis.map(emoji => (
+                                                        <Button key={emoji} variant="ghost" size="icon" onClick={() => handleEmojiSelect(emoji)} className="text-xl">
+                                                            {emoji}
+                                                        </Button>
+                                                    ))}
+                                                </div>
+                                            </PopoverContent>
+                                        </Popover>
+                                        <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={handleVirtualKeyboard}><Keyboard /></Button>
                                         <Button 
                                             className="btn-primary-gradient px-4 py-2 text-primary-foreground font-semibold rounded-lg h-auto"
                                             onClick={handleSendMessage}
@@ -423,7 +459,7 @@ function ForwardMessageDialog({ message, isOpen, onOpenChange }: { message: Mess
                             </div>
                            <Checkbox 
                                 checked={selected.some(s => s.id === recipient.id)}
-                                onCheckedChange={() => toggleSelection(recipient)}
+                                onCheckedChange={()={() => toggleSelection(recipient)}
                            />
                        </div>
                    ))}
@@ -439,3 +475,5 @@ function ForwardMessageDialog({ message, isOpen, onOpenChange }: { message: Mess
         </Dialog>
     )
 }
+
+    

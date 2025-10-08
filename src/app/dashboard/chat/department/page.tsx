@@ -189,7 +189,7 @@ export default function DepartmentChatPage() {
                                                 <MoreHorizontal className="w-4 h-4" />
                                             </Button>
                                         </PopoverTrigger>
-                                        <PopoverContent className="w-48 p-2">
+                                        <PopoverContent className="w-56 p-2">
                                             <div className="space-y-1 text-sm">
                                                 <Button variant="ghost" className="w-full justify-start" onClick={() => handlePinMessage(msg)}>
                                                     <Pin className="mr-2 h-4 w-4"/> {pinnedMessages.find(pm => pm.id === msg.id) ? 'Desfixar' : 'Fixar'}
@@ -433,5 +433,3 @@ function ForwardMessageDialog({ message, isOpen, onOpenChange }: { message: Mess
         </Dialog>
     )
 }
-
-    

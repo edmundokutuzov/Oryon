@@ -1,4 +1,5 @@
 
+
 'use client';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -18,22 +19,51 @@ const statusClasses: { [key: string]: { bg: string, text: string, ring: string }
 };
 
 const roleHierarchy = [
+    "Diretor de Operações (COO)",
+    "Diretora Financeira (CFO)",
+    "Conselheiro Geral",
+    "Chefe de Estratégia",
     "Administrador",
+    "Assistente Executiva",
     "Chefe de Dept.",
-    "Gestora de RH",
+    "Chefe de Compliance",
     "Controller",
+    "Gestora de RH",
+    "Oficial de Compliance Sénior",
+    "Oficial de Compliance",
+    "Especialista de Recrutamento",
     "Lead Designer",
+    "Engenheiro de DevOps",
+    "Administradora de Sistemas",
+    "Engenheiro de Software Sénior",
     "Tesoureira",
+    "Auditor de Compliance",
+    "Especialista em Cibersegurança",
     "Analista de Risco",
     "Analista Financeiro",
+    "Analista de Contabilidade",
+    "Especialista em Prevenção à Lavagem de Dinheiro",
+    "Analista Regulatório",
+    "Analista de KYC",
+    "Gestor de Conteúdo",
+    "Analista de Marketing Digital",
+    "Analista de Processos",
+    "Gestor de Logística",
+    "Técnica de RH",
+    "Analista de Segurança SOC",
+    "Engenheiro de Software Júnior",
 ];
 
 const sortUsers = (users: typeof initialUsers) => {
     return [...users].sort((a, b) => {
         const roleAIndex = roleHierarchy.indexOf(a.role);
         const roleBIndex = roleHierarchy.indexOf(b.role);
-        if (roleAIndex !== roleBIndex) {
-            return roleAIndex - roleBIndex;
+
+        const effectiveRoleAIndex = roleAIndex === -1 ? Infinity : roleAIndex;
+        const effectiveRoleBIndex = roleBIndex === -1 ? Infinity : roleBIndex;
+
+        if (effectiveRoleAIndex !== effectiveRoleBIndex) {
+            return effectiveRoleAIndex - effectiveRoleBIndex;
         }
         return a.name.localeCompare(b.name);
     });

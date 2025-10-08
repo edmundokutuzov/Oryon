@@ -737,7 +737,7 @@ export const meetings = [
 
 export const departments = [
     { id: 1, name: "Marketing", slug: "marketing", head: 3, memberCount: 12, budget: 450000, projects: 8, description: "Responsável pela imagem da marca, estratégias de comunicação, campanhas publicitárias e marketing digital.", goals: ["Aumentar notoriedade da marca em 25%", "Lançar 3 novas campanhas digitais", "Aumentar leads qualificados em 40%"] },
-    { id: 2, name: "Financeiro", slug: "finance", head: 4, memberCount: 8, budget: 1200000, projects: 5, description: "Gestão financeira, contabilidade, tesouraria, planeamento e relatórios económicos para a tomada de decisão.", goals: ["Reduzir custos operacionais em 15%", "Otimizar fluxo de caixa", "Melhorar precisão das previsões financeiras"] },
+    { id: 2, name: "Financeiro", slug: "finance", head: 4, memberCount: 8, budget: 1200000, projects: 5, description: "Gestão financeira, contabilidade, tesouraria, planeamento e relatórios económicos para a tomada de decisão.", goals: ["Reduzir custos operacionais em 15%", "Otimizar fluxo de caixa", "Melhorar precisão das previsões finance"] },
     { id: 3, name: "Recursos Humanos", slug: "hr", head: 5, memberCount: 6, budget: 300000, projects: 3, description: "Gestão de talentos, desenvolvimento profissional, recrutamento, e promoção do bem-estar dos colaboradores.", goals: ["Reduzir turnover para 8%", "Implementar novo programa de formação contínua", "Melhorar índice de satisfação dos colaboradores"] },
     { id: 4, name: "Tecnologia", slug: "it", head: 1, memberCount: 15, budget: 2000000, projects: 12, description: "Desenvolvimento e manutenção de sistemas, infraestrutura tecnológica, segurança da informação e suporte técnico.", goals: ["Migrar 50% dos sistemas para a cloud", "Implementar nova API de Open Banking", "Reduzir tempo de resposta de incidentes em 30%"] },
     { id: 5, name: "Operações", slug: "operations", head: 1, memberCount: 10, budget: 800000, projects: 6, description: "Otimização de processos operacionais bancários, gestão da qualidade, e eficiência dos serviços.", goals: ["Aumentar eficiência operacional em 20%", "Reduzir tempo de processamento de transações", "Automatizar 5 processos manuais"] },
@@ -965,12 +965,12 @@ export const nationalHolidays = [
     { date: "2024-01-01", name: "Dia de Ano Novo" },
     { date: "2024-02-03", name: "Dia dos Heróis Moçambicanos" },
     { date: "2024-04-07", name: "Dia da Mulher Moçambicana" },
-    { date: "2024-05-01", name: "Dia do Trabalhador" },
+    { date: "2024-05-01", name: "Dia Internacional dos Trabalhadores" },
     { date: "2024-06-25", name: "Dia da Independência Nacional" },
     { date: "2024-09-07", name: "Dia da Vitória" },
     { date: "2024-09-25", name: "Dia das Forças Armadas de Defesa de Moçambique" },
     { date: "2024-10-04", name: "Dia da Paz e Reconciliação" },
-    { date: "2024-12-25", name: "Dia de Natal" },
+    { date: "2024-12-25", name: "Dia da Família" },
 ];
 
 export const calendarEvents = [

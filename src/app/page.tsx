@@ -67,7 +67,7 @@ export default function LoginPage() {
                 type="email"
                 id="email"
                 name="email"
-                className="p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground pl-4"
+                className="pl-4 p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground"
                 placeholder="seu.email@standardbank.com"
                 required
                 defaultValue="maria.silva@standardbank.com"

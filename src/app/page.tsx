@@ -6,9 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import OryonLogo from '@/components/icons/oryon-logo';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState, useEffect, useState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { handleLogin } from '@/app/auth/actions';
-import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 
@@ -23,7 +23,7 @@ function LoginButton() {
 }
 
 export default function LoginPage() {
-  const [state, formAction] = useFormState(handleLogin, null);
+  const [state, formAction] = useActionState(handleLogin, null);
   const { toast } = useToast();
   const [showPassword, setShowPassword] = useState(false);
 

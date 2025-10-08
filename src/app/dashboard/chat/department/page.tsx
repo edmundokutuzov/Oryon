@@ -4,33 +4,70 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger, PopoverAnchor } from "@/components/ui/popover";
-import { getCurrentUser, getDepartment, getDepartmentMembers, messages, users } from "@/lib/data";
+import { getCurrentUser, getDepartment, getDepartmentMembers, messages as initialMessages, users } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Paperclip, Send, Smile, MoreHorizontal, Pin, Reply, Trash2, Forward, UserCheck, Keyboard } from "lucide-react";
 import { useMemo, useState, useEffect, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+
+type Message = (typeof initialMessages.geral)[0];
 
 const currentUser = getCurrentUser();
 const department = getDepartment(currentUser.department.toLowerCase());
 const departmentMembers = getDepartmentMembers(currentUser.department);
 const channel = department?.slug;
-const channelMessages = channel ? messages[channel as keyof typeof messages] || [] : [];
-
 
 export default function DepartmentChatPage() {
+    const { toast } = useToast();
+    const initialChannelMessages = channel ? initialMessages[channel as keyof typeof initialMessages] || [] : [];
+
     const [inputValue, setInputValue] = useState('');
     const [mentionQuery, setMentionQuery] = useState('');
     const [isMentionPopoverOpen, setMentionPopoverOpen] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
+    const [channelMessages, setChannelMessages] = useState<Message[]>(initialChannelMessages);
+    const [pinnedMessages, setPinnedMessages] = useState<Message[]>(initialChannelMessages.slice(0, 2));
 
     const otherMembers = useMemo(() => departmentMembers.filter(m => m.id !== currentUser.id), []);
 
     const handleSendMessage = () => {
         if(inputValue.trim()){
-            console.log("Sending message:", inputValue);
+            const newMessage: Message = {
+                id: channelMessages.length + 100, // temp id
+                userId: currentUser.id,
+                content: inputValue,
+                timestamp: new Date().toISOString(),
+                reactions: []
+            };
+            setChannelMessages(prev => [...prev, newMessage]);
             setInputValue('');
         }
     }
+    
+    const handlePinMessage = (message: Message) => {
+        if (pinnedMessages.find(pm => pm.id === message.id)) {
+            toast({ title: "Mensagem já fixada." });
+            return;
+        }
+        if (pinnedMessages.length >= 3) {
+            toast({ title: "Limite de 3 mensagens fixadas atingido.", description: "Remova uma mensagem fixada para adicionar outra." });
+            return;
+        }
+        setPinnedMessages(prev => [message, ...prev]);
+        toast({ title: "Mensagem fixada!", description: `A mensagem de ${users.find(u => u.id === message.userId)?.name} foi fixada no topo.` });
+    };
+
+    const handleDeleteMessage = (messageId: number) => {
+        setChannelMessages(prev => prev.filter(msg => msg.id !== messageId));
+        setPinnedMessages(prev => prev.filter(msg => msg.id !== messageId));
+        toast({ title: "Mensagem apagada.", variant: "destructive" });
+    };
+    
+    const handleAction = (action: string) => {
+        toast({ title: `Ação: ${action}`, description: "Esta funcionalidade está em desenvolvimento."});
+    };
+
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -60,9 +97,6 @@ export default function DepartmentChatPage() {
             m.name.toLowerCase().includes(mentionQuery.toLowerCase())
         );
     }, [mentionQuery, otherMembers]);
-
-
-    const pinnedMessages = channelMessages.slice(0, 2); // Mocking 2 pinned messages
 
     return (
         <div className="p-6 fade-in h-full flex flex-col">
@@ -132,11 +166,11 @@ export default function DepartmentChatPage() {
                                     </PopoverTrigger>
                                     <PopoverContent className="w-48 p-2">
                                         <div className="space-y-1 text-sm">
-                                            <Button variant="ghost" className="w-full justify-start"><Pin className="mr-2"/> Fixar</Button>
-                                            <Button variant="ghost" className="w-full justify-start"><Reply className="mr-2"/> Responder</Button>
-                                            <Button variant="ghost" className="w-full justify-start"><Forward className="mr-2"/> Reencaminhar</Button>
-                                            <Button variant="ghost" className="w-full justify-start"><UserCheck className="mr-2"/> Ver Detalhes</Button>
-                                            <Button variant="ghost" className="w-full justify-start text-destructive"><Trash2 className="mr-2"/> Apagar</Button>
+                                            <Button variant="ghost" className="w-full justify-start" onClick={() => handlePinMessage(msg)}><Pin className="mr-2"/> Fixar</Button>
+                                            <Button variant="ghost" className="w-full justify-start" onClick={() => handleAction('Responder')}><Reply className="mr-2"/> Responder</Button>
+                                            <Button variant="ghost" className="w-full justify-start" onClick={() => handleAction('Reencaminhar')}><Forward className="mr-2"/> Reencaminhar</Button>
+                                            <Button variant="ghost" className="w-full justify-start" onClick={() => handleAction('Ver Detalhes')}><UserCheck className="mr-2"/> Ver Detalhes</Button>
+                                            <Button variant="ghost" className="w-full justify-start text-destructive" onClick={() => handleDeleteMessage(msg.id)}><Trash2 className="mr-2"/> Apagar</Button>
                                         </div>
                                     </PopoverContent>
                                 </Popover>
@@ -199,3 +233,4 @@ export default function DepartmentChatPage() {
         </div>
     );
 }
+

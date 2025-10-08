@@ -121,7 +121,7 @@ export default function AppSidebar() {
   }
 
   return (
-    <aside className="w-64 h-full flex flex-col flex-shrink-0 gradient-surface rounded-none md:rounded-r-[1.5rem] shadow-2xl transition-all duration-300 fixed md:relative z-40 md:translate-x-0 -translate-x-full">
+    <aside className="w-64 h-full flex flex-col flex-shrink-0 gradient-surface shadow-2xl transition-all duration-300 fixed md:relative z-40 md:translate-x-0 -translate-x-full">
       <div className="p-6 flex flex-col items-start h-24 border-b border-border">
         <div className="flex items-center gap-2">
             <OryonLogo className="!h-8 !w-8" />

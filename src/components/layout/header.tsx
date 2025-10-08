@@ -56,7 +56,7 @@ export default function Header() {
   
   return (
     <>
-      <header className="flex-shrink-0 p-4 gradient-surface z-10 rounded-bl-2xl flex items-center justify-between">
+      <header className="flex-shrink-0 p-4 gradient-surface z-10 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Button variant="ghost" size="icon" className="md:hidden">
             <Menu />

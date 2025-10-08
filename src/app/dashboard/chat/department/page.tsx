@@ -6,12 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger, PopoverAnchor } from "@/components/ui/popover";
 import { getCurrentUser, getDepartment, getDepartmentMembers, messages as initialMessages, users, departments as allDepartments } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { Paperclip, Send, Smile, MoreHorizontal, Pin, Reply, Trash2, Forward, UserCheck, Keyboard, X, Eye, Users, Check, Search } from "lucide-react";
+import { Paperclip, Send, Smile, MoreHorizontal, Pin, Reply, Trash2, Forward, UserCheck, Keyboard, X, Eye, Users, Check, Search, MessageSquare } from "lucide-react";
 import { useMemo, useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import Link from "next/link";
 
 type Message = (typeof initialMessages.geral)[0] & { replyTo?: Message, isDeleted?: boolean };
 type ForwardRecipient = { type: 'user' | 'department'; id: number | string; name: string };
@@ -194,6 +195,13 @@ export default function DepartmentChatPage() {
                                                     <Pin className="mr-2 h-4 w-4"/> {pinnedMessages.find(pm => pm.id === msg.id) ? 'Desfixar' : 'Fixar'}
                                                 </Button>
                                                 <Button variant="ghost" className="w-full justify-start" onClick={() => handleReply(msg)}><Reply className="mr-2 h-4 w-4"/> Responder</Button>
+                                                {!isSelf && user && (
+                                                    <Link href={`/dashboard/chat/direct/${user.id}`} className="w-full">
+                                                        <Button variant="ghost" className="w-full justify-start">
+                                                            <MessageSquare className="mr-2 h-4 w-4"/> Responder no Privado
+                                                        </Button>
+                                                    </Link>
+                                                )}
                                                 <Button variant="ghost" className="w-full justify-start" onClick={() => setForwardingMessage(msg)}><Forward className="mr-2 h-4 w-4"/> Reencaminhar</Button>
                                                 <Button variant="ghost" className="w-full justify-start" onClick={() => setViewingDetails(msg)}><UserCheck className="mr-2 h-4 w-4"/> Ver Detalhes</Button>
                                                 {isSelf && (
@@ -425,3 +433,5 @@ function ForwardMessageDialog({ message, isOpen, onOpenChange }: { message: Mess
         </Dialog>
     )
 }
+
+    

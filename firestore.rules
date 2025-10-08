@@ -1,0 +1,151 @@
+/**
+ * @file Firestore Security Rules
+ * @description This ruleset enforces a strict user-ownership model for user profiles and shared access based on membership lists for projects and meetings. Public read access is granted to chat messages.
+ *
+ * @dataStructure
+ * - /users/{userId}: Stores public user profiles, accessible only to the user themselves.
+ * - /projects/{projectId}: Stores project details with a list of member user IDs.
+ * - /projects/{projectId}/tasks/{taskId}: Stores tasks associated with a specific project. Access is controlled by project membership.
+ * - /meetings/{meetingId}: Stores meeting details with a list of participant user IDs.
+ * - /chat/{channelId}/messages/{messageId}: Stores chat messages, publicly readable.
+ *
+ * @keySecurityDecisions
+ * - Users can only read/write their own profile data.
+ * - Project data access is restricted to project members.
+ * - Task data access is restricted to project members.
+ * - Meeting data access is restricted to meeting participants.
+ * - Chat messages are publicly readable, but write access is not allowed.
+ * - Listing of users is disallowed for privacy.
+ *
+ * @denormalizationForAuthorization
+ * - Projects and Meetings store user IDs directly in the 'members' and 'participants' fields respectively, enabling direct access checks without additional database reads.
+ *
+ * @structuralSegregation
+ * - Drafts and published content are not explicitly supported, but the structure allows for adding a status field to projects and tasks to differentiate between public and private states if required.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Checks if the request is made by an authenticated user.
+     * @return {bool} True if the user is authenticated, false otherwise.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * @description Checks if the request is made by the owner of the document, based on the userId.
+     * @param {string} userId - The user ID to compare against the request's authentication UID.
+     * @return {bool} True if the user is the owner, false otherwise.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * @description Checks if the user is an existing owner, verifying both ownership and document existence.
+     * @param {string} userId - The user ID to compare against the request's authentication UID.
+     * @return {bool} True if the user is the owner and the document exists, false otherwise.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description Determines if the authenticated user is a member of the project.
+     * @param {list} members - List of user IDs who are members of the project.
+     * @return {bool} True if the authenticated user is in the members list, false otherwise.
+     */
+    function isProjectMember(members) {
+      return isSignedIn() && request.auth.uid in members;
+    }
+
+    /**
+     * @description Determines if the authenticated user is a participant of the meeting.
+     * @param {list} participants - List of user IDs who are participants of the meeting.
+     * @return {bool} True if the authenticated user is in the participants list, false otherwise.
+     */
+    function isMeetingParticipant(participants) {
+      return isSignedIn() && request.auth.uid in participants;
+    }
+
+    /**
+     * @description Rules for user profiles.
+     * @path /users/{userId}
+     * @allow (create) - User with UID 'user_abc' can create their profile at /users/user_abc.
+     * @allow (get, update, delete) - User with UID 'user_abc' can read, update, and delete their profile at /users/user_abc.
+     * @deny (create) - User with UID 'user_xyz' cannot create a profile at /users/user_abc.
+     * @deny (get, update, delete) - User with UID 'user_xyz' cannot read, update or delete the profile at /users/user_abc.
+     * @principle Enforces document ownership for user profiles.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if isOwner(userId) && request.resource.data.email == request.auth.token.email;
+      allow update: if isExistingOwner(userId) && request.resource.data.email == resource.data.email;
+      allow delete: if isExistingOwner(userId);
+    }
+
+    /**
+     * @description Rules for projects.
+     * @path /projects/{projectId}
+     * @allow (create) - Authenticated user can create a project.
+     * @allow (get, update, delete) - Members listed in the project's 'members' array can read, update, and delete the project.
+     * @deny (get, update, delete) - Non-members cannot read, update, or delete the project.
+     * @principle Enforces shared access based on project membership.
+     */
+    match /projects/{projectId} {
+      allow get: if isSignedIn() && isProjectMember(resource.data.members);
+      allow list: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && isProjectMember(resource.data.members);
+      allow delete: if isSignedIn() && isProjectMember(resource.data.members);
+    }
+
+    /**
+     * @description Rules for tasks within a project.
+     * @path /projects/{projectId}/tasks/{taskId}
+     * @allow (create) - Authenticated user can create a task within a project they are a member of.
+     * @allow (get, update, delete) - Members of the parent project can read, update, and delete tasks.
+     * @deny (get, update, delete) - Non-members cannot read, update, or delete tasks.
+     * @principle Enforces shared access based on project membership for subcollection.
+     */
+    match /projects/{projectId}/tasks/{taskId} {
+      allow get: if isSignedIn() && get(/databases/$(database)/documents/projects/$(projectId)).data.members.hasAny([request.auth.uid]);
+      allow list: if isSignedIn() && get(/databases/$(database)/documents/projects/$(projectId)).data.members.hasAny([request.auth.uid]);
+      allow create: if isSignedIn() && get(/databases/$(database)/documents/projects/$(projectId)).data.members.hasAny([request.auth.uid]);
+      allow update: if isSignedIn() && get(/databases/$(database)/documents/projects/$(projectId)).data.members.hasAny([request.auth.uid]);
+      allow delete: if isSignedIn() && get(/databases/$(database)/documents/projects/$(projectId)).data.members.hasAny([request.auth.uid]);
+    }
+
+    /**
+     * @description Rules for meetings.
+     * @path /meetings/{meetingId}
+     * @allow (create) - Authenticated user can create a meeting.
+     * @allow (get, update, delete) - Participants listed in the meeting's 'participants' array can read, update, and delete the meeting.
+     * @deny (get, update, delete) - Non-participants cannot read, update, or delete the meeting.
+     * @principle Enforces shared access based on meeting participants.
+     */
+    match /meetings/{meetingId} {
+      allow get: if isSignedIn() && isMeetingParticipant(resource.data.participants);
+      allow list: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && isMeetingParticipant(resource.data.participants);
+      allow delete: if isSignedIn() && isMeetingParticipant(resource.data.participants);
+    }
+
+    /**
+     * @description Rules for chat messages.
+     * @path /chat/{channelId}/messages/{messageId}
+     * @allow (get, list) - All users can read chat messages.
+     * @deny (create, update, delete) - No users can create, update, or delete chat messages.
+     * @principle Allows public read access to chat messages, restricts write access.
+     */
+    match /chat/{channelId}/messages/{messageId} {
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+  }
+}

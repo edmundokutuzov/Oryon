@@ -225,7 +225,7 @@ export default function DashboardPage() {
           </Card>
         </div>
       </div>
-      <aside className="w-80 flex-shrink-0 gradient-surface rounded-l-2xl border-l border-border hidden xl:block">
+      <aside className="w-80 flex-shrink-0 gradient-surface rounded-bl-2xl border-l border-border hidden xl:block">
         <ContextPanel />
       </aside>
     </div>

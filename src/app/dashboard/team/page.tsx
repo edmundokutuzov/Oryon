@@ -27,8 +27,10 @@ const roleHierarchy = [
     "Assistente Executiva",
     "Chefe de Dept.",
     "Chefe de Compliance",
+    "Chefe de Operações",
     "Controller",
     "Gestora de RH",
+    "Gestora de Projetos de Operações",
     "Oficial de Compliance Sénior",
     "Oficial de Compliance",
     "Especialista de Recrutamento",
@@ -52,6 +54,9 @@ const roleHierarchy = [
     "Técnica de RH",
     "Analista de Segurança SOC",
     "Engenheiro de Software Júnior",
+    "Analista de Qualidade",
+    "Especialista em Melhoria Contínua",
+    "Coordenador de Turno",
 ];
 
 const sortUsers = (users: typeof initialUsers) => {
@@ -150,3 +155,6 @@ export default function TeamPage() {
     </div>
   );
 }
+
+
+  

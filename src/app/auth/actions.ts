@@ -38,13 +38,16 @@ export async function handleLogin(
 
     if (userDoc.exists()) {
       const firestoreData = userDoc.data();
-      // Combine Firestore data with a consistent ID structure from mock data if needed
+      const mockUser = users.find(u => u.email === firebaseUser.email);
       appUser = {
-        id: users.find(u => u.email === firebaseUser.email)?.id || 0, // Fallback ID
+        id: mockUser?.id || 0, // Get ID from mock data
         ...firestoreData,
+        name: firestoreData.name,
+        role: firestoreData.role,
+        permissions: firestoreData.permissions,
       };
     } else {
-      // Fallback to mock data if user is not in Firestore (for demo purposes)
+      // Fallback to mock data if user is not in Firestore
       appUser = users.find((u) => u.email === firebaseUser.email);
     }
     

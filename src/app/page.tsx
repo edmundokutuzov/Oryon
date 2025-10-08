@@ -63,12 +63,11 @@ export default function LoginPage() {
               Email Corporativo
             </Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type="email"
                 id="email"
                 name="email"
-                className="pl-10 p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground"
+                className="p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground"
                 placeholder="seu.email@standardbank.com"
                 required
                 defaultValue="maria.silva@standardbank.com"

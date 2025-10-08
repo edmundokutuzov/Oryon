@@ -38,6 +38,7 @@ export async function handleLogin(
 
     if (userDoc.exists()) {
       const firestoreData = userDoc.data();
+      // Find the corresponding mock user to get the ID, as Firestore doesn't have it.
       const mockUser = users.find(u => u.email === firebaseUser.email);
       appUser = {
         id: mockUser?.id || 0, // Get ID from mock data

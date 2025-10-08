@@ -62,8 +62,8 @@ export default function LoginPage() {
             <Label htmlFor="email" className="text-muted-foreground">
               Email Corporativo
             </Label>
-            <div className="relative flex items-center">
-              <Mail className="absolute left-3 h-5 w-5 text-muted-foreground" />
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type="email"
                 id="email"
@@ -78,8 +78,8 @@ export default function LoginPage() {
 
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <div className="relative flex items-center">
-              <Key className="absolute left-3 h-5 w-5 text-muted-foreground" />
+            <div className="relative">
+              <Key className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type={showPassword ? 'text' : 'password'}
                 id="password"
@@ -93,7 +93,7 @@ export default function LoginPage() {
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="absolute right-1 h-8 w-8 text-muted-foreground hover:bg-transparent"
+                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:bg-transparent"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}

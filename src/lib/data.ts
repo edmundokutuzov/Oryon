@@ -959,16 +959,20 @@ export const getCurrentUser = () => {
         const session = document.cookie.split('; ').find(row => row.startsWith('oryon_user_session='));
         if (session) {
             try {
+                // Correctly parse the JSON string from the cookie
                 const userData = JSON.parse(decodeURIComponent(session.split('=')[1]));
-                currentUser = users.find(u => u.id === userData.id);
-                return currentUser!;
+                // Find the user in the mock data array
+                const user = users.find(u => u.id === userData.id);
+                return user; // Return the found user object
             } catch (e) {
+                console.error("Failed to parse user session cookie:", e);
                 // Fallback for server-side or if cookie is invalid
+                return undefined;
             }
         }
     }
     // Fallback for server-side rendering or if no user is logged in
-    return users.find(u => u.id === 3)!; 
+    return users.find(u => u.id === 1)!;
 };
 
 

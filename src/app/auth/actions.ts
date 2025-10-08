@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { users } from '@/lib/data';
 import type { FormState } from '@/lib/types';
-import { sendPasswordResetEmail, getAuth } from 'firebase/auth';
+import { sendPasswordResetEmail } from 'firebase/auth';
 import { initializeFirebase } from '@/firebase';
 
 const { auth } = initializeFirebase();
@@ -29,8 +29,7 @@ export async function handleLogin(
     email: adminUser.email,
     role: adminUser.role,
     permissions: adminUser.permissions,
-    // Use a placeholder UID since we are bypassing Firebase Auth for now
-    uid: 'admin_placeholder_uid', 
+    uid: 'admin_placeholder_uid', // Placeholder UID
   };
 
   // Set the session cookie
@@ -75,4 +74,3 @@ export async function handleForgotPassword(
     };
   }
 }
-

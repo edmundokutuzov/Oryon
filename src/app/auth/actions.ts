@@ -3,97 +3,45 @@
 
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
-import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
-import { initializeFirebase } from '@/firebase';
 import { users } from '@/lib/data';
+import type { FormState } from '@/lib/types';
+import { sendPasswordResetEmail, getAuth } from 'firebase/auth';
+import { initializeFirebase } from '@/firebase';
 
-const { auth, firestore } = initializeFirebase();
-
-type FormState = {
-  error?: string | null;
-  message?: string | null;
-}
+const { auth } = initializeFirebase();
 
 export async function handleLogin(
   prevState: FormState | null,
   formData: FormData
 ): Promise<FormState> {
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
-  const rememberMe = formData.get('remember') === 'on';
+  
+  // Find the admin user (ID 1) from the mock data
+  const adminUser = users.find((u) => u.id === 1);
 
-  if (!email || !password) {
-    return { error: 'Email e password são obrigatórios.' };
+  if (!adminUser) {
+    return { error: 'Utilizador administrador não encontrado nos dados mock.' };
   }
 
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const firebaseUser = userCredential.user;
+  // Create the session object for the admin user
+  const userSession = {
+    id: adminUser.id,
+    name: adminUser.name,
+    email: adminUser.email,
+    role: adminUser.role,
+    permissions: adminUser.permissions,
+    // Use a placeholder UID since we are bypassing Firebase Auth for now
+    uid: 'admin_placeholder_uid', 
+  };
 
-    const userDocRef = doc(firestore, 'users', firebaseUser.uid);
-    const userDoc = await getDoc(userDocRef);
+  // Set the session cookie
+  cookies().set('oryon_user_session', JSON.stringify(userSession), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+    path: '/',
+  });
 
-    let appUser;
-
-    if (userDoc.exists()) {
-      const firestoreData = userDoc.data();
-      // Find the corresponding mock user to get the ID, as Firestore doesn't have it.
-      const mockUser = users.find(u => u.email === firebaseUser.email);
-      appUser = {
-        id: mockUser?.id || 0, // Get ID from mock data
-        ...firestoreData,
-        name: firestoreData.name,
-        role: firestoreData.role,
-        permissions: firestoreData.permissions,
-      };
-    } else {
-      // Fallback to mock data if user is not in Firestore
-      appUser = users.find((u) => u.email === firebaseUser.email);
-    }
-    
-    if (!appUser) {
-      return { error: 'Utilizador não encontrado na base de dados da aplicação.' };
-    }
-    
-    // Placeholder for 2FA logic
-    if (appUser.permissions.includes('2fa')) {
-      console.log(`User ${appUser.name} requires 2FA. Redirecting to 2FA verification page... (feature to be implemented)`);
-      // In a real implementation, you would redirect to a 2FA page here.
-      // For now, we proceed to login.
-    }
-
-
-    const userSession = {
-      id: appUser.id,
-      name: appUser.name,
-      email: firebaseUser.email,
-      role: appUser.role,
-      permissions: appUser.permissions,
-      uid: firebaseUser.uid,
-    };
-
-    cookies().set('oryon_user_session', JSON.stringify(userSession), {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: rememberMe ? 60 * 60 * 24 * 7 : undefined, // 7 days if "remember me" is checked
-      path: '/',
-    });
-    
-  } catch (error: any) {
-    console.error('Firebase Authentication Error:', error.code, error.message);
-    switch (error.code) {
-      case 'auth/user-not-found':
-      case 'auth/wrong-password':
-      case 'auth/invalid-credential':
-        return { error: 'Credenciais inválidas. Por favor, tente novamente.' };
-      case 'auth/too-many-requests':
-        return { error: 'Acesso temporariamente bloqueado devido a muitas tentativas. Tente novamente mais tarde.' };
-      default:
-        return { error: 'Ocorreu um erro inesperado. Por favor, tente novamente.' };
-    }
-  }
-
+  // Redirect to the dashboard
   redirect('/dashboard');
 }
 
@@ -127,3 +75,4 @@ export async function handleForgotPassword(
     };
   }
 }
+

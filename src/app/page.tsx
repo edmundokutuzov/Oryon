@@ -1,6 +1,6 @@
 
 'use client';
-import { Mail, ShieldCheck, LogIn, AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { LogIn, AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -45,7 +45,7 @@ export default function LoginPage() {
           <h1 className="text-4xl font-bold text-foreground mb-1">Oryon</h1>
           <p className="text-muted-foreground">STANDARD BANK - Plataforma Corporativa Segura</p>
           <div className="mt-2 flex items-center justify-center text-xs text-green-400">
-            <ShieldCheck className="mr-1.5 h-3 w-3" />
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shield-check mr-1.5 h-3 w-3"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
             <span>Conexão Segura • Firebase Authentication</span>
           </div>
         </div>
@@ -107,7 +107,7 @@ export default function LoginPage() {
               <Checkbox id="remember" name="remember" className="rounded bg-card border-border text-primary focus:ring-primary" />
               Lembrar-me
             </Label>
-            <Link href="#" className="text-primary/80 hover:text-primary transition-colors">
+            <Link href="/forgot-password" className="text-primary/80 hover:text-primary transition-colors">
               Esqueceu a password?
             </Link>
           </div>
@@ -118,9 +118,9 @@ export default function LoginPage() {
         <div className="mt-8 text-center">
           <p className="text-muted-foreground text-sm">Protegido pelo Sistema de Segurança Oryon</p>
           <div className="flex justify-center space-x-4 mt-2 text-xs text-muted-foreground/60">
-            <span className="flex items-center gap-1"><ShieldCheck className="w-3 h-3" />2FA via Firebase</span>
-            <span className="flex items-center gap-1"><ShieldCheck className="w-3 h-3" />SSL/TLS</span>
-            <span className="flex items-center gap-1"><ShieldCheck className="w-3 h-3" />GDPR</span>
+            <span className="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shield-check w-3 h-3"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>2FA via Firebase</span>
+            <span className="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shield-check w-3 h-3"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>SSL/TLS</span>
+            <span className="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shield-check w-3 h-3"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>GDPR</span>
           </div>
         </div>
       </div>

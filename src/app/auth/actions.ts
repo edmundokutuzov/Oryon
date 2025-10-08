@@ -3,17 +3,21 @@
 
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { initializeFirebase } from '@/firebase';
-import { users } from '@/lib/data'; // Still needed for mock permissions/roles
+import { users } from '@/lib/data';
 
-// Initialize Firebase Admin SDK
 const { auth } = initializeFirebase();
 
+type FormState = {
+  error?: string | null;
+  message?: string | null;
+}
+
 export async function handleLogin(
-  prevState: { error: string | null } | null,
+  prevState: FormState | null,
   formData: FormData
-): Promise<{ error: string | null }> {
+): Promise<FormState> {
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
 
@@ -25,7 +29,6 @@ export async function handleLogin(
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    // Find the corresponding user in our mock data to get roles/permissions
     const appUser = users.find((u) => u.email === user.email);
 
     if (!appUser) {
@@ -68,4 +71,30 @@ export async function handleLogin(
 export async function handleLogout() {
   cookies().delete('oryon_user_session');
   redirect('/');
+}
+
+
+export async function handleForgotPassword(
+  prevState: FormState | null,
+  formData: FormData
+): Promise<FormState> {
+  const email = formData.get('email') as string;
+
+  if (!email) {
+    return { error: 'O campo de email é obrigatório.' };
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    return {
+      message: 'Se existir uma conta associada a este email, um link para redefinir a password foi enviado.',
+    };
+  } catch (error: any) {
+    console.error('Password Reset Error:', error.code, error.message);
+    // Do not reveal if the email exists or not for security reasons.
+    // Return a generic message in both success and most error cases.
+    return {
+      message: 'Se existir uma conta associada a este email, um link para redefinir a password foi enviado.',
+    };
+  }
 }

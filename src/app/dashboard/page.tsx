@@ -148,19 +148,21 @@ const ContextPanel = () => {
             {onlineUsers.map(user => {
               const avatar = PlaceHolderImages.find(p => p.id === `user-avatar-${user.id}`)?.imageUrl;
               return (
-                <div key={user.id} className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50">
-                    <div className="relative">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={avatar} alt={user.name} data-ai-hint="person portrait" />
-                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <span className="absolute bottom-0 right-0 block h-2 w-2 rounded-full bg-green-500 ring-2 ring-background"></span>
-                    </div>
-                    <div>
-                        <p className="text-sm font-medium text-foreground">{user.name}</p>
-                        <p className="text-xs text-muted-foreground">{user.role}</p>
-                    </div>
-                </div>
+                <Link href={`/dashboard/team`} key={user.id}>
+                  <div className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer">
+                      <div className="relative">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={avatar} alt={user.name} data-ai-hint="person portrait" />
+                          <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <span className="absolute bottom-0 right-0 block h-2 w-2 rounded-full bg-green-500 ring-2 ring-background"></span>
+                      </div>
+                      <div>
+                          <p className="text-sm font-medium text-foreground">{user.name}</p>
+                          <p className="text-xs text-muted-foreground">{user.role}</p>
+                      </div>
+                  </div>
+                </Link>
               )
             })}
         </div>

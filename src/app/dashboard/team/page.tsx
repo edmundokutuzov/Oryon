@@ -29,12 +29,12 @@ const roleHierarchy = [
     "Controller",
     "Tesoureira",
     "Gestora de RH",
-    "Gestora de Projetos de Operações",
-    "Oficial de Compliance Sénior",
-    "Engenheiro de Software Sénior",
     "Especialista em Cibersegurança",
     "Engenheiro de DevOps",
     "Administradora de Sistemas",
+    "Gestora de Projetos de Operações",
+    "Oficial de Compliance Sénior",
+    "Engenheiro de Software Sénior",
     "Lead Designer",
     "Especialista de Recrutamento",
     "Assistente Executiva",
@@ -51,10 +51,10 @@ const roleHierarchy = [
     "Gestor de Logística",
     "Técnica de RH",
     "Analista de Segurança SOC",
-    "Engenheiro de Software Júnior",
     "Analista de Qualidade",
     "Especialista em Melhoria Contínua",
     "Coordenador de Turno",
+    "Engenheiro de Software Júnior",
 ];
 
 const sortUsers = (users: typeof initialUsers) => {
@@ -109,7 +109,7 @@ export default function TeamPage() {
                         const statusStyle = statusClasses[user.status];
 
                         return (
-                            <Card key={user.id} className="gradient-surface border-0 rounded-2xl text-center flex flex-col items-center p-6 justify-center">
+                            <Card key={user.id} className="gradient-surface border-0 rounded-2xl text-center flex flex-col items-center p-6">
                                 <CardHeader className="p-0 items-center">
                                     <div className="relative mb-4">
                                         <Avatar className="w-24 h-24 border-4 border-background">
@@ -122,7 +122,7 @@ export default function TeamPage() {
                                     <p className={`text-sm font-medium ${statusStyle.text}`}>{user.role}</p>
                                     <Badge variant="secondary" className="mt-2 bg-primary/10 text-primary/90">{user.department}</Badge>
                                 </CardHeader>
-                                <CardContent className="p-0 mt-4 text-center text-sm text-muted-foreground space-y-2 w-full">
+                                <CardContent className="p-0 mt-4 text-center text-sm text-muted-foreground space-y-2 w-full break-words">
                                     <div className="flex items-center justify-center gap-2">
                                         <Mail className="w-4 h-4 text-muted-foreground/80 shrink-0" />
                                         <span>{user.email}</span>

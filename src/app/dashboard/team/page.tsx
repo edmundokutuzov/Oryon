@@ -32,14 +32,14 @@ const roleHierarchy = [
     "Gestora de RH",
     "Gestora de Projetos de Operações",
     "Oficial de Compliance Sénior",
-    "Oficial de Compliance",
-    "Especialista de Recrutamento",
-    "Lead Designer",
+    "Engenheiro de Software Sénior",
     "Engenheiro de DevOps",
     "Administradora de Sistemas",
-    "Engenheiro de Software Sénior",
-    "Auditor de Compliance",
+    "Lead Designer",
     "Especialista em Cibersegurança",
+    "Especialista de Recrutamento",
+    "Oficial de Compliance",
+    "Auditor de Compliance",
     "Analista de Risco",
     "Analista Financeiro",
     "Analista de Contabilidade",
@@ -161,3 +161,4 @@ export default function TeamPage() {
     
 
     
+

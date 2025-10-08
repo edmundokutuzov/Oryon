@@ -7,6 +7,10 @@ import { firebaseConfig } from './config';
 // Re-export all members from the 'provider' module
 export * from './provider';
 
+let app: FirebaseApp;
+let auth: Auth;
+let firestore: Firestore;
+
 /**
  * Initializes and returns the Firebase app, auth, and firestore instances.
  * This function ensures that Firebase is initialized only once.
@@ -16,10 +20,19 @@ export function initializeFirebase(): {
   auth: Auth;
   firestore: Firestore;
 } {
-  const apps = getApps();
-  const app = apps.length ? getApp() : initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const firestore = getFirestore(app);
+  if (typeof window === 'undefined') {
+    // Server-side initialization
+    const apps = getApps();
+    app = apps.length ? getApp() : initializeApp(firebaseConfig);
+  } else {
+    // Client-side initialization
+    if (!app) {
+      app = initializeApp(firebaseConfig);
+    }
+  }
+  
+  auth = getAuth(app);
+  firestore = getFirestore(app);
 
   return { app, auth, firestore };
 }

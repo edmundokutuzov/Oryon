@@ -70,7 +70,7 @@ export default function LoginPage() {
                 className="pl-4 p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground"
                 placeholder="seu.email@standardbank.com"
                 required
-                defaultValue="maria.silva@standardbank.com"
+                defaultValue="admin@standardbank.com"
               />
             </div>
           </div>
@@ -97,6 +97,7 @@ export default function LoginPage() {
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </Button>
             </div>
+            <p className="text-xs text-muted-foreground pt-1">Dica: Use as credenciais de admin para aceder.</p>
           </div>
 
           <div className="flex items-center justify-between text-sm">

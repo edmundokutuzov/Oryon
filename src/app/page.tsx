@@ -1,17 +1,41 @@
 
 'use client';
-import { Key, Mail, Lock, ShieldCheck, LogIn, AlertCircle } from 'lucide-react';
+import { Key, Mail, ShieldCheck, LogIn, AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import OryonLogo from '@/components/icons/oryon-logo';
-import { handleLogin } from '@/app/actions';
-import { useSearchParams } from 'next/navigation';
+import { useFormState, useFormStatus } from 'react-dom';
+import { handleLogin } from '@/app/auth/actions';
+import { useEffect, useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import Link from 'next/link';
+
+function LoginButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" className="w-full btn-primary-gradient py-3 h-auto text-base font-semibold" disabled={pending}>
+      {pending ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <LogIn className="mr-2 h-5 w-5" />}
+      {pending ? 'A verificar...' : 'Entrar no Oryon'}
+    </Button>
+  );
+}
 
 export default function LoginPage() {
-  const searchParams = useSearchParams();
-  const error = searchParams.get('error');
+  const [state, formAction] = useFormState(handleLogin, null);
+  const { toast } = useToast();
+  const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (state?.error) {
+      toast({
+        variant: 'destructive',
+        title: 'Falha no Login',
+        description: state.error,
+      });
+    }
+  }, [state, toast]);
 
   return (
     <main className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -21,25 +45,25 @@ export default function LoginPage() {
           <h1 className="text-4xl font-bold text-foreground mb-1">Oryon</h1>
           <p className="text-muted-foreground">STANDARD BANK - Plataforma Corporativa Segura</p>
           <div className="mt-2 flex items-center justify-center text-xs text-green-400">
-            <Lock className="mr-1.5 h-3 w-3" />
-            <span>Conexão Segura • Criptografia AES-256</span>
+            <ShieldCheck className="mr-1.5 h-3 w-3" />
+            <span>Conexão Segura • Firebase Authentication</span>
           </div>
         </div>
 
-        {error === 'invalid_credentials' && (
-            <div className="bg-destructive/20 text-destructive-foreground p-3 rounded-lg mb-6 flex items-center gap-3 text-sm">
-                <AlertCircle className="w-5 h-5"/>
-                <span>Email ou password inválidos. Tente novamente.</span>
-            </div>
+        {state?.error && !toast && (
+          <div className="bg-destructive/20 text-destructive-foreground p-3 rounded-lg mb-6 flex items-center gap-3 text-sm">
+            <AlertCircle className="w-5 h-5" />
+            <span>{state.error}</span>
+          </div>
         )}
 
-        <form action={handleLogin} className="space-y-6">
+        <form action={formAction} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="email" className="text-muted-foreground">
               Email Corporativo
             </Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <div className="relative flex items-center">
+              <Mail className="absolute left-3 h-5 w-5 text-muted-foreground" />
               <Input
                 type="email"
                 id="email"
@@ -54,17 +78,26 @@ export default function LoginPage() {
 
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <div className="relative">
-              <Key className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <div className="relative flex items-center">
+              <Key className="absolute left-3 h-5 w-5 text-muted-foreground" />
               <Input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 id="password"
                 name="password"
-                className="pl-10 p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground"
+                className="pl-10 pr-10 p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground"
                 placeholder="••••••••"
                 required
                 defaultValue="Oryon@2024!"
               />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-1 h-8 w-8 text-muted-foreground hover:bg-transparent"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </Button>
             </div>
           </div>
 
@@ -73,23 +106,21 @@ export default function LoginPage() {
               htmlFor="remember"
               className="flex items-center gap-2 font-normal text-muted-foreground cursor-pointer"
             >
-              <Checkbox id="remember" className="rounded bg-card border-border text-primary focus:ring-primary" />
+              <Checkbox id="remember" name="remember" className="rounded bg-card border-border text-primary focus:ring-primary" />
               Lembrar-me
             </Label>
-            <a href="#" className="text-primary/80 hover:text-primary transition-colors">
+            <Link href="#" className="text-primary/80 hover:text-primary transition-colors">
               Esqueceu a password?
-            </a>
+            </Link>
           </div>
 
-          <Button type="submit" className="w-full btn-primary-gradient py-3 h-auto text-base font-semibold">
-            <LogIn className="mr-2 h-5 w-5" /> Entrar no Oryon
-          </Button>
+          <LoginButton />
         </form>
 
         <div className="mt-8 text-center">
           <p className="text-muted-foreground text-sm">Protegido pelo Sistema de Segurança Oryon</p>
           <div className="flex justify-center space-x-4 mt-2 text-xs text-muted-foreground/60">
-            <span className="flex items-center gap-1"><ShieldCheck className="w-3 h-3" />2FA</span>
+            <span className="flex items-center gap-1"><ShieldCheck className="w-3 h-3" />2FA via Firebase</span>
             <span className="flex items-center gap-1"><ShieldCheck className="w-3 h-3" />SSL/TLS</span>
             <span className="flex items-center gap-1"><ShieldCheck className="w-3 h-3" />GDPR</span>
           </div>

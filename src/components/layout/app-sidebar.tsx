@@ -43,6 +43,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { handleLogout } from '@/app/auth/actions';
 
 const statusClasses: { [key: string]: string } = {
   online: 'bg-green-500',
@@ -127,7 +128,7 @@ export default function AppSidebar() {
           <OryonLogo />
           <div>
             <h1 className="text-xl font-extrabold text-foreground leading-none">Oryon</h1>
-            <p className="text-xs text-muted-foreground mt-1">STANDARD BANK</p>
+            <p className="text-xs text-muted-foreground">STANDARD BANK</p>
           </div>
         </div>
       </div>
@@ -190,11 +191,9 @@ export default function AppSidebar() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                  </Link>
+                <DropdownMenuItem onSelect={() => handleLogout()}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

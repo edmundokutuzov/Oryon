@@ -6,13 +6,18 @@ export function middleware(request: NextRequest) {
   const sessionCookie = request.cookies.get('oryon_user_session');
   const { pathname } = request.nextUrl;
 
-  // Se não houver cookie e o utilizador não estiver na página de login, redirecione para o login
-  if (!sessionCookie && pathname !== '/') {
-    return NextResponse.redirect(new URL('/', request.url));
+  const isAuthPage = pathname === '/' || pathname === '/forgot-password';
+  const isDashboardPage = pathname.startsWith('/dashboard');
+
+  // If there's no session cookie and the user is trying to access a protected page
+  if (!sessionCookie && isDashboardPage) {
+    const loginUrl = new URL('/', request.url);
+    loginUrl.searchParams.set('redirectedFrom', pathname);
+    return NextResponse.redirect(loginUrl);
   }
 
-  // Se houver cookie e o utilizador estiver na página de login, redirecione para o dashboard
-  if (sessionCookie && pathname === '/') {
+  // If there is a session cookie and the user is trying to access an authentication page
+  if (sessionCookie && isAuthPage) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 

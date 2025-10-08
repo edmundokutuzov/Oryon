@@ -4,10 +4,11 @@
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 import { initializeFirebase } from '@/firebase';
-import { users } from '@/lib/data';
+import { users } from '@/lib/data'; // Kept for fallback until user creation is implemented
 
-const { auth } = initializeFirebase();
+const { auth, firestore } = initializeFirebase();
 
 type FormState = {
   error?: string | null;
@@ -20,6 +21,7 @@ export async function handleLogin(
 ): Promise<FormState> {
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
+  const rememberMe = formData.get('remember') === 'on';
 
   if (!email || !password) {
     return { error: 'Email e password são obrigatórios.' };
@@ -27,27 +29,51 @@ export async function handleLogin(
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+    const firebaseUser = userCredential.user;
 
-    const appUser = users.find((u) => u.email === user.email);
+    // In a real app, user data should be fetched from Firestore.
+    // We are temporarily falling back to mock data if Firestore doc doesn't exist.
+    const userDocRef = doc(firestore, 'users', firebaseUser.uid);
+    const userDoc = await getDoc(userDocRef);
+    
+    let appUser;
+
+    if (userDoc.exists()) {
+      const firestoreData = userDoc.data();
+      appUser = {
+        id: parseInt(firebaseUser.uid.replace(/\D/g, '').slice(0, 5)), // Create a numeric ID for consistency with mock data
+        ...firestoreData,
+      };
+    } else {
+      // Fallback to mock data if user is not in Firestore (for demo purposes)
+      appUser = users.find((u) => u.email === firebaseUser.email);
+    }
 
     if (!appUser) {
       return { error: 'Utilizador não encontrado na base de dados da aplicação.' };
     }
+    
+    // Placeholder for 2FA logic
+    if (appUser.permissions.includes('2fa')) {
+      console.log(`User ${appUser.name} requires 2FA. Redirecting to 2FA verification page... (feature to be implemented)`);
+      // In a real implementation, you would redirect to a 2FA page here.
+      // For now, we proceed to login.
+    }
+
 
     const userSession = {
       id: appUser.id,
       name: appUser.name,
-      email: user.email,
+      email: firebaseUser.email,
       role: appUser.role,
       permissions: appUser.permissions,
-      uid: user.uid,
+      uid: firebaseUser.uid,
     };
 
     cookies().set('oryon_user_session', JSON.stringify(userSession), {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24 * 7, // 1 week
+      maxAge: rememberMe ? 60 * 60 * 24 * 7 : undefined, // 7 days if "remember me" is checked
       path: '/',
     });
     

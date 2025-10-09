@@ -1,11 +1,8 @@
-
-// This configuration is publicly available and safe to share.
-// It does not contain any sensitive information.
 export const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  "projectId": "studio-9673943838-af2e1",
+  "appId": "1:170941472051:web:4d1fdf624a9817da37f246",
+  "apiKey": "AIzaSyDD7v0gfqK12nBpYaUHwQKxoHe81RItbrE",
+  "authDomain": "studio-9673943838-af2e1.firebaseapp.com",
+  "measurementId": "",
+  "messagingSenderId": "170941472051"
 };

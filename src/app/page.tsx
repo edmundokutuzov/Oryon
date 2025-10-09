@@ -1,41 +1,65 @@
 
 'use client';
-import { LogIn, AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { LogIn, AlertCircle, Eye, EyeOff, Loader2, UserPlus, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import OryonLogo from '@/components/icons/oryon-logo';
-import { useActionState, useEffect, useState } from 'react';
-import { useFormStatus } from 'react-dom';
-import { handleLogin } from '@/app/auth/actions';
+import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
-
-function LoginButton() {
-  const { pending } = useFormStatus();
-  return (
-    <Button type="submit" className="w-full btn-primary-gradient py-3 h-auto text-base font-semibold" disabled={pending}>
-      {pending ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <LogIn className="mr-2 h-5 w-5" />}
-      {pending ? 'A verificar...' : 'Entrar no Oryon'}
-    </Button>
-  );
-}
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useAuth } from '@/firebase';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-  const [state, formAction] = useActionState(handleLogin, null);
   const { toast } = useToast();
+  const auth = useAuth();
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (state?.error) {
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      toast({
+        title: 'Login bem-sucedido!',
+        description: 'Bem-vindo de volta ao Oryon.',
+      });
+      router.push('/dashboard');
+    } catch (err: any) {
+      let errorMessage = 'Ocorreu um erro desconhecido.';
+      switch (err.code) {
+        case 'auth/user-not-found':
+        case 'auth/wrong-password':
+        case 'auth/invalid-credential':
+          errorMessage = 'Credenciais inválidas. Por favor, verifique o seu email e password.';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'O formato do email é inválido.';
+          break;
+        default:
+          errorMessage = 'Falha no login. Por favor, tente novamente.';
+          break;
+      }
+      setError(errorMessage);
       toast({
         variant: 'destructive',
         title: 'Falha no Login',
-        description: state.error,
+        description: errorMessage,
       });
+    } finally {
+      setLoading(false);
     }
-  }, [state, toast]);
+  };
 
   return (
     <main className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950">
@@ -44,20 +68,16 @@ export default function LoginPage() {
           <OryonLogo className="mx-auto mb-4" />
           <h1 className="text-4xl font-bold text-foreground mb-1">Oryon</h1>
           <p className="text-muted-foreground">STANDARD BANK - Plataforma Corporativa Segura</p>
-          <div className="mt-2 flex items-center justify-center text-xs text-green-400">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shield-check mr-1.5 h-3 w-3"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
-            <span>Conexão Segura • Firebase Authentication</span>
-          </div>
         </div>
 
-        {state?.error && !toast && (
+        {error && (
           <div className="bg-destructive/20 text-destructive-foreground p-3 rounded-lg mb-6 flex items-center gap-3 text-sm">
             <AlertCircle className="w-5 h-5" />
-            <span>{state.error}</span>
+            <span>{error}</span>
           </div>
         )}
 
-        <form action={formAction} className="space-y-6">
+        <form onSubmit={handleLogin} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="email" className="text-muted-foreground">
               Email Corporativo
@@ -70,7 +90,9 @@ export default function LoginPage() {
                 className="pl-4 p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground"
                 placeholder="seu.email@standardbank.com"
                 required
-                defaultValue="admin@standardbank.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
               />
             </div>
           </div>
@@ -85,7 +107,9 @@ export default function LoginPage() {
                 className="pl-4 pr-10 p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground"
                 placeholder="••••••••"
                 required
-                defaultValue="Oryon@2024!"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
               />
               <Button
                 type="button"
@@ -97,7 +121,6 @@ export default function LoginPage() {
                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground pt-1">Dica: Use as credenciais de admin para aceder.</p>
           </div>
 
           <div className="flex items-center justify-between text-sm">
@@ -113,16 +136,17 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <LoginButton />
+          <Button type="submit" className="w-full btn-primary-gradient py-3 h-auto text-base font-semibold" disabled={loading}>
+            {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <LogIn className="mr-2 h-5 w-5" />}
+            {loading ? 'A verificar...' : 'Entrar no Oryon'}
+          </Button>
         </form>
 
         <div className="mt-8 text-center">
-          <p className="text-muted-foreground text-sm">Protegido pelo Sistema de Segurança Oryon</p>
-          <div className="flex justify-center space-x-4 mt-2 text-xs text-muted-foreground/60">
-            <span className="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shield-check w-3 h-3"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>2FA via Firebase</span>
-            <span className="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shield-check w-3 h-3"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>SSL/TLS</span>
-            <span className="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shield-check w-3 h-3"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>GDPR</span>
-          </div>
+            <p className="text-sm text-muted-foreground">Não tem uma conta?</p>
+            <Link href="/signup" className="font-semibold text-primary hover:text-primary/80 transition-colors flex items-center justify-center gap-2 mt-1">
+                Registe-se agora <ArrowRight className="w-4 h-4"/>
+            </Link>
         </div>
       </div>
     </main>

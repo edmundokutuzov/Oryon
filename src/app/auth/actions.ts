@@ -3,47 +3,12 @@
 
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
-import { users } from '@/lib/data';
 import type { FormState } from '@/lib/types';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { initializeFirebase } from '@/firebase';
 
-const { auth } = initializeFirebase();
-
-export async function handleLogin(
-  prevState: FormState | null,
-  formData: FormData
-): Promise<FormState> {
-  
-  // Find the admin user (ID 1) from the mock data
-  const adminUser = users.find((u) => u.id === 1);
-
-  if (!adminUser) {
-    return { error: 'Utilizador administrador não encontrado nos dados mock.' };
-  }
-
-  // Create the session object for the admin user
-  const userSession = {
-    id: adminUser.id,
-    name: adminUser.name,
-    email: adminUser.email,
-    role: adminUser.role,
-    permissions: adminUser.permissions,
-    uid: 'admin_placeholder_uid', // Placeholder UID
-  };
-
-  // Set the session cookie with SameSite=None and Secure=true for cross-site/iframe compatibility
-  cookies().set('oryon_user_session', JSON.stringify(userSession), {
-    httpOnly: true,
-    secure: true, // Required for SameSite=None
-    sameSite: 'none', // Allows cookie to be sent in cross-site contexts like iframes
-    maxAge: 60 * 60 * 24 * 7, // 7 days
-    path: '/',
-  });
-
-  // Redirect to the dashboard
-  redirect('/dashboard');
-}
+// NOTE: Cannot initialize Firebase on the server side in this file as it's a client module.
+// Auth logic should be handled on the client. Only server-specific actions like cookie management should be here.
 
 export async function handleLogout() {
   cookies().delete('oryon_user_session');
@@ -55,6 +20,11 @@ export async function handleForgotPassword(
   prevState: FormState | null,
   formData: FormData
 ): Promise<FormState> {
+  // This might also need refactoring if initializeFirebase is client-only.
+  // For now, let's assume it can be initialized on the server for specific actions like this,
+  // but it's better to do this on the client.
+  // To avoid the error, we must not call initializeFirebase() at the top level.
+  const { auth } = initializeFirebase();
   const email = formData.get('email') as string;
 
   if (!email) {

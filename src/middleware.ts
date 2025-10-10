@@ -2,25 +2,11 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+// This middleware is now simplified to no longer handle auth redirects.
+// The client-side AuthGuard component is now the single source of truth
+// for protecting routes and handling redirects, which is a more robust
+// pattern for Firebase Auth with the Next.js App Router.
 export function middleware(request: NextRequest) {
-  const sessionCookie = request.cookies.get('oryon_user_session');
-  const { pathname } = request.nextUrl;
-
-  const isAuthPage = pathname === '/' || pathname === '/forgot-password';
-  const isDashboardPage = pathname.startsWith('/dashboard');
-
-  // If there's no session cookie and the user is trying to access a protected page
-  if (!sessionCookie && isDashboardPage) {
-    const loginUrl = new URL('/', request.url);
-    loginUrl.searchParams.set('redirectedFrom', pathname);
-    return NextResponse.redirect(loginUrl);
-  }
-
-  // If there is a session cookie and the user is trying to access an authentication page
-  if (sessionCookie && isAuthPage) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
-  }
-
   return NextResponse.next();
 }
 

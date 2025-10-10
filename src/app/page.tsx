@@ -11,14 +11,12 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useAuth } from '@/firebase';
-import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const { toast } = useToast();
   const auth = useAuth();
-  const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('admin@standardbank.com');
+  const [password, setPassword] = useState('Oryon@2024!');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -29,27 +27,31 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      // Tenta fazer login primeiro
+      // First, try to sign in
       await signInWithEmailAndPassword(auth, email, password);
       toast({
         title: 'Login bem-sucedido!',
         description: 'Bem-vindo de volta ao Oryon.',
       });
-      router.push('/dashboard');
+      // The AuthGuard will handle the redirection.
     } catch (err: any) {
-      // Se o utilizador não existir, cria a conta e faz login
+      // If the user doesn't exist, create the account (for the admin user)
       if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
-        try {
-          await createUserWithEmailAndPassword(auth, email, password);
-          await signInWithEmailAndPassword(auth, email, password); // Faz login após criar
-          toast({
-            title: 'Conta de administrador criada!',
-            description: 'A conta de administrador foi criada com sucesso e a sessão iniciada.',
-          });
-          router.push('/dashboard');
-        } catch (signupErr: any) {
-          setError('Falha ao criar e autenticar a conta de administrador.');
-        }
+         if (email === 'admin@standardbank.com') {
+            try {
+                await createUserWithEmailAndPassword(auth, email, password);
+                await signInWithEmailAndPassword(auth, email, password); // Sign in after creation
+                toast({
+                    title: 'Conta de administrador criada!',
+                    description: 'A conta de administrador foi criada com sucesso e a sessão iniciada.',
+                });
+                 // The AuthGuard will handle the redirection.
+            } catch (signupErr: any) {
+                setError('Falha ao criar e autenticar a conta de administrador.');
+            }
+         } else {
+             setError('Credenciais inválidas. Verifique o seu email e password.');
+         }
       } else {
         let errorMessage = 'Ocorreu um erro desconhecido.';
         switch (err.code) {
@@ -64,11 +66,6 @@ export default function LoginPage() {
             break;
         }
         setError(errorMessage);
-        toast({
-          variant: 'destructive',
-          title: 'Falha no Login',
-          description: errorMessage,
-        });
       }
     } finally {
       setLoading(false);

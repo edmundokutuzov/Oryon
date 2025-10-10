@@ -6,10 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import OryonLogo from '@/components/icons/oryon-logo';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useAuth } from '@/firebase';
 import { useRouter } from 'next/navigation';
 
@@ -29,6 +29,7 @@ export default function LoginPage() {
     setError(null);
 
     try {
+      // Tenta fazer login primeiro
       await signInWithEmailAndPassword(auth, email, password);
       toast({
         title: 'Login bem-sucedido!',
@@ -36,26 +37,39 @@ export default function LoginPage() {
       });
       router.push('/dashboard');
     } catch (err: any) {
-      let errorMessage = 'Ocorreu um erro desconhecido.';
-      switch (err.code) {
-        case 'auth/user-not-found':
-        case 'auth/wrong-password':
-        case 'auth/invalid-credential':
-          errorMessage = 'Credenciais inválidas. Por favor, verifique o seu email e password.';
-          break;
-        case 'auth/invalid-email':
-          errorMessage = 'O formato do email é inválido.';
-          break;
-        default:
-          errorMessage = 'Falha no login. Por favor, tente novamente.';
-          break;
+      // Se o utilizador não existir, cria a conta e faz login
+      if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
+        try {
+          await createUserWithEmailAndPassword(auth, email, password);
+          await signInWithEmailAndPassword(auth, email, password); // Faz login após criar
+          toast({
+            title: 'Conta de administrador criada!',
+            description: 'A conta de administrador foi criada com sucesso e a sessão iniciada.',
+          });
+          router.push('/dashboard');
+        } catch (signupErr: any) {
+          setError('Falha ao criar e autenticar a conta de administrador.');
+        }
+      } else {
+        let errorMessage = 'Ocorreu um erro desconhecido.';
+        switch (err.code) {
+          case 'auth/wrong-password':
+            errorMessage = 'Password incorreta. Por favor, verifique a sua password.';
+            break;
+          case 'auth/invalid-email':
+            errorMessage = 'O formato do email é inválido.';
+            break;
+          default:
+            errorMessage = 'Falha no login. Por favor, tente novamente.';
+            break;
+        }
+        setError(errorMessage);
+        toast({
+          variant: 'destructive',
+          title: 'Falha no Login',
+          description: errorMessage,
+        });
       }
-      setError(errorMessage);
-      toast({
-        variant: 'destructive',
-        title: 'Falha no Login',
-        description: errorMessage,
-      });
     } finally {
       setLoading(false);
     }

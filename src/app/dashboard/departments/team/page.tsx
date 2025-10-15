@@ -4,30 +4,28 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getDepartment, getDepartmentMembers, users } from "@/lib/data";
+import { getDepartment, getDepartmentMembers } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Mail, MapPin, Phone, MessageSquare, Video } from "lucide-react";
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import Link from 'next/link';
 
-const statusClasses: { [key: string]: { bg: string, text: string, ring: string } } = {
-  online: { bg: 'bg-green-500', text: 'text-green-400', ring: 'ring-green-500/50' },
-  away: { bg: 'bg-yellow-500', text: 'text-yellow-400', ring: 'ring-yellow-500/50' },
-  busy: { bg: 'bg-red-500', text: 'text-red-400', ring: 'ring-red-500/50' },
-  dnd: { bg: 'bg-purple-500', text: 'text-purple-400', ring: 'ring-purple-500/50' },
-  offline: { bg: 'bg-slate-500', text: 'text-slate-400', ring: 'ring-slate-500/50' },
+const statusClasses: { [key: string]: { bg: string, text: string } } = {
+  online: { bg: 'bg-green-500', text: 'text-green-400' },
+  away: { bg: 'bg-yellow-500', text: 'text-yellow-400' },
+  busy: { bg: 'bg-red-500', text: 'text-red-400' },
+  dnd: { bg: 'bg-purple-500', text: 'text-purple-400' },
+  offline: { bg: 'bg-slate-500', text: 'text-slate-400' },
 };
 
 export default function DepartmentTeamPage() {
     const params = useParams();
     const departmentSlug = params.department as string;
     const department = getDepartment(departmentSlug);
-    const departmentMembers = getDepartmentMembers(department?.name || "");
-
-    const [teamMembers] = useState([...departmentMembers].sort((a, b) => {
+    const teamMembers = getDepartmentMembers(department?.name || "").sort((a, b) => {
         const statusOrder = { online: 1, away: 2, busy: 3, dnd: 4, offline: 5 };
         return statusOrder[a.status] - statusOrder[b.status];
-    }));
+    });
 
   if (!department) {
     return (
@@ -49,7 +47,7 @@ export default function DepartmentTeamPage() {
                 const statusStyle = statusClasses[user.status];
 
                 return (
-                    <Card key={user.id} className="gradient-surface border-0 rounded-2xl text-center flex flex-col items-center p-6">
+                    <Card key={user.id} className="gradient-surface border-0 rounded-2xl text-center flex flex-col items-center p-6 transition-all hover:shadow-primary/20 hover:shadow-2xl hover:-translate-y-1">
                         <CardHeader className="p-0 items-center">
                             <div className="relative mb-4">
                                 <Avatar className="w-24 h-24 border-4 border-background">
@@ -65,7 +63,7 @@ export default function DepartmentTeamPage() {
                         <CardContent className="p-0 mt-4 text-left text-sm text-muted-foreground space-y-2 w-full">
                             <div className="flex items-start gap-3">
                                 <Mail className="w-4 h-4 text-muted-foreground/80 shrink-0 mt-1" />
-                                <span>{user.email}</span>
+                                <span className="truncate">{user.email}</span>
                             </div>
                             <div className="flex items-start gap-3">
                                 <Phone className="w-4 h-4 text-muted-foreground/80 shrink-0 mt-1" />
@@ -77,12 +75,16 @@ export default function DepartmentTeamPage() {
                             </div>
                         </CardContent>
                         <div className="mt-6 flex space-x-3">
-                            <Button variant="outline" size="icon" className="bg-card/50 border-border hover:bg-card rounded-full h-11 w-11">
-                                <MessageSquare />
-                            </Button>
-                             <Button variant="outline" size="icon" className="bg-card/50 border-border hover:bg-card rounded-full h-11 w-11">
-                                <Video />
-                            </Button>
+                            <Link href={`/dashboard/chat/direct/${user.id}`}>
+                                <Button variant="outline" size="icon" className="bg-card/50 border-border hover:bg-card rounded-full h-11 w-11">
+                                    <MessageSquare />
+                                </Button>
+                            </Link>
+                             <Link href={`/dashboard/call/${user.id}?type=video`}>
+                                <Button variant="outline" size="icon" className="bg-card/50 border-border hover:bg-card rounded-full h-11 w-11">
+                                    <Video />
+                                </Button>
+                            </Link>
                         </div>
                     </Card>
                 )

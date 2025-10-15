@@ -4,61 +4,37 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { users, departments } from "@/lib/data";
+import { users } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Mail, MapPin, Phone, MessageSquare, Video } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import Link from 'next/link';
 
-const statusClasses: { [key: string]: { bg: string, text: string, ring: string } } = {
-  online: { bg: 'bg-green-500', text: 'text-green-400', ring: 'ring-green-500/50' },
-  away: { bg: 'bg-yellow-500', text: 'text-yellow-400', ring: 'ring-yellow-500/50' },
-  busy: { bg: 'bg-red-500', text: 'text-red-400', ring: 'ring-red-500/50' },
-  dnd: { bg: 'bg-purple-500', text: 'text-purple-400', ring: 'ring-purple-500/50' },
-  offline: { bg: 'bg-slate-500', text: 'text-slate-400', ring: 'ring-slate-500/50' },
+const statusClasses: { [key: string]: { bg: string, text: string } } = {
+  online: { bg: 'bg-green-500', text: 'text-green-400' },
+  away: { bg: 'bg-yellow-500', text: 'text-yellow-400' },
+  busy: { bg: 'bg-red-500', text: 'text-red-400' },
+  dnd: { bg: 'bg-purple-500', text: 'text-purple-400' },
+  offline: { bg: 'bg-slate-500', text: 'text-slate-400' },
 };
 
 const roleHierarchy = [
-    "Diretor de Operações (COO)",
-    "Diretora Financeira (CFO)",
-    "Conselheiro Geral",
-    "Chefe de Estratégia",
-    "Administrador",
-    "Chefe de Compliance",
-    "Chefe de Operações",
-    "Chefe de Dept.",
-    "Controller",
-    "Tesoureira",
-    "Gestora de RH",
-    "Especialista em Cibersegurança",
-    "Engenheiro de DevOps",
-    "Administradora de Sistemas",
-    "Gestora de Projetos de Operações",
-    "Oficial de Compliance Sénior",
-    "Engenheiro de Software Sénior",
-    "Lead Designer",
-    "Especialista de Recrutamento",
-    "Assistente Executiva",
-    "Auditor de Compliance",
-    "Analista de Risco",
-    "Analista Financeiro",
-    "Analista de Contabilidade",
-    "Especialista em Prevenção à Lavagem de Dinheiro",
-    "Analista Regulatório",
-    "Analista de KYC",
-    "Gestor de Conteúdo",
-    "Analista de Marketing Digital",
-    "Analista de Processos",
-    "Gestor de Logística",
-    "Técnica de RH",
-    "Analista de Segurança SOC",
-    "Analista de Qualidade",
-    "Especialista em Melhoria Contínua",
-    "Coordenador de Turno",
+    "Diretor de Operações (COO)", "Diretora Financeira (CFO)", "Conselheiro Geral", "Chefe de Estratégia",
+    "Administrador", "Chefe de Compliance", "Chefe de Operações", "Chefe de Dept.",
+    "Controller", "Tesoureira", "Gestora de RH", "Especialista em Cibersegurança",
+    "Engenheiro de DevOps", "Administradora de Sistemas", "Gestora de Projetos de Operações",
+    "Oficial de Compliance Sénior", "Engenheiro de Software Sénior", "Lead Designer",
+    "Especialista de Recrutamento", "Assistente Executiva", "Auditor de Compliance",
+    "Analista de Risco", "Analista Financeiro", "Analista de Contabilidade",
+    "Especialista em Prevenção à Lavagem de Dinheiro", "Analista Regulatório", "Analista de KYC",
+    "Gestor de Conteúdo", "Analista de Marketing Digital", "Analista de Processos",
+    "Gestor de Logística", "Técnica de RH", "Analista de Segurança SOC",
+    "Analista de Qualidade", "Especialista em Melhoria Contínua", "Coordenador de Turno",
     "Engenheiro de Software Júnior",
 ];
 
-const sortUsers = (users: typeof initialUsers) => {
-    return [...users].sort((a, b) => {
+const sortUsers = (usersToSort: typeof users) => {
+    return [...usersToSort].sort((a, b) => {
         const roleAIndex = roleHierarchy.indexOf(a.role);
         const roleBIndex = roleHierarchy.indexOf(b.role);
 
@@ -72,24 +48,20 @@ const sortUsers = (users: typeof initialUsers) => {
     });
 };
 
-const initialUsers = users;
-
 export default function TeamPage() {
     const teamByDept = useMemo(() => {
-        const grouped: { [key: string]: typeof initialUsers } = {};
-        initialUsers.forEach(user => {
+        const grouped: { [key: string]: typeof users } = {};
+        users.forEach(user => {
             if (!grouped[user.department]) {
                 grouped[user.department] = [];
             }
             grouped[user.department].push(user);
         });
         
-        // Sort users within each department
         for (const dept in grouped) {
             grouped[dept] = sortUsers(grouped[dept]);
         }
 
-        // Sort departments to have Administration first, then alphabetically
         return Object.entries(grouped).sort(([deptA], [deptB]) => {
             if (deptA === 'Administração') return -1;
             if (deptB === 'Administração') return 1;
@@ -99,7 +71,7 @@ export default function TeamPage() {
 
   return (
     <div className="p-6 fade-in">
-        <h1 className="text-3xl font-bold text-foreground mb-8">Equipa</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-8">A Nossa Equipa</h1>
         {teamByDept.map(([department, members]) => (
             <div key={department} className="mb-12">
                 <h2 className="text-2xl font-semibold text-foreground mb-6 border-b-2 border-primary/20 pb-2">{department}</h2>
@@ -109,7 +81,7 @@ export default function TeamPage() {
                         const statusStyle = statusClasses[user.status];
 
                         return (
-                            <Card key={user.id} className="gradient-surface border-0 rounded-2xl text-center flex flex-col items-center p-6">
+                            <Card key={user.id} className="gradient-surface border-0 rounded-2xl text-center flex flex-col items-center p-6 transition-all hover:shadow-primary/20 hover:shadow-2xl hover:-translate-y-1">
                                 <CardHeader className="p-0 items-center">
                                     <div className="relative mb-4">
                                         <Avatar className="w-24 h-24 border-4 border-background">
@@ -120,29 +92,24 @@ export default function TeamPage() {
                                     </div>
                                     <CardTitle className="text-lg font-bold text-foreground">{user.name}</CardTitle>
                                     <p className={`text-sm font-medium ${statusStyle.text}`}>{user.role}</p>
-                                    <Badge variant="secondary" className="mt-2 bg-primary/10 text-primary/90">{user.department}</Badge>
                                 </CardHeader>
                                 <CardContent className="p-0 mt-4 text-center text-sm text-muted-foreground space-y-2 w-full break-words">
                                     <div className="flex items-center justify-center gap-2">
                                         <Mail className="w-4 h-4 text-muted-foreground/80 shrink-0" />
                                         <span>{user.email}</span>
                                     </div>
-                                    <div className="flex items-center justify-center gap-2">
-                                        <Phone className="w-4 h-4 text-muted-foreground/80 shrink-0" />
-                                        <span>{user.phone}</span>
-                                    </div>
-                                    <div className="flex items-center justify-center gap-2">
-                                        <MapPin className="w-4 h-4 text-muted-foreground/80 shrink-0" />
-                                        <span>{user.location}</span>
-                                    </div>
                                 </CardContent>
                                 <div className="mt-6 flex space-x-3">
-                                    <Button variant="outline" size="icon" className="bg-card/50 border-border hover:bg-card rounded-full h-11 w-11">
-                                        <MessageSquare />
-                                    </Button>
-                                    <Button variant="outline" size="icon" className="bg-card/50 border-border hover:bg-card rounded-full h-11 w-11">
-                                        <Video />
-                                    </Button>
+                                    <Link href={`/dashboard/chat/direct/${user.id}`}>
+                                        <Button variant="outline" size="icon" className="bg-card/50 border-border hover:bg-card rounded-full h-11 w-11">
+                                            <MessageSquare />
+                                        </Button>
+                                    </Link>
+                                     <Link href={`/dashboard/call/${user.id}?type=video`}>
+                                        <Button variant="outline" size="icon" className="bg-card/50 border-border hover:bg-card rounded-full h-11 w-11">
+                                            <Video />
+                                        </Button>
+                                    </Link>
                                 </div>
                             </Card>
                         )

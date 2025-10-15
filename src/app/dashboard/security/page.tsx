@@ -54,7 +54,7 @@ export default function SecurityPage() {
                         </CardHeader>
                         <CardContent>
                             <div className="flex items-center justify-between p-4 bg-card/50 rounded-lg">
-                                <Label htmlFor="2fa-switch" className="flex flex-col gap-1">
+                                <Label htmlFor="2fa-switch" className="flex flex-col gap-1 cursor-pointer">
                                     <span>Ativar Autenticação de Dois Fatores</span>
                                     <span className="text-xs text-muted-foreground">Será solicitado um código via app autenticador.</span>
                                 </Label>
@@ -81,7 +81,7 @@ export default function SecurityPage() {
                                     <div className="text-right">
                                         {session.isCurrent ? 
                                             <span className="text-xs font-semibold text-green-400">Sessão Atual</span> :
-                                            <Button variant="ghost" size="sm" className="h-auto p-1" onClick={() => handleLogoutSession(session.id)}><LogOut className="w-4 h-4 text-red-400"/></Button>
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-red-400/80 hover:text-red-400" onClick={() => handleLogoutSession(session.id)}><LogOut className="w-4 h-4"/></Button>
                                         }
                                         <p className="text-xs text-muted-foreground">{session.lastActive}</p>
                                     </div>
@@ -150,5 +150,3 @@ export default function SecurityPage() {
         </div>
     );
 }
-
-    

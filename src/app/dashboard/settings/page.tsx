@@ -235,7 +235,18 @@ export default function SettingsPage() {
                                     </Button>
                                 </div>
                             </div>
-                            <div className="space-y-2">
+                            <Button className="w-full btn-primary-gradient" onClick={() => handleSaveChanges(t.appearanceTitle)}>{t.saveChanges}</Button>
+                        </CardContent>
+                    </Card>
+
+                    {/* Accessibility Settings Card */}
+                    <Card className="gradient-surface border-0 rounded-2xl">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2"><Accessibility className="text-primary"/>{t.accessibilityTitle}</CardTitle>
+                            <CardDescription>{t.accessibilityDescription}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                             <div className="space-y-2">
                                 <Label htmlFor="font-size">{t.fontSize}</Label>
                                 <Select defaultValue="medium">
                                     <SelectTrigger id="font-size" className="bg-card border-border">
@@ -248,33 +259,22 @@ export default function SettingsPage() {
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <Button className="w-full btn-primary-gradient" onClick={() => handleSaveChanges(t.appearanceTitle)}>{t.saveChanges}</Button>
-                        </CardContent>
-                    </Card>
-
-                    {/* Accessibility Settings Card */}
-                    <Card className="gradient-surface border-0 rounded-2xl">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2"><Accessibility className="text-primary"/>{t.accessibilityTitle}</CardTitle>
-                            <CardDescription>{t.accessibilityDescription}</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
                             <div className="flex items-center justify-between p-3 bg-card/50 rounded-lg">
-                                <Label htmlFor="high-contrast" className="flex flex-col gap-1">
+                                <Label htmlFor="high-contrast" className="flex flex-col gap-1 cursor-pointer">
                                     <span>{t.highContrast}</span>
                                     <span className="text-xs text-muted-foreground">{t.highContrastDesc}</span>
                                 </Label>
                                 <Switch id="high-contrast" />
                             </div>
                              <div className="flex items-center justify-between p-3 bg-card/50 rounded-lg">
-                                <Label htmlFor="voice-over" className="flex flex-col gap-1">
+                                <Label htmlFor="voice-over" className="flex flex-col gap-1 cursor-pointer">
                                     <span>{t.voiceOver}</span>
                                     <span className="text-xs text-muted-foreground">{t.voiceOverDesc}</span>
                                 </Label>
                                 <Switch id="voice-over" />
                             </div>
                             <div className="flex items-center justify-between p-3 bg-card/50 rounded-lg">
-                                <Label htmlFor="reduced-motion" className="flex flex-col gap-1">
+                                <Label htmlFor="reduced-motion" className="flex flex-col gap-1 cursor-pointer">
                                     <span>{t.reducedMotion}</span>
                                     <span className="text-xs text-muted-foreground">{t.reducedMotionDesc}</span>
                                 </Label>

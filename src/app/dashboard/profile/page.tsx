@@ -36,7 +36,7 @@ export default function ProfilePage() {
                     <CardHeader className="flex flex-row items-center gap-6">
                          <div className="relative">
                             <Avatar className="h-24 w-24 border-4 border-primary">
-                                <AvatarImage src={avatar} alt={currentUser.name} />
+                                <AvatarImage src={avatar} alt={currentUser.name} data-ai-hint="person portrait" />
                                 <AvatarFallback>{currentUser.name.charAt(0)}</AvatarFallback>
                             </Avatar>
                             <Button size="icon" className="absolute bottom-0 right-0 h-8 w-8 rounded-full btn-primary-gradient">

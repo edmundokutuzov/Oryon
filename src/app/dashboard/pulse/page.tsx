@@ -84,6 +84,8 @@ const KudosCard = ({ item }: { item: any }) => {
 const FeedItemCard = ({ item }: { item: any }) => {
   const author = users.find(u => u.id === item.author_user_id);
   const authorAvatar = author ? PlaceHolderImages.find(p => p.id === `user-avatar-${author.id}`)?.imageUrl : '';
+  const feedImage = item.content.media_urls?.[0] ? PlaceHolderImages.find(p => p.id === 'pulse-feed-image-1') : null;
+
 
   if (item.item_type === 'system_event') {
       return <SystemEventCard item={item} />;
@@ -112,15 +114,15 @@ const FeedItemCard = ({ item }: { item: any }) => {
       </CardHeader>
       <CardContent className="p-6 pt-0">
         <p className="text-foreground/90 whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: item.content.text.replace(/#(\w+)/g, '<span class="text-primary font-semibold">#$1</span>').replace(/@(\w+\s\w+)/g, '<span class="text-cyan-400 font-semibold">@$1</span>') }}></p>
-        {item.content.media_urls?.[0] && (
+        {feedImage && (
             <div className="mt-4 rounded-lg overflow-hidden border border-border">
                 <Image 
-                  src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2020" 
-                  alt="Feed content" 
+                  src={feedImage.imageUrl}
+                  alt={feedImage.description}
                   width={800} 
                   height={400} 
                   className="w-full object-cover"
-                  data-ai-hint="technology gradient"
+                  data-ai-hint={feedImage.imageHint}
                 />
             </div>
         )}

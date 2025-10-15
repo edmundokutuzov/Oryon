@@ -16,7 +16,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 
 const toneStyles = {
@@ -62,19 +62,21 @@ export default function DocumentEditorPage() {
         });
     }
     
-    const handleSaveToDevice = () => {
+    const handleSaveToDevice = async () => {
         if (editorRef.current) {
             const content = editorRef.current.innerText;
-            const blob = new Blob([content], { type: 'text/plain' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = "documento-oryon.txt";
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'documento-oryon.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
             toast({
                 title: "Download Iniciado",
-                description: "O seu documento está a ser salvo no seu dispositivo.",
+                description: "O seu documento está a ser salvo como .txt.",
             });
         }
     }

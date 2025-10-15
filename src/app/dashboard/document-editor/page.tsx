@@ -3,12 +3,15 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-    Bold, Italic, Underline, List, ListOrdered, Heading1, Heading2, Heading3, TextQuote, Code, Link, Image, Pilcrow, AlignLeft, AlignCenter, AlignRight, AlignJustify, Undo, Redo, Paintbrush, Highlighter, CaseSensitive, Strikethrough, Subscript, Superscript, Wand2, Sparkles, Save
+    Bold, Italic, Underline, List, ListOrdered, Heading1, Heading2, Heading3, TextQuote, Code, Link, Image, Pilcrow, AlignLeft, AlignCenter, AlignRight, AlignJustify, Undo, Redo, Paintbrush, Highlighter, CaseSensitive, Strikethrough, Subscript, Superscript, Wand2, Sparkles, Save, Loader2
 } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
+import { summarizeText } from "@/ai/flows/summarize-text";
+import { translateText } from "@/ai/flows/translate-text";
+import { correctGrammar } from "@/ai/flows/correct-grammar";
+
 
 const toneStyles = {
     'Neutro': 'text-muted-foreground',
@@ -18,10 +21,14 @@ const toneStyles = {
     'Amigável': 'text-yellow-400',
 }
 
+type AiAction = 'summarize' | 'translate' | 'correct' | null;
+
 export default function DocumentEditorPage() {
     const { toast } = useToast();
     const [textContent, setTextContent] = useState('');
     const [documentTone, setDocumentTone] = useState<keyof typeof toneStyles>('Neutro');
+    const [loadingAiAction, setLoadingAiAction] = useState<AiAction>(null);
+    const editorRef = useRef<HTMLDivElement>(null);
 
     const handleCommand = (command: string, value?: string) => {
         document.execCommand(command, false, value);
@@ -50,11 +57,57 @@ export default function DocumentEditorPage() {
     }
 
     const updateTextContent = () => {
-        const editor = document.getElementById('editable-doc');
-        if (editor) {
-            setTextContent(editor.innerText);
+        if (editorRef.current) {
+            setTextContent(editorRef.current.innerText);
         }
     }
+
+    const getSelectedText = () => {
+        const selection = window.getSelection();
+        return selection ? selection.toString() : '';
+    }
+
+    const handleAiAction = async (action: AiAction) => {
+        setLoadingAiAction(action);
+        const selectedText = getSelectedText();
+        const targetText = selectedText.trim() || textContent;
+
+        if (!targetText.trim()) {
+            toast({
+                title: "Nenhum texto para processar",
+                description: "Por favor, escreva ou selecione algum texto no editor.",
+                variant: 'destructive'
+            });
+            setLoadingAiAction(null);
+            return;
+        }
+
+        try {
+            let result;
+            if (action === 'summarize') {
+                result = await summarizeText({ text: targetText });
+                if (editorRef.current) editorRef.current.innerHTML = result.summary;
+            } else if (action === 'translate') {
+                result = await translateText({ text: targetText });
+                 if (editorRef.current) editorRef.current.innerHTML = result.translation;
+            } else if (action === 'correct') {
+                result = await correctGrammar({ text: targetText });
+                 if (editorRef.current) editorRef.current.innerHTML = result.correctedText;
+            }
+            updateTextContent(); // Update state after changing editor content
+            toast({ title: "Ação da IA concluída com sucesso!"});
+        } catch (error) {
+            console.error(`Error during AI action (${action}):`, error);
+            toast({
+                title: `Erro ao executar a ação de IA`,
+                description: "Não foi possível contactar o serviço de IA. Tente novamente.",
+                variant: 'destructive'
+            });
+        } finally {
+            setLoadingAiAction(null);
+        }
+    }
+
 
     useEffect(() => {
         const text = textContent.toLowerCase();
@@ -89,9 +142,18 @@ export default function DocumentEditorPage() {
                         <CardContent className="p-4">
                             <h3 className="font-semibold text-lg flex items-center gap-2 mb-3"><Wand2 className="text-yellow-300"/>Nexus Assist</h3>
                             <p className="text-sm text-muted-foreground mb-4">Selecione texto no editor e use os comandos, ou escreva /nexus no documento.</p>
-                            <Button variant="outline" className="w-full justify-start bg-card/50">Resumir Texto</Button>
-                             <Button variant="outline" className="w-full justify-start bg-card/50 mt-2">Traduzir para Inglês</Button>
-                             <Button variant="outline" className="w-full justify-start bg-card/50 mt-2">Corrigir Gramática</Button>
+                             <Button variant="outline" className="w-full justify-start bg-card/50 mt-2" onClick={() => handleAiAction('summarize')} disabled={loadingAiAction === 'summarize'}>
+                                {loadingAiAction === 'summarize' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
+                                Resumir Texto
+                            </Button>
+                             <Button variant="outline" className="w-full justify-start bg-card/50 mt-2" onClick={() => handleAiAction('translate')} disabled={loadingAiAction === 'translate'}>
+                                {loadingAiAction === 'translate' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
+                                Traduzir para Inglês
+                             </Button>
+                             <Button variant="outline" className="w-full justify-start bg-card/50 mt-2" onClick={() => handleAiAction('correct')} disabled={loadingAiAction === 'correct'}>
+                                {loadingAiAction === 'correct' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
+                                Corrigir Gramática
+                            </Button>
                         </CardContent>
                     </Card>
                      <Card className="gradient-surface border-0 rounded-2xl">
@@ -133,6 +195,7 @@ export default function DocumentEditorPage() {
                         </div>
                         <div 
                             id="editable-doc" 
+                            ref={editorRef}
                             contentEditable="true" 
                             className="p-8 text-foreground/90 bg-transparent flex-grow focus:outline-none prose prose-invert prose-lg max-w-full custom-scrollbar overflow-y-auto"
                             suppressContentEditableWarning={true}

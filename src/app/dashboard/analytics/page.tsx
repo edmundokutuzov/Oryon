@@ -1,22 +1,24 @@
-
 'use client';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { analyticsData } from '@/lib/data';
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, PieChart, Pie, Cell } from 'recharts';
+import dynamic from 'next/dynamic';
+import { Skeleton } from '@/components/ui/skeleton';
 
-const projectProgressColors = {
-    'Campanha Q4': '#8884d8',
-    'Identidade Visual': '#82ca9d',
-    'Relatório Trimestral': '#ffc658',
-    'Otimização SEO': '#ff8042',
-};
+const ProjectProgressChart = dynamic(
+  () => import('./_components/project-progress-chart'),
+  { 
+    ssr: false,
+    loading: () => <Skeleton className="h-80 w-full" />
+  }
+);
 
-const projectData = analyticsData.projectProgress.labels.map((label, i) => ({
-    name: label,
-    value: analyticsData.projectProgress.data[i],
-    fill: projectProgressColors[label as keyof typeof projectProgressColors] || '#8884d8'
-}));
-
+const UserActivityChart = dynamic(
+  () => import('./_components/user-activity-chart'),
+  { 
+    ssr: false,
+    loading: () => <Skeleton className="h-80 w-full" />
+  }
+);
 
 export default function AnalyticsPage() {
   return (
@@ -28,23 +30,7 @@ export default function AnalyticsPage() {
                     <CardTitle className="text-xl font-bold">Progresso dos Projetos Ativos</CardTitle>
                 </CardHeader>
                 <CardContent className="h-80">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                             <Pie data={projectData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} label>
-                                {projectData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                                ))}
-                            </Pie>
-                            <Tooltip
-                                cursor={{ fill: 'hsla(var(--primary) / 0.1)' }}
-                                contentStyle={{
-                                    backgroundColor: 'hsl(var(--background))',
-                                    borderColor: 'hsl(var(--border))',
-                                    color: 'hsl(var(--foreground))'
-                                }}
-                            />
-                        </PieChart>
-                    </ResponsiveContainer>
+                    <ProjectProgressChart />
                 </CardContent>
             </Card>
             <Card className="gradient-surface border-0 rounded-2xl">
@@ -52,21 +38,7 @@ export default function AnalyticsPage() {
                     <CardTitle className="text-xl font-bold">Atividade dos Utilizadores (Últimos 7 Dias)</CardTitle>
                 </CardHeader>
                 <CardContent className="h-80">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={analyticsData.userActivity.labels.map((label, i) => ({ name: label, value: analyticsData.userActivity.data[i] }))}>
-                            <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                            <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                            <Tooltip
-                                cursor={{ fill: 'hsla(var(--primary) / 0.1)' }}
-                                contentStyle={{
-                                    backgroundColor: 'hsl(var(--background))',
-                                    borderColor: 'hsl(var(--border))',
-                                    color: 'hsl(var(--foreground))'
-                                }}
-                            />
-                            <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                        </BarChart>
-                    </ResponsiveContainer>
+                    <UserActivityChart />
                 </CardContent>
             </Card>
         </div>

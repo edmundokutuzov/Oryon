@@ -586,7 +586,7 @@ export const tasks = [
         assignedTo: [2, 13, 14],
         createdBy: 3,
         priority: "urgent" as "urgent" | "high" | "medium" | "low",
-        status: "in-progress" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
+        status: "in_progress" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
         labels: ["design", "campanha", "2024-Q4"],
         dueDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 10 days from now
         progress: 65,
@@ -1212,7 +1212,7 @@ export const feedItems: FeedItem[] = [
         comments_count: 1,
         is_pinned: false,
     }
-]
+];
 
 
 export const messages = {
@@ -1270,5 +1270,7 @@ export const getWorkspacesForUser = (userId: number) => workspaces.filter(w => w
 export const getWorkspaceById = (workspaceId: string) => workspaces.find(w => w.id === workspaceId);
 export const getWorkspaceTasks = (taskIds: number[]) => tasks.filter(t => taskIds.includes(t.id));
 export const getWorkspaceFiles = (fileIds: number[]) => cloudFiles.filter(f => fileIds.includes(f.id));
+
+    
 
     

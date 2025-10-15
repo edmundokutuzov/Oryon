@@ -643,6 +643,62 @@
         "ip",
         "details"
       ]
+    },
+    "Workspace": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Workspace",
+      "type": "object",
+      "description": "Represents a collaborative workspace for a team or project.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Workspace entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the workspace."
+        },
+        "description": {
+          "type": "string",
+          "description": "A short description of the workspace's purpose."
+        },
+        "members": {
+          "type": "array",
+          "description": "Array of user IDs who are members of this workspace.",
+          "items": {
+            "type": "number"
+          }
+        },
+        "owner_id": {
+          "type": "number",
+          "description": "The user ID of the workspace owner."
+        },
+        "privacy": {
+          "type": "string",
+          "enum": ["public", "private"],
+          "description": "The privacy setting of the workspace."
+        },
+        "linked_tasks": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "linked_projects": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "linked_files": {
+          "type": "array",
+          "items": { "type": "number" }
+        },
+        "linked_chat_channel_id": {
+          "type": "string"
+        },
+        "linked_knowledge_base_articles": {
+          "type": "array",
+          "items": { "type": "number" }
+        }
+      },
+      "required": ["id", "name", "owner_id", "members", "privacy"]
     }
   },
   "auth": {
@@ -764,9 +820,26 @@
             }
           ]
         }
+      },
+      {
+        "path": "/workspaces/{workspaceId}",
+        "definition": {
+          "entityName": "Workspace",
+          "schema": {
+            "$ref": "#/backend/entities/Workspace"
+          },
+          "description": "Stores workspace data, linking various resources like tasks, files, and projects. Access is managed by workspace membership.",
+          "params": [
+            {
+              "name": "workspaceId",
+              "description": "The unique identifier for the workspace."
+            }
+          ]
+        }
       }
     ],
     "reasoning": "The Firestore data structure is designed to support the features described in the user request, focusing on authentication, user profiles, task management, meetings, and departmental organization, while adhering to the core design principles of Authorization Independence, Clarity of Intent, DBAC, and QAPs. This design avoids `get()` calls in security rules, enabling atomic operations and improving debuggability. It utilizes denormalization, structural segregation, and consistent access modeling patterns.\n\n**Authorization Independence (Denormalization):**\n\n*   Authorization data (e.g., user roles, membership) is denormalized into subcollections to avoid `get()` calls in security rules.\n\n**QAPs (Rules are Not Filters):**\n\n*   Structural Segregation: Different types of data with different access requirements are stored in separate collections.\n\n**Access Modeling:**\n\n*   User Profiles: Stored in `/users/{userId}`, providing path-based ownership.\n*   Tasks: Stored in `/users/{userId}/tasks/{taskId}`, creating a hierarchical path of ownership from `UserProfile` to `Task`.\n*   Comments: Stored in `/users/{userId}/tasks/{taskId}/comments/{commentId}` maintaining hierarchy and ownership.\n*   Calendar Events: Stored in `/users/{userId}/calendarEvents/{calendarEventId}`.\n\n**Security and Integrity:**\n\n*   Path-based ownership is used where applicable (e.g., `/users/{userId}/tasks/{taskId}`) to simplify security rules.\n*   Timestamps (createdAt, lastModified) are included to track data changes.\n*   Radical Consistency is applied through consistent naming conventions (e.g., always using `userId` for user IDs).\n"
   }
 }
+
     

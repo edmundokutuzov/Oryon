@@ -803,6 +803,7 @@ export const menuItems = [
         title: 'Navegação',
         items: [
             { id: 'dashboard', title: 'Dashboard' },
+            { id: 'workspaces', title: 'Workspaces' },
             { id: 'tasks', title: 'Minhas Tarefas', badge: 5 },
             { id: 'projects', title: 'Projetos' },
             { id: 'meetings', title: 'Reuniões', badge: 2 },
@@ -987,6 +988,49 @@ export const cloudFiles = [
     { id: 5, name: 'Logos_Campanha_Natal.zip', size: '15.8 MB', type: 'zip', lastModified: '2024-11-05T12:00:00Z', sharedWith: [] },
 ];
 
+export type Workspace = {
+    id: string;
+    name: string;
+    description: string;
+    members: number[];
+    owner_id: number;
+    privacy: 'public' | 'private';
+    linked_tasks: number[];
+    linked_projects: number[];
+    linked_files: number[];
+    linked_chat_channel_id: string;
+    linked_knowledge_base_articles: number[];
+};
+
+export const workspaces: Workspace[] = [
+    {
+        id: 'ws-marketing-q4',
+        name: "Lançamento Produto 'Conta Pro'",
+        description: "Workspace central para a campanha de marketing do 4º trimestre para o lançamento da 'Conta Pro'.",
+        owner_id: 3,
+        members: [2, 3, 13, 14],
+        privacy: 'private',
+        linked_tasks: [1, 2, 4],
+        linked_projects: [1],
+        linked_files: [4, 5],
+        linked_chat_channel_id: "workspace_chat_1",
+        linked_knowledge_base_articles: [4]
+    },
+    {
+        id: 'ws-tech-homebanking',
+        name: "Modernização do Homebanking",
+        description: "Projeto de tecnologia para a renovação completa da plataforma de homebanking.",
+        owner_id: 1,
+        members: [1, 2, 4, 9, 18, 19, 20],
+        privacy: 'private',
+        linked_tasks: [6],
+        linked_projects: [2],
+        linked_files: [],
+        linked_chat_channel_id: "workspace_chat_2",
+        linked_knowledge_base_articles: []
+    }
+];
+
 export const messages = {
     "geral": [
         { id: 1, userId: 1, content: "Bem-vindos ao Oryon Enterprise! 🎉 A nova plataforma de colaboração do STANDARD BANK.", timestamp: "2024-11-01T09:00:00Z", reactions: [{ userId: 2, emoji: "👍" }, { userId: 3, emoji: "🎉" }] },
@@ -997,6 +1041,13 @@ export const messages = {
         { id: 1, userId: 3, content: "@Edmundo Kutuzov, você pode preparar os mockups para a nova campanha? Precisamos apresentar na reunião de quinta-feira.", timestamp: "2024-11-16T09:15:00Z", reactions: [{ userId: 2, emoji: "👍" }] },
         { id: 2, userId: 2, content: "Claro, Maria! Já estou trabalhando nisso. Vou partilhar os primeiros drafts amanhã.", timestamp: "2024-11-16T09:20:00Z", reactions: [{ userId: 3, emoji: "👏" }] },
         { id: 3, userId: 2, content: "Aqui estão os primeiros conceitos para a campanha. O que acham?", timestamp: "2024-11-17T14:30:00Z", attachments: [{ name: "conceito-campanha-v1.pdf", size: "12.3 MB", type: "pdf" }, { name: "mockups-digital.jpg", size: "3.7 MB", type: "image" }], reactions: [{ userId: 3, emoji: "❤️" }, { userId: 1, emoji: "🔥" }] },
+    ],
+    "workspace_chat_1": [
+        { id: 1, userId: 3, content: "Equipa, bem-vindos ao workspace para o lançamento da 'Conta Pro'! Vamos manter toda a comunicação aqui.", timestamp: "2024-11-18T10:00:00Z", reactions: [] },
+        { id: 2, userId: 2, content: "Excelente iniciativa! Já associei os meus ficheiros de design a este workspace.", timestamp: "2024-11-18T10:05:00Z", reactions: [] },
+    ],
+    "workspace_chat_2": [
+        { id: 1, userId: 1, content: "Este é o canal dedicado para a modernização do homebanking. Por favor partilhem aqui todas as atualizações técnicas.", timestamp: "2024-11-18T11:00:00Z", reactions: [] }
     ]
 };
 
@@ -1031,17 +1082,10 @@ export const getDepartmentMembers = (deptName: string) => users.filter(u => u.de
 export const getDepartmentProjects = (deptName: string) => projects.filter(p => p.department === deptName);
 export const getCalendarEventsForUser = (userId: number) => calendarEvents.filter(event => event.participants.includes(userId) || event.createdBy === userId);
 
+export const getWorkspacesForUser = (userId: number) => workspaces.filter(w => w.members.includes(userId));
+export const getWorkspaceById = (workspaceId: string) => workspaces.find(w => w.id === workspaceId);
+export const getWorkspaceTasks = (taskIds: number[]) => tasks.filter(t => taskIds.includes(t.id));
+export const getWorkspaceFiles = (fileIds: number[]) => cloudFiles.filter(f => fileIds.includes(f.id));
 
-
-
-
-
-  
-
-
-
-    
-
-    
 
     

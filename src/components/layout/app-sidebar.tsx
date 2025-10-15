@@ -27,7 +27,8 @@ import {
   FileText,
   UserCog,
   MoreVertical,
-  LogOut
+  LogOut,
+  Briefcase
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -56,6 +57,7 @@ const statusClasses: { [key: string]: string } = {
 
 const iconMap: { [key: string]: React.ElementType } = {
   dashboard: GaugeCircle,
+  workspaces: Briefcase,
   tasks: ListTodo,
   projects: Network,
   meetings: Video,
@@ -87,7 +89,7 @@ const iconMap: { [key: string]: React.ElementType } = {
 
 const NavLink = ({ href, children, icon, badge }: { href: string; children: React.ReactNode; icon: React.ElementType; badge?: number | string }) => {
   const pathname = usePathname();
-  const isActive = pathname === href;
+  const isActive = pathname.startsWith(href) && (href !== '/dashboard' || pathname === '/dashboard');
   const Icon = icon;
 
   return (
@@ -212,3 +214,5 @@ export default function AppSidebar() {
     </aside>
   );
 }
+
+    

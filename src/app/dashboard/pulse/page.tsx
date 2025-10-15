@@ -114,7 +114,14 @@ const FeedItemCard = ({ item }: { item: any }) => {
         <p className="text-foreground/90 whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: item.content.text.replace(/#(\w+)/g, '<span class="text-primary font-semibold">#$1</span>').replace(/@(\w+\s\w+)/g, '<span class="text-cyan-400 font-semibold">@$1</span>') }}></p>
         {item.content.media_urls?.[0] && (
             <div className="mt-4 rounded-lg overflow-hidden border border-border">
-                <Image src={item.content.media_urls[0].url} alt="Feed content" width={800} height={400} className="w-full object-cover"/>
+                <Image 
+                  src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2020" 
+                  alt="Feed content" 
+                  width={800} 
+                  height={400} 
+                  className="w-full object-cover"
+                  data-ai-hint="technology gradient"
+                />
             </div>
         )}
       </CardContent>

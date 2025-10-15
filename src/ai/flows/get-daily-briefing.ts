@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A flow to generate a predictive and personalized daily briefing for a user.
@@ -56,6 +57,7 @@ O seu objetivo é analisar as tarefas e reuniões de hoje para o utilizador, {{u
 Regras do Resumo:
 - O tom deve ser profissional, mas amigável e encorajador. Trate o utilizador pelo nome.
 - Seja conciso e direto ao ponto. Use parágrafos curtos ou listas de itens.
+- EVITE o uso excessivo de markdown. Não use '*' para ênfase.
 - NÃO liste todas as tarefas e reuniões. Em vez disso, sintetize e extraia os pontos mais importantes.
 - Identifique as prioridades do dia (tarefas com prioridade 'high' ou com prazo a expirar).
 - Encontre sinergias. Por exemplo, se uma tarefa está relacionada com uma reunião, mencione isso. (Ex: "Vejo que tem a tarefa 'X', que é perfeita para preparar a sua reunião 'Y' à tarde.")

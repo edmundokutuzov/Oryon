@@ -8,6 +8,8 @@ import {
   Users,
   Shield,
   TrendingUp,
+  Bot,
+  Loader2,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getTasksForUser, getUpcomingMeetings, getCurrentUser, users } from '@/lib/data';
@@ -16,10 +18,13 @@ import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from '@/components/ui/button';
+import { getDailyBriefing } from '@/ai/flows/get-daily-briefing';
+import { useEffect, useState } from 'react';
 
 const currentUser = getCurrentUser();
 const tasks = getTasksForUser(currentUser.id);
-const meetings = getUpcomingMeetings(currentUser.id);
+const today = new Date().toISOString().split('T')[0];
+const meetings = getUpcomingMeetings(currentUser.id).filter(m => m.date === today);
 const hasAdminPermissions = currentUser.permissions.includes('all') || currentUser.permissions.includes('approve');
 
 const dashboardStats = [
@@ -85,6 +90,54 @@ const AdminPanel = () => (
       </CardContent>
   </Card>
 );
+
+const DailyBriefing = () => {
+  const [briefing, setBriefing] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchBriefing() {
+      try {
+        const relevantTasks = tasks.filter(t => t.status !== 'completed').map(t => ({ id: t.id, title: t.title, description: t.description, status: t.status, priority: t.priority, dueDate: t.dueDate }));
+        const relevantMeetings = meetings.map(m => ({ id: m.id, title: m.title, description: m.description, date: m.date, time: m.time, duration: m.duration }));
+
+        const response = await getDailyBriefing({
+          userName: currentUser.name,
+          tasks: relevantTasks,
+          meetings: relevantMeetings,
+        });
+        setBriefing(response.briefing);
+      } catch (error) {
+        console.error("Failed to fetch daily briefing:", error);
+        setBriefing("Não foi possível carregar o seu resumo diário. Por favor, tente mais tarde.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchBriefing();
+  }, []);
+
+  return (
+     <Card className="gradient-surface border-0 rounded-2xl mb-8">
+        <CardContent className="p-6">
+           <div className="flex items-start gap-4">
+            <Bot className="w-8 h-8 text-yellow-300 flex-shrink-0 mt-1" />
+            <div className='w-full'>
+              <h3 className="font-bold text-lg text-foreground">O seu Resumo Diário da OryonAI</h3>
+               {isLoading ? (
+                <div className="space-y-2 mt-2">
+                  <div className="h-4 bg-muted/50 rounded w-3/4 animate-pulse"></div>
+                  <div className="h-4 bg-muted/50 rounded w-1/2 animate-pulse"></div>
+                </div>
+              ) : (
+                <p className="text-muted-foreground mt-1 whitespace-pre-wrap">{briefing}</p>
+              )}
+            </div>
+          </div>
+        </CardContent>
+     </Card>
+  )
+}
 
 const TaskPreviewCard = ({ task }: { task: (typeof tasks)[0] }) => {
   const priorityStyles: { [key: string]: string } = {
@@ -181,6 +234,8 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        <DailyBriefing />
+        
         {hasAdminPermissions && <AdminPanel />}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

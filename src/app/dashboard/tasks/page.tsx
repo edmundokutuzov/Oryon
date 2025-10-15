@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getTasksForUser, getCurrentUser, users, projects } from '@/lib/data';
-import { Plus, ArrowUpDown, LayoutGrid, List } from 'lucide-react';
+import { Plus, ArrowUpDown, LayoutGrid, List, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -72,41 +72,55 @@ const TasksBoardView = () => {
 
 const TasksListView = () => {
     type SortKey = 'title' | 'priority' | 'dueDate' | 'status' | 'project';
-    const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' }>({ key: 'dueDate', direction: 'ascending' });
+    const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' }>({ key: 'priority', direction: 'ascending' });
 
     const priorityOrder: { [key: string]: number } = { urgent: 4, high: 3, medium: 2, low: 1 };
-    const statusOrder: { [key: string]: number } = { 'in-progress': 1, todo: 2, backlog: 3, blocked: 4, done: 5 };
+    const statusOrder: { [key: string]: number } = { 'in-progress': 1, todo: 2, blocked: 3, backlog: 4, done: 5 };
 
     const sortedTasks = useMemo(() => {
         let sortableItems = [...userTasks];
         sortableItems.sort((a, b) => {
-            if (sortConfig.key === 'priority') {
-                const aValue = priorityOrder[a.priority] || 0;
-                const bValue = priorityOrder[b.priority] || 0;
-                if (aValue < bValue) return sortConfig.direction === 'ascending' ? 1 : -1;
-                if (aValue > bValue) return sortConfig.direction === 'ascending' ? -1 : 1;
-            } else if (sortConfig.key === 'dueDate') {
-                const dateA = a.dueDate ? new Date(a.dueDate).getTime() : Infinity;
-                const dateB = b.dueDate ? new Date(b.dueDate).getTime() : Infinity;
-                if (dateA < dateB) return sortConfig.direction === 'ascending' ? -1 : 1;
-                if (dateA > dateB) return sortConfig.direction === 'ascending' ? 1 : -1;
-            } else if (sortConfig.key === 'status') {
-                 const aValue = statusOrder[a.status] || 0;
-                 const bValue = statusOrder[b.status] || 0;
-                 if (aValue < bValue) return sortConfig.direction === 'ascending' ? -1 : 1;
-                if (aValue > bValue) return sortConfig.direction === 'ascending' ? 1 : -1;
-            } else if (sortConfig.key === 'project') {
-                 const projectA = projects.find(p => p.id === a.projectId)?.name || '';
-                 const projectB = projects.find(p => p.id === b.projectId)?.name || '';
-                 return projectA.localeCompare(projectB) * (sortConfig.direction === 'ascending' ? 1 : -1);
+            let aValue: any;
+            let bValue: any;
+
+            switch (sortConfig.key) {
+                case 'priority':
+                    aValue = priorityOrder[a.priority] || 0;
+                    bValue = priorityOrder[b.priority] || 0;
+                    break;
+                case 'dueDate':
+                    aValue = a.dueDate ? new Date(a.dueDate).getTime() : Infinity;
+                    bValue = b.dueDate ? new Date(b.dueDate).getTime() : Infinity;
+                    // For ascending, null/Infinity dates should go last
+                    if (sortConfig.direction === 'ascending') {
+                        if (aValue === Infinity && bValue !== Infinity) return 1;
+                        if (aValue !== Infinity && bValue === Infinity) return -1;
+                    } else {
+                        if (aValue === Infinity && bValue !== Infinity) return -1;
+                        if (aValue !== Infinity && bValue === Infinity) return 1;
+                    }
+                    break;
+                case 'status':
+                    aValue = statusOrder[a.status] || 0;
+                    bValue = statusOrder[b.status] || 0;
+                    break;
+                case 'project':
+                    aValue = projects.find(p => p.id === a.projectId)?.name || 'zzzz';
+                    bValue = projects.find(p => p.id === b.projectId)?.name || 'zzzz';
+                    return aValue.localeCompare(bValue) * (sortConfig.direction === 'ascending' ? 1 : -1);
+                default: // title
+                    aValue = a.title;
+                    bValue = b.title;
+                    return aValue.localeCompare(bValue) * (sortConfig.direction === 'ascending' ? 1 : -1);
             }
-            else { // title
-                return a.title.localeCompare(b.title) * (sortConfig.direction === 'ascending' ? 1 : -1);
-            }
+            
+            if (aValue < bValue) return sortConfig.direction === 'ascending' ? -1 : 1;
+            if (aValue > bValue) return sortConfig.direction === 'ascending' ? 1 : -1;
+
             return 0;
         });
         return sortableItems;
-    }, [userTasks, sortConfig]);
+    }, [sortConfig]);
 
     const requestSort = (key: SortKey) => {
         let direction: 'ascending' | 'descending' = 'ascending';
@@ -117,14 +131,14 @@ const TasksListView = () => {
     };
 
     const priorityStyles: { [key: string]: string } = {
-        urgent: 'text-red-500',
-        high: 'text-red-500',
+        urgent: 'text-red-400',
+        high: 'text-red-400',
         medium: 'text-yellow-400',
         low: 'text-green-400',
     };
      const statusStyles: { [key: string]: string } = {
         'in-progress': 'text-yellow-400',
-        blocked: 'text-red-500',
+        blocked: 'text-red-400',
         todo: 'text-blue-400',
         backlog: 'text-slate-400',
         done: 'text-green-400',

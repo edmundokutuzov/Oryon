@@ -2,15 +2,14 @@
 'use client';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { feedItems, users, projects } from '@/lib/data';
+import { feedItems, users } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { cn } from '@/lib/utils';
 import {
   MessageCircle,
   ThumbsUp,
-  Share2,
   MoreHorizontal,
   Bookmark,
   Radio,
@@ -21,7 +20,6 @@ import {
   Sparkles,
   Rocket,
   UserPlus,
-  Heart,
   BrainCircuit,
   PartyPopper,
   Handshake,
@@ -63,7 +61,7 @@ const KudosCard = ({ item }: { item: any }) => {
         <Card className="gradient-surface border-yellow-400/50 rounded-2xl overflow-hidden">
             <CardContent className="p-6 text-center">
                 <PartyPopper className="w-12 h-12 text-yellow-400 mx-auto mb-4"/>
-                <p className="text-lg text-foreground">{item.content.text}</p>
+                <p className="text-lg text-foreground" dangerouslySetInnerHTML={{ __html: item.content.text }}></p>
                  <div className="mt-6 flex justify-center items-center gap-4">
                     {item.reactions.map((reaction: any, index: number) => {
                         const user = users.find(u => u.id === reaction.user_id);
@@ -104,7 +102,7 @@ const FeedItemCard = ({ item }: { item: any }) => {
           </Avatar>
           <div>
             <p className="font-semibold text-foreground">{author?.name}</p>
-            <p className="text-xs text-muted-foreground">{author?.role} • {new Date(item.timestamp).toLocaleString()}</p>
+            <p className="text-xs text-muted-foreground">{author?.role} • {new Date(item.timestamp).toLocaleString('pt-PT', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</p>
           </div>
           <div className="ml-auto flex items-center gap-1">
             {item.is_pinned && <Bookmark className="w-4 h-4 text-yellow-400" />}
@@ -113,7 +111,7 @@ const FeedItemCard = ({ item }: { item: any }) => {
         </div>
       </CardHeader>
       <CardContent className="p-6 pt-0">
-        <p className="text-foreground/90 whitespace-pre-wrap">{item.content.text.replace(/#\w+/g, (match: string) => `<span class="text-primary font-semibold">${match}</span>`).replace(/@\w+\s\w+/g, (match: string) => `<span class="text-cyan-400 font-semibold">${match}</span>`)}</p>
+        <p className="text-foreground/90 whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: item.content.text.replace(/#(\w+)/g, '<span class="text-primary font-semibold">#$1</span>').replace(/@(\w+\s\w+)/g, '<span class="text-cyan-400 font-semibold">@$1</span>') }}></p>
         {item.content.media_urls?.[0] && (
             <div className="mt-4 rounded-lg overflow-hidden border border-border">
                 <Image src={item.content.media_urls[0].url} alt="Feed content" width={800} height={400} className="w-full object-cover"/>
@@ -127,7 +125,7 @@ const FeedItemCard = ({ item }: { item: any }) => {
                      if(count === 0 && key !== 'like') return null;
 
                     return (
-                        <Button key={key} variant="ghost" size="sm" className="flex items-center gap-1.5 text-muted-foreground">
+                        <Button key={key} variant="ghost" size="sm" className="flex items-center gap-1.5 text-muted-foreground hover:text-primary">
                             <Icon className={cn("w-4 h-4", count > 0 && 'text-primary')}/> 
                             <span className="text-xs">{count > 0 && count}</span>
                         </Button>
@@ -135,8 +133,10 @@ const FeedItemCard = ({ item }: { item: any }) => {
                 })}
             </div>
             <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                <span>{item.comments_count} comentários</span>
-                <span>{item.reactions.length} reações</span>
+                 <Button variant="ghost" size="sm" className="flex items-center gap-1.5 text-muted-foreground">
+                    <MessageCircle className="w-4 h-4"/> 
+                    <span>{item.comments_count} comentários</span>
+                 </Button>
             </div>
        </div>
     </Card>
@@ -145,7 +145,7 @@ const FeedItemCard = ({ item }: { item: any }) => {
 
 
 export default function PulsePage() {
-    const popularHashtags = ['#design', '#feedback', '#marketingdigital', '#comunicado', '#tecnologia'];
+    const popularHashtags = ['#anuncios', '#feedback', '#marketingdigital', '#cultura', '#tecnologia', '#design'];
   return (
     <div className="p-6 fade-in">
         <h1 className="text-3xl font-bold text-foreground mb-8 flex items-center gap-3">
@@ -212,3 +212,5 @@ export default function PulsePage() {
     </div>
   );
 }
+
+    

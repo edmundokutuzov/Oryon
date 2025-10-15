@@ -803,7 +803,7 @@ export const menuItems = [
         title: 'Navegação',
         items: [
             { id: 'dashboard', title: 'Dashboard' },
-            { id: 'pulse', title: 'Pulse', badge: 3 },
+            { id: 'pulse', title: 'Pulse' },
             { id: 'workspaces', title: 'Workspaces' },
             { id: 'tasks', title: 'Minhas Tarefas', badge: 5 },
             { id: 'projects', title: 'Projetos' },
@@ -1063,10 +1063,10 @@ export const feedItems: FeedItem[] = [
         timestamp: new Date().toISOString(),
         author_user_id: 1, // Admin
         item_type: 'post',
-        content: { text: "📢 **Anúncio Importante:** A partir da próxima segunda-feira, teremos um novo sistema de ponto eletrónico. Por favor, consultem o artigo na Base de Conhecimento para mais detalhes." },
+        content: { text: "<b>Anúncio Importante:</b> A partir da próxima segunda-feira, teremos um novo sistema de ponto eletrónico. Por favor, consultem o artigo na Base de Conhecimento para mais detalhes. #anuncios" },
         mentions: [],
-        hashtags: ['comunicado', 'rh'],
-        reactions: [{user_id: 2, reaction_type: 'like'}],
+        hashtags: ['anuncios', 'rh'],
+        reactions: [{user_id: 2, reaction_type: 'like'}, {user_id: 5, reaction_type: 'like'}],
         comments_count: 2,
         is_pinned: true,
     },
@@ -1090,11 +1090,23 @@ export const feedItems: FeedItem[] = [
         timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
         author_user_id: 2, // Edmundo
         item_type: 'post',
-        content: { text: "Equipa de #design, partilho aqui algumas inspirações para a nova identidade visual. O que acham da abordagem com gradientes mais subtis? @Maria Silva, gostaria do seu feedback.", media_urls: [{ type: 'image', url: 'https://picsum.photos/seed/pulse-img/800/400' }] },
+        content: { text: "Equipa de #design, partilho aqui algumas inspirações para a nova identidade visual. O que acham da abordagem com gradientes mais subtis? @Maria Silva, gostaria do seu feedback.", media_urls: [{ type: 'image', url: 'https://picsum.photos/seed/design-inspiration/800/400' }] },
         mentions: [3],
         hashtags: ['design', 'feedback', 'branding'],
-        reactions: [{user_id: 3, reaction_type: 'idea'}, {user_id: 14, reaction_type: 'like'}],
+        reactions: [{user_id: 3, reaction_type: 'idea'}, {user_id: 14, reaction_type: 'like'}, {user_id: 1, reaction_type: 'like'}],
         comments_count: 3,
+        is_pinned: false,
+    },
+     {
+        item_id: 'pulse-5',
+        timestamp: new Date(Date.now() - 10 * 60 * 60 * 1000).toISOString(),
+        author_user_id: 9, // Pedro Nunes
+        item_type: 'post',
+        content: { text: "Alguém tem experiência com a implementação de WebSockets para notificações em tempo real em larga escala? A pensar na arquitetura para o novo #homebanking. #devs #tecnologia" },
+        mentions: [],
+        hashtags: ['devs', 'tecnologia', 'homebanking'],
+        reactions: [{user_id: 18, reaction_type: 'idea'}, {user_id: 20, reaction_type: 'idea'}],
+        comments_count: 4,
         is_pinned: false,
     },
     {
@@ -1102,7 +1114,7 @@ export const feedItems: FeedItem[] = [
         timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
         author_user_id: 'system',
         item_type: 'kudos',
-        content: { text: "Parabéns à **Ana Costa** por ter recebido 'Kudos' do **Admin Sistema** pelo seu excelente trabalho na organização do evento de team-building!"},
+        content: { text: "Parabéns à <b>Ana Costa</b> por ter recebido 'Kudos' do <b>Admin Sistema</b> pelo seu excelente trabalho na organização do evento de team-building! #cultura" },
         reactions: [{user_id: 3, reaction_type: 'celebrate'}, {user_id: 4, reaction_type: 'celebrate'}, {user_id: 2, reaction_type: 'celebrate'}],
         comments_count: 1,
         is_pinned: false,
@@ -1165,3 +1177,5 @@ export const getWorkspacesForUser = (userId: number) => workspaces.filter(w => w
 export const getWorkspaceById = (workspaceId: string) => workspaces.find(w => w.id === workspaceId);
 export const getWorkspaceTasks = (taskIds: number[]) => tasks.filter(t => taskIds.includes(t.id));
 export const getWorkspaceFiles = (fileIds: number[]) => cloudFiles.filter(f => fileIds.includes(f.id));
+
+    

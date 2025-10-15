@@ -1,4 +1,3 @@
-
 'use client';
 import {
   Activity,
@@ -30,7 +29,7 @@ const hasAdminPermissions = currentUser.permissions.includes('all') || currentUs
 const dashboardStats = [
   {
     title: 'Tarefas Pendentes',
-    value: tasks.filter(t => t.status !== 'completed').length,
+    value: tasks.filter(t => t.status !== 'done').length,
     icon: ListTodo,
     color: 'bg-blue-500/20 text-blue-300',
   },
@@ -144,6 +143,7 @@ const TaskPreviewCard = ({ task }: { task: (typeof tasks)[0] }) => {
     high: 'bg-red-500/20 text-red-300',
     medium: 'bg-yellow-500/20 text-yellow-300',
     low: 'bg-green-500/20 text-green-300',
+    urgent: 'bg-red-500/20 text-red-300',
   };
   return (
     <div className="p-4 rounded-xl bg-card/5 hover:bg-card/10 transition-colors cursor-pointer">

@@ -803,6 +803,7 @@ export const menuItems = [
         title: 'Navegação',
         items: [
             { id: 'dashboard', title: 'Dashboard' },
+            { id: 'pulse', title: 'Pulse', badge: 3 },
             { id: 'workspaces', title: 'Workspaces' },
             { id: 'tasks', title: 'Minhas Tarefas', badge: 5 },
             { id: 'projects', title: 'Projetos' },
@@ -1030,6 +1031,84 @@ export const workspaces: Workspace[] = [
         linked_knowledge_base_articles: []
     }
 ];
+
+export type FeedItem = {
+    item_id: string;
+    timestamp: string;
+    author_user_id: number | 'system';
+    item_type: 'post' | 'poll' | 'kudos' | 'system_event';
+    content: {
+        text: string;
+        media_urls?: { type: 'image' | 'video', url: string }[];
+    };
+    poll_options?: { option_id: string, text: string, votes: number }[];
+    system_event_details?: {
+        event: 'project.milestone.completed' | 'project.created' | 'user.joined';
+        project_id?: number;
+        project_name?: string;
+        user_name?: string;
+        department_name?: string;
+        milestone_name?: string;
+    };
+    mentions?: number[];
+    hashtags?: string[];
+    reactions: { user_id: number, reaction_type: 'like' | 'celebrate' | 'idea' | 'thanks' }[];
+    comments_count: number;
+    is_pinned: boolean;
+};
+
+export const feedItems: FeedItem[] = [
+    {
+        item_id: 'pulse-1',
+        timestamp: new Date().toISOString(),
+        author_user_id: 1, // Admin
+        item_type: 'post',
+        content: { text: "📢 **Anúncio Importante:** A partir da próxima segunda-feira, teremos um novo sistema de ponto eletrónico. Por favor, consultem o artigo na Base de Conhecimento para mais detalhes." },
+        mentions: [],
+        hashtags: ['comunicado', 'rh'],
+        reactions: [{user_id: 2, reaction_type: 'like'}],
+        comments_count: 2,
+        is_pinned: true,
+    },
+    {
+        item_id: 'pulse-2',
+        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+        author_user_id: 'system',
+        item_type: 'system_event',
+        content: { text: "O projeto 'Modernização da Plataforma de Homebanking' foi iniciado." },
+        system_event_details: {
+            event: 'project.created',
+            project_id: 2,
+            project_name: 'Modernização da Plataforma de Homebanking'
+        },
+        reactions: [],
+        comments_count: 0,
+        is_pinned: false,
+    },
+    {
+        item_id: 'pulse-3',
+        timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+        author_user_id: 2, // Edmundo
+        item_type: 'post',
+        content: { text: "Equipa de #design, partilho aqui algumas inspirações para a nova identidade visual. O que acham da abordagem com gradientes mais subtis? @Maria Silva, gostaria do seu feedback.", media_urls: [{ type: 'image', url: 'https://picsum.photos/seed/pulse-img/800/400' }] },
+        mentions: [3],
+        hashtags: ['design', 'feedback', 'branding'],
+        reactions: [{user_id: 3, reaction_type: 'idea'}, {user_id: 14, reaction_type: 'like'}],
+        comments_count: 3,
+        is_pinned: false,
+    },
+    {
+        item_id: 'pulse-4',
+        timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+        author_user_id: 'system',
+        item_type: 'kudos',
+        content: { text: "Parabéns à **Ana Costa** por ter recebido 'Kudos' do **Admin Sistema** pelo seu excelente trabalho na organização do evento de team-building!"},
+        reactions: [{user_id: 3, reaction_type: 'celebrate'}, {user_id: 4, reaction_type: 'celebrate'}, {user_id: 2, reaction_type: 'celebrate'}],
+        comments_count: 1,
+        is_pinned: false,
+    }
+]
+
 
 export const messages = {
     "geral": [

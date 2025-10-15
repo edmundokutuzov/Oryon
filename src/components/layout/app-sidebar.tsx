@@ -28,7 +28,8 @@ import {
   UserCog,
   MoreVertical,
   LogOut,
-  Briefcase
+  Briefcase,
+  Radio,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -57,6 +58,7 @@ const statusClasses: { [key: string]: string } = {
 
 const iconMap: { [key: string]: React.ElementType } = {
   dashboard: GaugeCircle,
+  pulse: Radio,
   workspaces: Briefcase,
   tasks: ListTodo,
   projects: Network,
@@ -214,5 +216,3 @@ export default function AppSidebar() {
     </aside>
   );
 }
-
-    

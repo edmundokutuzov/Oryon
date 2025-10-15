@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "UserProfile": {
@@ -699,6 +700,74 @@
         }
       },
       "required": ["id", "name", "owner_id", "members", "privacy"]
+    },
+    "FeedItem": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "FeedItem",
+      "type": "object",
+      "description": "Represents a single item in the Oryon Pulse feed.",
+      "properties": {
+        "item_id": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "author_user_id": { "type": "string" },
+        "item_type": { "type": "string", "enum": ["post", "poll", "kudos", "system_event"] },
+        "content": {
+          "type": "object",
+          "properties": {
+            "text": { "type": "string" },
+            "media_urls": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": { "type": "string", "enum": ["image", "video"] },
+                  "url": { "type": "string", "format": "uri" }
+                },
+                "required": ["type", "url"]
+              }
+            }
+          }
+        },
+        "poll_options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "option_id": { "type": "string" },
+              "text": { "type": "string" },
+              "votes": { "type": "number" }
+            },
+            "required": ["option_id", "text", "votes"]
+          }
+        },
+        "system_event_details": {
+          "type": "object",
+          "properties": {
+            "event": { "type": "string", "enum": ["project.milestone.completed", "project.created", "user.joined"] },
+            "project_id": { "type": "string" },
+            "project_name": { "type": "string" },
+            "user_name": { "type": "string" },
+            "department_name": { "type": "string" },
+            "milestone_name": { "type": "string" }
+          }
+        },
+        "mentions": { "type": "array", "items": { "type": "string" } },
+        "hashtags": { "type": "array", "items": { "type": "string" } },
+        "reactions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "user_id": { "type": "string" },
+              "reaction_type": { "type": "string", "enum": ["like", "celebrate", "idea", "thanks"] }
+            },
+            "required": ["user_id", "reaction_type"]
+          }
+        },
+        "comments_count": { "type": "number" },
+        "is_pinned": { "type": "boolean" }
+      },
+      "required": ["item_id", "timestamp", "author_user_id", "item_type", "content", "reactions", "comments_count", "is_pinned"]
     }
   },
   "auth": {
@@ -836,10 +905,24 @@
             }
           ]
         }
-      }
+      },
+      {
+        "path": "/feedItems/{feedItemId}",
+        "definition": {
+            "entityName": "FeedItem",
+            "schema": {
+                "$ref": "#/backend/entities/FeedItem"
+            },
+            "description": "Stores individual items for the Oryon Pulse feed. Publicly readable by all authenticated users, with write access controlled by the author_user_id.",
+            "params": [
+                {
+                    "name": "feedItemId",
+                    "description": "The unique identifier for the feed item."
+                }
+            ]
+        }
+    }
     ],
     "reasoning": "The Firestore data structure is designed to support the features described in the user request, focusing on authentication, user profiles, task management, meetings, and departmental organization, while adhering to the core design principles of Authorization Independence, Clarity of Intent, DBAC, and QAPs. This design avoids `get()` calls in security rules, enabling atomic operations and improving debuggability. It utilizes denormalization, structural segregation, and consistent access modeling patterns.\n\n**Authorization Independence (Denormalization):**\n\n*   Authorization data (e.g., user roles, membership) is denormalized into subcollections to avoid `get()` calls in security rules.\n\n**QAPs (Rules are Not Filters):**\n\n*   Structural Segregation: Different types of data with different access requirements are stored in separate collections.\n\n**Access Modeling:**\n\n*   User Profiles: Stored in `/users/{userId}`, providing path-based ownership.\n*   Tasks: Stored in `/users/{userId}/tasks/{taskId}`, creating a hierarchical path of ownership from `UserProfile` to `Task`.\n*   Comments: Stored in `/users/{userId}/tasks/{taskId}/comments/{commentId}` maintaining hierarchy and ownership.\n*   Calendar Events: Stored in `/users/{userId}/calendarEvents/{calendarEventId}`.\n\n**Security and Integrity:**\n\n*   Path-based ownership is used where applicable (e.g., `/users/{userId}/tasks/{taskId}`) to simplify security rules.\n*   Timestamps (createdAt, lastModified) are included to track data changes.\n*   Radical Consistency is applied through consistent naming conventions (e.g., always using `userId` for user IDs).\n"
   }
 }
-
-    

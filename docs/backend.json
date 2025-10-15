@@ -147,7 +147,7 @@
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Task",
       "type": "object",
-      "description": "Represents a task assigned to a user.",
+      "description": "Represents a task within the Oryon platform. Tasks can be assigned to multiple users and have dependencies.",
       "properties": {
         "id": {
           "type": "string",
@@ -159,67 +159,113 @@
         },
         "description": {
           "type": "string",
-          "description": "A description of the task."
+          "description": "A detailed description of the task."
+        },
+        "projectId": {
+          "type": ["string", "null"],
+          "description": "Reference to Project. The ID of the project this task belongs to."
         },
         "assignedTo": {
-          "type": "string",
-          "description": "Reference to UserProfile. The ID of the user the task is assigned to. (Relationship: UserProfile 1:N Task)"
+          "type": "array",
+          "description": "References to UserProfiles. An array of user IDs the task is assigned to.",
+          "items": {
+            "type": "string"
+          }
         },
-        "assignedBy": {
+        "createdBy": {
           "type": "string",
-          "description": "Reference to UserProfile. The ID of the user who assigned the task. (Relationship: UserProfile 1:N Task)"
-        },
-        "department": {
-          "type": "string",
-          "description": "The department the task belongs to."
-        },
-        "dueDate": {
-          "type": "string",
-          "description": "The due date of the task.",
-          "format": "date-time"
-        },
-        "status": {
-          "type": "string",
-          "description": "The status of the task (e.g., 'pending', 'in-progress', 'completed')."
+          "description": "Reference to UserProfile. The ID of the user who created the task."
         },
         "priority": {
           "type": "string",
-          "description": "The priority of the task (e.g., 'high', 'medium', 'low')."
+          "description": "The priority of the task.",
+          "enum": ["low", "medium", "high", "urgent"]
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the task in the workflow.",
+          "enum": ["backlog", "todo", "in_progress", "blocked", "done"]
+        },
+        "labels": {
+          "type": "array",
+          "description": "An array of tags associated with the task for categorization.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "dueDate": {
+          "type": ["string", "null"],
+          "description": "The due date of the task.",
+          "format": "date-time"
         },
         "progress": {
           "type": "number",
-          "description": "The progress of the task, as a percentage."
+          "description": "The progress of the task, as a percentage (0-100)."
+        },
+        "attachments": {
+          "type": "array",
+          "description": "An array of files attached to the task.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "fileId": { "type": "string" },
+              "name": { "type": "string" },
+              "size": { "type": "string" }
+            },
+            "required": ["fileId", "name", "size"]
+          }
+        },
+        "checklist": {
+          "type": "array",
+          "description": "A list of sub-tasks or to-do items within the main task.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "text": { "type": "string" },
+              "checked": { "type": "boolean" }
+            },
+            "required": ["id", "text", "checked"]
+          }
+        },
+        "dependencies": {
+          "type": "array",
+          "description": "An array of task IDs that this task depends on.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "watchers": {
+          "type": "array",
+          "description": "An array of user IDs who are watching this task for notifications.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "commentsCount": {
+          "type": "number",
+          "description": "The total number of comments on the task."
         },
         "createdAt": {
           "type": "string",
           "description": "Timestamp of when the task was created.",
           "format": "date-time"
         },
-        "timeSpent": {
-          "type": "number",
-          "description": "The amount of time spent on the task, in hours."
-        },
-        "tags": {
-          "type": "array",
-          "description": "An array of tags associated with the task.",
-          "items": {
-            "type": "string"
-          }
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp of when the task was last updated.",
+          "format": "date-time"
         }
       },
       "required": [
         "id",
         "title",
-        "description",
         "assignedTo",
-        "assignedBy",
-        "department",
-        "dueDate",
-        "status",
+        "createdBy",
         "priority",
-        "progress",
+        "status",
         "createdAt",
-        "timeSpent"
+        "updatedAt"
       ]
     },
     "Comment": {
@@ -801,18 +847,14 @@
         }
       },
       {
-        "path": "/users/{userId}/tasks/{taskId}",
+        "path": "/tasks/{taskId}",
         "definition": {
           "entityName": "Task",
           "schema": {
             "$ref": "#/backend/entities/Task"
           },
-          "description": "Stores tasks associated with a specific user. Includes denormalized `userId` for authorization independence. Supports listing tasks for a user.",
+          "description": "Stores tasks in a centralized collection for collaborative access.",
           "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier for the user who owns the task."
-            },
             {
               "name": "taskId",
               "description": "The unique identifier for the task."
@@ -821,18 +863,14 @@
         }
       },
       {
-        "path": "/users/{userId}/tasks/{taskId}/comments/{commentId}",
+        "path": "/tasks/{taskId}/comments/{commentId}",
         "definition": {
           "entityName": "Comment",
           "schema": {
             "$ref": "#/backend/entities/Comment"
           },
-          "description": "Stores comments associated with a specific task. Includes denormalized `userId` and `taskId` for authorization independence. Supports listing comments for a task.",
+          "description": "Stores comments associated with a specific task.",
           "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier for the user who created the comment."
-            },
             {
               "name": "taskId",
               "description": "The unique identifier for the task the comment belongs to."
@@ -932,5 +970,3 @@
     "reasoning": "The Firestore data structure is designed to support the features described in the user request, focusing on authentication, user profiles, task management, meetings, and departmental organization, while adhering to the core design principles of Authorization Independence, Clarity of Intent, DBAC, and QAPs. This design avoids `get()` calls in security rules, enabling atomic operations and improving debuggability. It utilizes denormalization, structural segregation, and consistent access modeling patterns.\n\n**Authorization Independence (Denormalization):**\n\n*   Authorization data (e.g., user roles, membership) is denormalized into subcollections to avoid `get()` calls in security rules.\n\n**QAPs (Rules are Not Filters):**\n\n*   Structural Segregation: Different types of data with different access requirements are stored in separate collections.\n\n**Access Modeling:**\n\n*   User Profiles: Stored in `/users/{userId}`, providing path-based ownership.\n*   Tasks: Stored in `/users/{userId}/tasks/{taskId}`, creating a hierarchical path of ownership from `UserProfile` to `Task`.\n*   Comments: Stored in `/users/{userId}/tasks/{taskId}/comments/{commentId}` maintaining hierarchy and ownership.\n*   Calendar Events: Stored in `/users/{userId}/calendarEvents/{calendarEventId}`.\n\n**Security and Integrity:**\n\n*   Path-based ownership is used where applicable (e.g., `/users/{userId}/tasks/{taskId}`) to simplify security rules.\n*   Timestamps (createdAt, lastModified) are included to track data changes.\n*   Radical Consistency is applied through consistent naming conventions (e.g., always using `userId` for user IDs).\n"
   }
 }
-
-    

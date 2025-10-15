@@ -579,123 +579,112 @@ export const users = [
 export const tasks = [
     {
         id: 1,
-        title: "Criar campanha publicitária para novo produto 'Conta Pro'",
-        description: "Desenvolver conceito criativo e materiais para campanha do novo produto bancário digital 'Conta Pro' incluindo anúncios, social media e email marketing. Foco em atingir o segmento de PMEs e freelancers.",
-        assignedTo: 2,
-        assignedBy: 3,
-        department: "Marketing",
+        title: "Criar campanha publicitária para 'Conta Pro'",
+        description: "Desenvolver conceito criativo e materiais para campanha do novo produto bancário digital 'Conta Pro'.",
+        assignedTo: [2, 13, 14],
+        createdBy: 3,
+        priority: "urgent" as "urgent" | "high" | "medium" | "low",
+        status: "in-progress" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
+        labels: ["design", "campanha", "2024-Q4"],
         dueDate: "2024-12-15",
-        status: "in-progress" as "in-progress" | "pending" | "completed",
-        priority: "high" as "high" | "medium" | "low",
         progress: 65,
-        tags: ["design", "campanha", "urgente", "2024-Q4", "digital"],
-        comments: [
-            { id: 1, userId: 2, content: "Iniciei o design dos materiais. Preciso de feedback sobre a paleta de cores.", timestamp: "2024-11-10T14:30:00Z" },
-            { id: 2, userId: 3, content: "A paleta está aprovada. Pode prosseguir com os designs finais. Gosto da abordagem moderna.", timestamp: "2024-11-11T09:15:00Z" },
-        ],
-        timeSpent: 12,
         attachments: [
             { name: "conceito-campanha.pdf", size: "2.4 MB", type: "pdf" },
             { name: "mockups-v1.psd", size: "15.7 MB", type: "psd" },
-        ]
+        ],
+        checklist: [
+            {id: 'c1-1', text: 'Definir público-alvo', checked: true},
+            {id: 'c1-2', text: 'Criar mockups iniciais', checked: true},
+            {id: 'c1-3', text: 'Aprovar copywriting', checked: false},
+        ],
     },
     {
         id: 2,
         title: "Atualizar identidade visual da marca para 2025",
-        description: "Revisar e atualizar guidelines da marca para 2025 incluindo logotipo, tipografia, cores e aplicações em diferentes suportes. O objetivo é modernizar a imagem do banco.",
-        assignedTo: 2,
-        assignedBy: 3,
-        department: "Marketing",
+        description: "Revisar e atualizar guidelines da marca para 2025 incluindo logotipo, tipografia, cores e aplicações.",
+        assignedTo: [2],
+        createdBy: 3,
+        priority: "medium" as "urgent" | "high" | "medium" | "low",
+        status: "todo" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
+        labels: ["branding", "design"],
         dueDate: "2024-12-30",
-        status: "pending" as "in-progress" | "pending" | "completed",
-        priority: "medium" as "high" | "medium" | "low",
         progress: 10,
-        tags: ["branding", "design", "2025", "identidade-visual"],
-        comments: [],
-        timeSpent: 2,
-        attachments: []
+        attachments: [],
+        checklist: [],
     },
     {
         id: 3,
-        title: "Preparar relatório trimestral de desempenho financeiro Q3",
-        description: "Compilar dados de performance dos últimos 3 meses e preparar relatório para apresentação à direção. Incluir análise de KPIs e projeções.",
-        assignedTo: 1,
-        assignedBy: 26,
-        department: "Financeiro",
+        title: "Preparar relatório financeiro Q3",
+        description: "Compilar dados de performance dos últimos 3 meses e preparar relatório para apresentação à direção.",
+        assignedTo: [4, 6],
+        createdBy: 26,
+        priority: "high" as "urgent" | "high" | "medium" | "low",
+        status: "in-progress" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
+        labels: ["relatório", "financeiro"],
         dueDate: "2024-11-25",
-        status: "in-progress" as "in-progress" | "pending" | "completed",
-        priority: "high" as "high" | "medium" | "low",
         progress: 40,
-        tags: ["relatório", "financeiro", "trimestral", "urgente"],
-        comments: [
-            { id: 3, userId: 4, content: "Aguardando dados do departamento de operações para completar a análise de custos.", timestamp: "2024-11-15T16:45:00Z" }
+        attachments: [{ name: "dados-setembro.xlsx", size: "3.2 MB", type: "excel" }],
+        checklist: [
+            {id: 'c3-1', text: 'Coletar dados de vendas', checked: true},
+            {id: 'c3-2', text: 'Analisar despesas operacionais', checked: false},
+            {id: 'c3-3', text: 'Elaborar sumário executivo', checked: false},
         ],
-        timeSpent: 8,
-        attachments: [{ name: "dados-setembro.xlsx", size: "3.2 MB", type: "excel" }]
     },
     {
         id: 4,
-        title: "Review de SEO para blog corporativo e otimização de artigos",
-        description: "Analisar performance do blog, identificar palavras-chave de oportunidade e otimizar os 10 artigos mais populares para melhor ranking nos motores de busca.",
-        assignedTo: 2,
-        assignedBy: 3,
-        department: "Marketing",
+        title: "Review de SEO para blog corporativo",
+        description: "Analisar performance do blog, identificar palavras-chave de oportunidade e otimizar os 10 artigos mais populares.",
+        assignedTo: [13],
+        createdBy: 3,
+        priority: "low" as "urgent" | "high" | "medium" | "low",
+        status: "done" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
+        labels: ["seo", "marketing"],
         dueDate: "2024-11-28",
-        status: "completed" as "in-progress" | "pending" | "completed",
-        priority: "low" as "high" | "medium" | "low",
         progress: 100,
-        tags: ["seo", "blog", "marketing-conteudo"],
-        comments: [],
-        timeSpent: 16,
-        attachments: [{ name: "relatorio_seo_outubro.pdf", size: "1.2 MB", type: "pdf" }]
+        attachments: [{ name: "relatorio_seo_outubro.pdf", size: "1.2 MB", type: "pdf" }],
+        checklist: [],
     },
     {
         id: 5,
-        title: "Auditoria de Segurança dos Servidores da Cloud",
-        description: "Realizar uma auditoria completa de segurança em todos os servidores da cloud para identificar e corrigir vulnerabilidades.",
-        assignedTo: 1,
-        assignedBy: 12,
-        department: "Segurança",
+        title: "Auditoria de Segurança dos Servidores Cloud",
+        description: "Realizar uma auditoria completa de segurança para identificar e corrigir vulnerabilidades.",
+        assignedTo: [12, 23],
+        createdBy: 1,
+        priority: "high" as "urgent" | "high" | "medium" | "low",
+        status: "in-progress" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
+        labels: ["segurança", "cloud"],
         dueDate: "2024-12-10",
-        status: "in-progress" as "in-progress" | "pending" | "completed",
-        priority: "high" as "high" | "medium" | "low",
         progress: 30,
-        tags: ["segurança", "cloud", "auditoria"],
-        comments: [],
-        timeSpent: 20,
-        attachments: [{ name: "checklist-auditoria.docx", size: "150 KB", type: "docx" }]
+        attachments: [{ name: "checklist-auditoria.docx", size: "150 KB", type: "docx" }],
+        checklist: [],
     },
     {
         id: 6,
         title: "Desenvolver Dashboard de Monitorização de KPIs",
         description: "Criar um novo dashboard em tempo real para monitorizar os principais indicadores de performance (KPIs) da plataforma.",
-        assignedTo: 1,
-        assignedBy: 28,
-        department: "Tecnologia",
+        assignedTo: [9, 20],
+        createdBy: 28,
+        priority: "medium" as "urgent" | "high" | "medium" | "low",
+        status: "backlog" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
+        labels: ["dashboard", "kpi", "bi"],
         dueDate: "2025-01-15",
-        status: "pending" as "in-progress" | "pending" | "completed",
-        priority: "medium" as "high" | "medium" | "low",
         progress: 5,
-        tags: ["dashboard", "kpi", "bi"],
-        comments: [],
-        timeSpent: 0,
-        attachments: []
+        attachments: [],
+        checklist: [],
     },
     {
         id: 7,
         title: "Organizar evento de team-building de final de ano",
         description: "Planear e organizar o evento de final de ano para todos os colaboradores, incluindo logística, catering e atividades.",
-        assignedTo: 1,
-        assignedBy: 5,
-        department: "Recursos Humanos",
+        assignedTo: [5, 16],
+        createdBy: 5,
+        priority: "medium" as "urgent" | "high" | "medium" | "low",
+        status: "done" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
+        labels: ["evento", "rh"],
         dueDate: "2024-12-01",
-        status: "completed" as "in-progress" | "pending" | "completed",
-        priority: "medium" as "high" | "medium" | "low",
         progress: 100,
-        tags: ["evento", "rh", "team-building"],
-        comments: [],
-        timeSpent: 25,
-        attachments: [{ name: "propostas-locais.pdf", size: "5.5 MB", type: "pdf" }]
+        attachments: [{ name: "propostas-locais.pdf", size: "5.5 MB", type: "pdf" }],
+        checklist: [],
     }
 ];
 
@@ -708,7 +697,7 @@ export const meetings = [
         date: "2024-11-20",
         time: "14:00",
         duration: 60,
-        participants: [2, 3],
+        participants: [2, 3, 13, 14],
         status: "scheduled" as "scheduled" | "active" | "completed",
     },
     {
@@ -719,7 +708,7 @@ export const meetings = [
         date: "2024-11-25",
         time: "10:00",
         duration: 90,
-        participants: [1, 2, 3, 4, 5],
+        participants: [1, 2, 3, 4, 5, 25, 26, 28],
         status: "scheduled" as "scheduled" | "active" | "completed",
     },
     {
@@ -730,20 +719,20 @@ export const meetings = [
         date: "2024-12-05",
         time: "09:30",
         duration: 120,
-        participants: [1, 2, 4],
+        participants: [1, 2, 4, 9, 18, 28],
         status: "scheduled" as "scheduled" | "active" | "completed",
     }
 ];
 
 export const departments = [
     { id: 1, name: "Marketing", slug: "marketing", head: 3, memberCount: 12, budget: 450000, projects: 8, description: "Responsável pela imagem da marca, estratégias de comunicação, campanhas publicitárias e marketing digital.", goals: ["Aumentar notoriedade da marca em 25%", "Lançar 3 novas campanhas digitais", "Aumentar leads qualificados em 40%"] },
-    { id: 2, name: "Financeiro", slug: "finance", head: 4, memberCount: 8, budget: 1200000, projects: 5, description: "Gestão financeira, contabilidade, tesouraria, planeamento e relatórios económicos para a tomada de decisão.", goals: ["Reduzir custos operacionais em 15%", "Otimizar fluxo de caixa", "Melhorar precisão das previsões finance"] },
+    { id: 2, name: "Financeiro", slug: "finance", head: 26, memberCount: 8, budget: 1200000, projects: 5, description: "Gestão financeira, contabilidade, tesouraria, planeamento e relatórios económicos para a tomada de decisão.", goals: ["Reduzir custos operacionais em 15%", "Otimizar fluxo de caixa", "Melhorar precisão das previsões finance"] },
     { id: 3, name: "Recursos Humanos", slug: "hr", head: 5, memberCount: 6, budget: 300000, projects: 3, description: "Gestão de talentos, desenvolvimento profissional, recrutamento, e promoção do bem-estar dos colaboradores.", goals: ["Reduzir turnover para 8%", "Implementar novo programa de formação contínua", "Melhorar índice de satisfação dos colaboradores"] },
     { id: 4, name: "Tecnologia", slug: "it", head: 1, memberCount: 15, budget: 2000000, projects: 12, description: "Desenvolvimento e manutenção de sistemas, infraestrutura tecnológica, segurança da informação e suporte técnico.", goals: ["Migrar 50% dos sistemas para a cloud", "Implementar nova API de Open Banking", "Reduzir tempo de resposta de incidentes em 30%"] },
-    { id: 5, name: "Operações", slug: "operations", head: 1, memberCount: 10, budget: 800000, projects: 6, description: "Otimização de processos operacionais bancários, gestão da qualidade, e eficiência dos serviços.", goals: ["Aumentar eficiência operacional em 20%", "Reduzir tempo de processamento de transações", "Automatizar 5 processos manuais"] },
-    { id: 6, name: "Compliance", slug: "compliance", head: 1, memberCount: 5, budget: 400000, projects: 4, description: "Garantia de conformidade com regulamentações financeiras, políticas internas e prevenção de riscos.", goals: ["Implementar novo sistema de monitorização de transações (AML)", "Realizar auditorias de conformidade trimestrais", "Atualizar todas as políticas internas (RGPD, etc)"] },
-    { id: 7, name: "Segurança", slug: "security", head: 1, memberCount: 4, budget: 600000, projects: 3, description: "Proteção de dados, cibersegurança, segurança física das instalações e prevenção de fraudes.", goals: ["Implementar autenticação multi-fator (MFA) para todos os sistemas críticos", "Realizar testes de penetração trimestrais", "Reduzir falsos positivos em alertas de fraude em 15%"] },
-    { id: 8, name: "Administração", slug: "administration", head: 1, memberCount: 1, budget: 100000, projects: 1, description: "Gestão geral e administrativa da plataforma Oryon.", goals: [] },
+    { id: 5, name: "Operações", slug: "operations", head: 34, memberCount: 10, budget: 800000, projects: 6, description: "Otimização de processos operacionais bancários, gestão da qualidade, e eficiência dos serviços.", goals: ["Aumentar eficiência operacional em 20%", "Reduzir tempo de processamento de transações", "Automatizar 5 processos manuais"] },
+    { id: 6, name: "Compliance", slug: "compliance", head: 29, memberCount: 5, budget: 400000, projects: 4, description: "Garantia de conformidade com regulamentações financeiras, políticas internas e prevenção de riscos.", goals: ["Implementar novo sistema de monitorização de transações (AML)", "Realizar auditorias de conformidade trimestrais", "Atualizar todas as políticas internas (RGPD, etc)"] },
+    { id: 7, name: "Segurança", slug: "security", head: 12, memberCount: 4, budget: 600000, projects: 3, description: "Proteção de dados, cibersegurança, segurança física das instalações e prevenção de fraudes.", goals: ["Implementar autenticação multi-fator (MFA) para todos os sistemas críticos", "Realizar testes de penetração trimestrais", "Reduzir falsos positivos em alertas de fraude em 15%"] },
+    { id: 8, name: "Administração", slug: "administration", head: 25, memberCount: 1, budget: 100000, projects: 1, description: "Gestão geral e administrativa da plataforma Oryon.", goals: [] },
 ];
 
 export const projects = [
@@ -755,7 +744,7 @@ export const projects = [
         status: "active",
         startDate: "2024-10-01",
         endDate: "2024-12-31",
-        members: [2, 3],
+        members: [2, 3, 13, 14],
         budget: 250000,
         spent: 156000,
         tasksCount: 24,
@@ -771,7 +760,7 @@ export const projects = [
         status: "active",
         startDate: "2024-09-15",
         endDate: "2025-03-31",
-        members: [1, 2, 4, 9],
+        members: [1, 2, 4, 9, 18, 19, 20],
         budget: 500000,
         spent: 145000,
         tasksCount: 45,
@@ -787,7 +776,7 @@ export const projects = [
         status: "planning",
         startDate: "2024-12-01",
         endDate: "2025-06-30",
-        members: [4, 5, 10],
+        members: [4, 5, 10, 34, 35, 36, 37],
         budget: 350000,
         spent: 45000,
         tasksCount: 18,
@@ -976,17 +965,17 @@ export const nationalHolidays = [
 ];
 
 export const calendarEvents = [
-    { id: 1, title: "Reunião de Equipa - Marketing", description: "Reunião semanal da equipa de Marketing", start: "2024-11-20T10:00:00", end: "2024-11-20T11:00:00", createdBy: 3, participants: [2, 3], type: "meeting", department: "Marketing", location: "Sala de Reuniões A", color: "purple" },
-    { id: 2, title: "Apresentação aos Investidores", description: "Apresentação dos resultados do trimestre aos investidores", start: "2024-11-22T14:00:00", end: "2024-11-22T16:00:00", createdBy: 1, participants: [1, 3, 4], type: "presentation", department: "Administração", location: "Auditório Principal", color: "blue" },
-    { id: 3, title: "Workshop de Inovação", description: "Workshop sobre tendências de inovação no sector bancário", start: "2024-11-25T09:00:00", end: "2024-11-25T13:00:00", createdBy: 1, participants: [1, 2, 3, 4, 5], type: "workshop", department: "Tecnologia", location: "Centro de Formação", color: "green" },
+    { id: 1, title: "Reunião de Equipa - Marketing", description: "Reunião semanal da equipa de Marketing", start: "2024-11-20T10:00:00", end: "2024-11-20T11:00:00", createdBy: 3, participants: [2, 3, 13, 14], type: "meeting", department: "Marketing", location: "Sala de Reuniões A", color: "purple" },
+    { id: 2, title: "Apresentação aos Investidores", description: "Apresentação dos resultados do trimestre aos investidores", start: "2024-11-22T14:00:00", end: "2024-11-22T16:00:00", createdBy: 1, participants: [1, 3, 4, 26, 28], type: "presentation", department: "Administração", location: "Auditório Principal", color: "blue" },
+    { id: 3, title: "Workshop de Inovação", description: "Workshop sobre tendências de inovação no sector bancário", start: "2024-11-25T09:00:00", end: "2024-11-25T13:00:00", createdBy: 1, participants: [1, 2, 3, 4, 5, 9, 18], type: "workshop", department: "Tecnologia", location: "Centro de Formação", color: "green" },
 ];
 
 export const cloudFiles = [
     { id: 1, name: 'Orçamento_2025.xlsx', size: '1.2 MB', type: 'excel', lastModified: '2024-11-15T10:30:00Z', sharedWith: [4] },
-    { id: 2, name: 'Apresentacao_Q3.pptx', size: '8.5 MB', type: 'powerpoint', lastModified: '2024-11-12T15:00:00Z', sharedWith: [1, 3] },
+    { id: 2, name: 'Apresentacao_Q3.pptx', size: '8.5 MB', type: 'powerpoint', lastModified: '2024-11-12T15:00:00Z', sharedWith: [1, 3, 26, 28] },
     { id: 3, name: 'Minutas_reuniao_estrategia.docx', size: '350 KB', type: 'word', lastModified: '2024-11-10T11:00:00Z', sharedWith: [] },
-    { id: 4, name: 'Design_System_v2.fig', size: '22.1 MB', type: 'figma', lastModified: '2024-11-08T18:00:00Z', sharedWith: [3] },
-    { id: 5, name: 'Logos_Campanha_Natal.zip', size: '15.8 MB', type: 'zip', lastModified: '2024-11-05T12:00:00Z', sharedWith: [] },
+    { id: 4, name: 'Design_System_v2.fig', size: '22.1 MB', type: 'figma', lastModified: '2024-11-08T18:00:00Z', sharedWith: [2, 3] },
+    { id: 5, name: 'Logos_Campanha_Natal.zip', size: '15.8 MB', type: 'zip', lastModified: '2024-11-05T12:00:00Z', sharedWith: [13, 14] },
 ];
 
 export type Workspace = {
@@ -1165,7 +1154,7 @@ export const getCurrentUser = () => {
 };
 
 
-export const getTasksForUser = (userId: number) => tasks.filter(t => t.assignedTo === userId);
+export const getTasksForUser = (userId: number) => tasks.filter(t => t.assignedTo.includes(userId));
 export const getUpcomingMeetings = (userId: number) => meetings.filter(m => m.participants.includes(userId) && m.status === 'scheduled');
 export const getProjectsForUser = (userId: number) => projects.filter(p => p.members.includes(userId));
 export const getDepartment = (slug: string) => departments.find(d => d.slug === slug);

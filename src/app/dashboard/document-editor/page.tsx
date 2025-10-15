@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-    Bold, Italic, Underline, List, ListOrdered, Heading1, Heading2, Heading3, TextQuote, Code, Link, Image, Pilcrow, AlignLeft, AlignCenter, AlignRight, AlignJustify, Undo, Redo, Paintbrush, Highlighter, CaseSensitive, Strikethrough, Subscript, Superscript, Wand2, Sparkles, Save, Loader2
+    Bold, Italic, Underline, List, ListOrdered, Heading1, Heading2, Heading3, TextQuote, Code, Link, Image, Pilcrow, AlignLeft, AlignCenter, AlignRight, AlignJustify, Undo, Redo, Paintbrush, Highlighter, CaseSensitive, Strikethrough, Subscript, Superscript, Wand2, Sparkles, Save, Loader2, Cloud, Download
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect, useRef } from "react";
@@ -11,6 +11,12 @@ import { cn } from "@/lib/utils";
 import { summarizeText } from "@/ai/flows/summarize-text";
 import { translateText } from "@/ai/flows/translate-text";
 import { correctGrammar } from "@/ai/flows/correct-grammar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 
 const toneStyles = {
@@ -49,11 +55,28 @@ export default function DocumentEditorPage() {
         }
     }
 
-    const handleSave = () => {
+    const handleSaveToCloud = () => {
         toast({
-            title: "Documento Salvo",
-            description: "O seu documento foi salvo com sucesso na Nuvem.",
+            title: "Documento Salvo na Nuvem",
+            description: "Uma cópia do seu documento foi salva na Oryon Cloud.",
         });
+    }
+    
+    const handleSaveToDevice = () => {
+        if (editorRef.current) {
+            const content = editorRef.current.innerText;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = "documento-oryon.txt";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            toast({
+                title: "Download Iniciado",
+                description: "O seu documento está a ser salvo no seu dispositivo.",
+            });
+        }
     }
 
     const updateTextContent = () => {
@@ -132,9 +155,23 @@ export default function DocumentEditorPage() {
                     <h1 className="text-3xl font-bold text-foreground">Editor de Documentos Nexus</h1>
                     <p className="text-muted-foreground">Crie, edite e colabore com a ajuda da OryonAI.</p>
                 </div>
-                <Button className="btn-primary-gradient px-6 py-2 h-auto text-base" onClick={handleSave}>
-                    <Save className="mr-2 h-5 w-5" /> Salvar Documento
-                </Button>
+                 <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                         <Button className="btn-primary-gradient px-6 py-2 h-auto text-base">
+                            <Save className="mr-2 h-5 w-5" /> Salvar
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                        <DropdownMenuItem onSelect={handleSaveToCloud}>
+                            <Cloud className="mr-2 h-4 w-4" />
+                            <span>Salvar na Nuvem</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onSelect={handleSaveToDevice}>
+                           <Download className="mr-2 h-4 w-4" />
+                           <span>Salvar no Dispositivo</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
             <div className="flex-grow flex gap-8">
                 <div className="w-1/4 space-y-6">

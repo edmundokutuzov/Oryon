@@ -586,7 +586,7 @@ export const tasks = [
         assignedTo: [2, 13, 14],
         createdBy: 3,
         priority: "urgent" as "urgent" | "high" | "medium" | "low",
-        status: "in_progress" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
+        status: "in_progress" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
         labels: ["design", "campanha", "2024-Q4"],
         dueDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 10 days from now
         progress: 65,
@@ -635,7 +635,7 @@ export const tasks = [
         assignedTo: [4, 6],
         createdBy: 26,
         priority: "high" as "urgent" | "high" | "medium" | "low",
-        status: "in-progress" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
+        status: "in_progress" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
         labels: ["relatório", "financeiro"],
         dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 5 days from now
         progress: 40,
@@ -660,7 +660,7 @@ export const tasks = [
         assignedTo: [12, 23],
         createdBy: 1,
         priority: "high" as "urgent" | "high" | "medium" | "low",
-        status: "in-progress" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
+        status: "in_progress" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
         labels: ["segurança", "cloud", "auditoria"],
         dueDate: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 30,

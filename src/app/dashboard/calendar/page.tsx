@@ -4,9 +4,9 @@
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Calendar } from '@/components/ui/calendar';
 import { useState, useEffect }from 'react';
-import { calendarEvents, getCurrentUser, nationalHolidays } from '@/lib/data';
+import { calendarEvents, getCurrentUser, nationalHolidays, tasks, getTasksForUser } from '@/lib/data';
 import { Badge } from '@/components/ui/badge';
-import { Clock, MapPin, Video, Flag, Star, Plus } from 'lucide-react';
+import { Clock, MapPin, Video, Flag, Star, Plus, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
@@ -15,6 +15,7 @@ import { differenceInDays, isSameDay, parseISO } from 'date-fns';
 type Note = { date: string; text: string; };
 
 const currentUser = getCurrentUser();
+const userTasks = getTasksForUser(currentUser.id);
 
 export default function CalendarPage() {
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -27,9 +28,6 @@ export default function CalendarPage() {
     today.setHours(0, 0, 0, 0);
 
     nationalHolidays.forEach(holiday => {
-      // The holiday dates in data.ts are like "YYYY-MM-DD", which parseISO treats as UTC midnight.
-      // To avoid timezone issues, we can add 'T00:00:00' to ensure it's parsed as local time,
-      // but since we only care about the date part, we can simply add a day to UTC date to be safe.
       const holidayDate = new Date(holiday.date);
       holidayDate.setDate(holidayDate.getDate() + 1);
       holidayDate.setHours(0,0,0,0);
@@ -51,7 +49,8 @@ export default function CalendarPage() {
   }, [toast]);
 
 
-  const isSameDayHelper = (d1: Date, d2: Date) => {
+  const isSameDayHelper = (d1: Date, d2: Date | null | undefined) => {
+    if (!d2) return false;
     return d1.getDate() === d2.getDate() &&
            d1.getMonth() === d2.getMonth() &&
            d1.getFullYear() === d2.getFullYear();
@@ -62,6 +61,9 @@ export default function CalendarPage() {
     return isSameDayHelper(eventDate, date) &&
            (event.participants.includes(currentUser.id) || event.createdBy === currentUser.id);
   }) : [];
+
+  const tasksForSelectedDay = date ? userTasks.filter(task => isSameDayHelper(new Date(task.dueDate), date)) : [];
+
 
   const holidayForSelectedDay = date ? nationalHolidays.find(h => {
     const holidayDate = new Date(h.date);
@@ -122,16 +124,22 @@ export default function CalendarPage() {
                      return isSameDayHelper(eventDate, date) &&
                              (event.participants.includes(currentUser.id) || event.createdBy === currentUser.id);
                   });
+                  const dailyTasks = userTasks.filter(task => isSameDayHelper(new Date(task.dueDate), date));
                    const dailyNotes = notes.filter(n => isSameDayHelper(new Date(n.date), date));
                    const isHoliday = holidayDates.some(holidayDate => isSameDayHelper(holidayDate, date));
 
                   return (
                     <>
-                      <span>{date.getDate()}</span>
-                       {isHoliday && <Flag className="w-3 h-3 text-red-400 absolute top-2 right-2" />}
+                      <div className="flex items-center justify-center w-full">
+                        <span>{date.getDate()}</span>
+                        {isHoliday && <Flag className="w-3 h-3 text-red-400 absolute top-2 right-2" />}
+                      </div>
                       <div className="flex flex-col gap-1 mt-1 w-full">
                         {dailyEvents.map(event => (
                            <div key={event.id} className={`w-full h-1.5 rounded-full ${event.type === 'meeting' ? 'bg-blue-400' : event.type === 'presentation' ? 'bg-purple-400' : 'bg-green-400'}`} title={event.title}></div>
+                        ))}
+                         {dailyTasks.length > 0 && dailyTasks.map(task => (
+                            <div key={task.id} className="w-full h-1.5 rounded-full bg-orange-400" title={task.title}></div>
                         ))}
                         {dailyNotes.length > 0 && (
                             <div className="w-full h-1.5 rounded-full bg-yellow-400" title={`${dailyNotes.length} nota(s)`}></div>
@@ -159,9 +167,9 @@ export default function CalendarPage() {
                             <p className="text-foreground/90 text-sm mt-1">{holidayForSelectedDay.name}</p>
                         </div>
                     )}
-
-                    {eventsForSelectedDay.length > 0 ? eventsForSelectedDay.map(event => (
-                        <div key={event.id} className={`p-4 rounded-xl bg-card/5 border-l-4 border-primary`}>
+                    
+                    {eventsForSelectedDay.length > 0 && eventsForSelectedDay.map(event => (
+                        <div key={event.id} className={`p-4 rounded-xl bg-card/5 border-l-4 border-blue-400`}>
                             <h3 className="font-semibold text-foreground">{event.title}</h3>
                             <p className="text-muted-foreground text-sm mt-1">{event.description}</p>
                             <div className="text-xs text-muted-foreground mt-3 space-y-1">
@@ -174,9 +182,16 @@ export default function CalendarPage() {
                                 </Button>
                             )}
                         </div>
-                    )) : (
-                        !holidayForSelectedDay && <p className="text-muted-foreground text-center py-4">Nenhum evento para este dia.</p>
-                    )}
+                    ))}
+
+                    {tasksForSelectedDay.length > 0 && tasksForSelectedDay.map(task => (
+                        <div key={task.id} className={`p-4 rounded-xl bg-card/5 border-l-4 border-orange-400`}>
+                            <h3 className="font-semibold text-foreground flex items-center gap-2"><CheckCircle className="w-4 h-4 text-orange-400"/> Prazo de Tarefa</h3>
+                            <p className="text-foreground/90 text-sm mt-1">{task.title}</p>
+                            <Badge variant={task.priority === 'high' || task.priority === 'urgent' ? 'destructive' : 'secondary'} className="mt-2 text-xs">{task.priority}</Badge>
+                        </div>
+                    ))}
+                    
 
                     {notesForSelectedDay.map((note, index) => (
                          <div key={index} className={`p-4 rounded-xl bg-yellow-500/10 border-l-4 border-yellow-500`}>
@@ -184,6 +199,10 @@ export default function CalendarPage() {
                             <p className="text-foreground/90 text-sm mt-1">{note.text}</p>
                         </div>
                     ))}
+                    
+                    {eventsForSelectedDay.length === 0 && tasksForSelectedDay.length === 0 && !holidayForSelectedDay && notesForSelectedDay.length === 0 && (
+                      <p className="text-muted-foreground text-center py-4">Nenhum evento para este dia.</p>
+                    )}
                 </div>
             </CardContent>
          </Card>

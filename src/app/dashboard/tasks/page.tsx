@@ -11,6 +11,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useState, useMemo } from 'react';
+import { cn } from '@/lib/utils';
 
 const currentUser = getCurrentUser();
 const userTasks = getTasksForUser(currentUser.id);
@@ -29,12 +30,12 @@ export default function TasksPage() {
         <div className="p-6 fade-in h-full flex flex-col">
             <div className="flex justify-between items-center mb-8 flex-shrink-0">
                 <h1 className="text-3xl font-bold text-foreground">Minhas Tarefas</h1>
-                <Button className="btn-primary-gradient" onClick={handleNewTask}>
+                 <Button className="btn-primary-gradient" onClick={handleNewTask}>
                     <Plus className="mr-2 h-4 w-4" /> Nova Tarefa
                 </Button>
             </div>
 
-            <Tabs defaultValue="board" className="h-full flex flex-col">
+            <Tabs defaultValue="board" className="flex-grow flex flex-col">
                 <TabsList className="grid w-full grid-cols-2 max-w-sm mb-6 bg-muted/50 self-start">
                     <TabsTrigger value="board"><LayoutGrid className="mr-2 h-4 w-4" />Quadro</TabsTrigger>
                     <TabsTrigger value="list"><List className="mr-2 h-4 w-4" />Lista</TabsTrigger>
@@ -176,98 +177,91 @@ const TasksListView = () => {
 }
 
 function TaskColumn({title, tasks}: {title: string, tasks: typeof userTasks}) {
-    const statusColor: { [key: string]: string } = {
-        "Backlog": "border-t-slate-400",
-        "A Fazer": "border-t-blue-400",
-        "Em Progresso": "border-t-yellow-400",
-        "Bloqueado": "border-t-red-500",
-        "Concluído": "border-t-green-400",
+    const columnStyles: { [key: string]: { border: string } } = {
+        "Backlog": { border: "border-slate-400" },
+        "A Fazer": { border: "border-blue-400" },
+        "Em Progresso": { border: "border-yellow-400" },
+        "Bloqueado": { border: "border-red-500" },
+        "Concluído": { border: "border-green-400" },
     }
+    const style = columnStyles[title] || { border: "border-gray-400" };
     return (
-        <div className="flex flex-col h-full">
-            <div className={`flex-shrink-0 p-2 border-t-4 ${statusColor[title]}`}>
-                <h2 className="text-lg font-bold text-foreground mb-4 px-2">{title} <span className="text-muted-foreground text-base font-normal">({tasks.length})</span></h2>
+        <div className="flex flex-col h-full bg-muted/30 rounded-lg">
+            <div className={`flex-shrink-0 p-3 border-l-4 ${style.border}`}>
+                <h2 className="text-base font-semibold text-foreground">{title} <span className="text-sm text-muted-foreground font-normal">({tasks.length})</span></h2>
             </div>
-            <div className="space-y-4 flex-grow overflow-y-auto custom-scrollbar pr-2 pb-4">
+            <div className="space-y-4 flex-grow overflow-y-auto custom-scrollbar p-3">
                 {tasks.map(task => <TaskCard key={task.id} task={task} />)}
-                 {tasks.length === 0 && <p className="text-sm text-muted-foreground text-center pt-10">Nenhuma tarefa aqui.</p>}
+                 {tasks.length === 0 && <div className="text-sm text-muted-foreground text-center pt-10 px-4">Nenhuma tarefa nesta coluna.</div>}
             </div>
         </div>
     )
 }
 
 function TaskCard({ task }: { task: (typeof userTasks)[0] }) {
-  const priorityStyles: { [key: string]: string } = {
-    urgent: 'bg-red-700/30 text-red-300 border-red-700/50',
-    high: 'bg-red-500/20 text-red-300 border-red-500/30',
-    medium: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
-    low: 'bg-green-500/20 text-green-300 border-green-500/30',
+  const priorityStyles: { [key: string]: { text: string; icon: string } } = {
+    urgent: { text: 'text-red-400', icon: '🔴' },
+    high: { text: 'text-red-400', icon: '🔴' },
+    medium: { text: 'text-yellow-400', icon: '🟡' },
+    low: { text: 'text-green-400', icon: '🟢' },
   };
    const assignedUsers = task.assignedTo.map(userId => users.find(u => u.id === userId)).filter(Boolean);
+   const isDone = task.status === 'done';
 
   return (
-    <Card className="gradient-surface border-0 rounded-xl cursor-grab active:cursor-grabbing">
-        <CardHeader className="p-4 pb-2">
-             <div className="flex justify-between items-start">
-                <Badge variant="outline" className={`text-xs capitalize ${priorityStyles[task.priority]}`}>{task.priority}</Badge>
-                {task.status === 'done' && <Check className="w-5 h-5 text-green-400" />}
-             </div>
-             <CardTitle className="text-base font-semibold pt-2">{task.title}</CardTitle>
-        </CardHeader>
-      <CardContent className="p-4 pt-0">
-        <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{task.description}</p>
-        
-        { (task.progress !== undefined && task.progress > 0) &&
-            <div className="mb-4">
-                <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                    <span>Progresso</span>
-                    <span>{task.progress}%</span>
-                </div>
-                <Progress value={task.progress} className="h-1.5" />
-            </div>
-        }
+    <div className={cn("p-4 bg-card/70 rounded-lg shadow-sm cursor-grab active:cursor-grabbing", { 'opacity-60': isDone }, { 'border-l-2 border-red-500': task.status === 'blocked'})}>
+        <p className={cn("font-semibold text-foreground text-sm", {'line-through text-muted-foreground': isDone})}>
+            {task.title}
+        </p>
 
-        <div className="flex justify-between items-center text-xs text-muted-foreground mb-4">
-            <div className="flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5" />
-                <span>{new Date(task.dueDate).toLocaleDateString('pt-BR')}</span>
-            </div>
-             <div className="flex items-center gap-2">
-                {task.checklist && task.checklist.length > 0 && 
-                    <div className="flex items-center gap-1">
-                        <CheckSquare className="w-3.5 h-3.5"/> 
-                        <span>{task.checklist.filter(i => i.checked).length}/{task.checklist.length}</span>
-                    </div>
-                }
-                {task.attachments && task.attachments.length > 0 &&
-                    <div className="flex items-center gap-1">
-                         <Paperclip className="w-3.5 h-3.5"/> 
-                         <span>{task.attachments.length}</span>
-                    </div>
-                }
-            </div>
-        </div>
+        {task.status === 'blocked' && (
+            <p className="text-xs font-semibold text-red-400 mt-2">Bloqueio: Aguardando aprovação do orçamento.</p>
+        )}
+
+        <p className={cn("text-xs text-muted-foreground mt-2", {'line-through': isDone})}>{task.description}</p>
         
-        <div className="border-t border-border pt-3 flex justify-between items-center">
+        {task.checklist && task.checklist.length > 0 && (
+             <div className="mt-3 space-y-1">
+                 {task.checklist.map(item => (
+                     <div key={item.id} className={cn("flex items-center gap-2 text-xs", item.checked ? 'text-muted-foreground line-through' : 'text-foreground')}>
+                         <input type="checkbox" checked={item.checked} readOnly className="w-3.5 h-3.5 rounded-sm bg-card/80 border-border"/>
+                         <span>{item.text}</span>
+                     </div>
+                 ))}
+             </div>
+        )}
+
+        <div className="flex items-center justify-between mt-4">
+            <div className="flex items-center gap-2 text-xs">
+                {task.priority && (
+                    <span className={cn('font-semibold', priorityStyles[task.priority]?.text)}>
+                        {priorityStyles[task.priority]?.icon} {task.priority}
+                    </span>
+                )}
+                {task.dueDate && (
+                     <span className="text-muted-foreground">| Prazo: {new Date(task.dueDate).toLocaleDateString('pt-PT')}</span>
+                )}
+            </div>
             <div className="flex -space-x-2">
                 {assignedUsers.map(user => {
                     if (!user) return null;
                     const avatar = PlaceHolderImages.find(p => p.id === `user-avatar-${user.id}`)?.imageUrl;
                     return (
-                        <Avatar key={user.id} className="h-7 w-7 border-2 border-background" title={user.name}>
+                        <Avatar key={user.id} className="h-6 w-6 border-2 border-background" title={user.name}>
                             <AvatarImage src={avatar} />
                             <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                         </Avatar>
                     );
                 })}
             </div>
-            <div className='flex items-center gap-2'>
-                {task.labels.map(label => (
-                    <Badge key={label} variant="secondary" className="text-xs">{label}</Badge>
-                ))}
-            </div>
         </div>
-      </CardContent>
-    </Card>
+         {task.labels && task.labels.length > 0 && (
+             <div className="mt-3 flex flex-wrap gap-1">
+                 {task.labels.map(label => (
+                     <Badge key={label} variant="secondary" className="text-xs">#{label}</Badge>
+                 ))}
+             </div>
+         )}
+    </div>
   );
 };

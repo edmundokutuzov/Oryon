@@ -159,7 +159,7 @@ export const users = [
         name: "Daniela Pereira",
         email: "daniela.pereira@standardbank.com",
         password: "Oryon@2024!",
-        role: "Oficial de Compliance",
+        role: "Oficial de Compliance Sénior",
         department: "Compliance",
         avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTk3Nzk4MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
         status: "online" as "online" | "away" | "busy" | "offline" | "dnd",
@@ -1086,6 +1086,3 @@ export const getWorkspacesForUser = (userId: number) => workspaces.filter(w => w
 export const getWorkspaceById = (workspaceId: string) => workspaces.find(w => w.id === workspaceId);
 export const getWorkspaceTasks = (taskIds: number[]) => tasks.filter(t => taskIds.includes(t.id));
 export const getWorkspaceFiles = (fileIds: number[]) => cloudFiles.filter(f => fileIds.includes(f.id));
-
-
-    

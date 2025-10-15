@@ -7,7 +7,7 @@ import { users, getCurrentUser, tasks, cloudFiles } from '@/lib/data';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Mic, MicOff, PhoneOff, Video, VideoOff, Volume2, User, Briefcase, FileText, CheckCircle } from 'lucide-react';
+import { Mic, MicOff, PhoneOff, Video, VideoOff, Volume2, User, Briefcase, FileText } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import Link from 'next/link';
@@ -29,16 +29,9 @@ export default function CallPage() {
   
   const currentUser = getCurrentUser();
   const otherUser = users.find(u => u.id === userId);
-  const otherUserAvatar = PlaceHolderImages.find(p => p.id === `user-avatar-${otherUser?.id}`)?.imageUrl;
-  const currentUserAvatar = PlaceHolderImages.find(p => p.id === `user-avatar-${currentUser.id}`)?.imageUrl;
-  
-  // --- Contextual Data ---
-  const sharedTasks = tasks.filter(t => t.assignedTo === currentUser.id && t.assignedBy === otherUser?.id || t.assignedTo === otherUser?.id && t.assignedBy === currentUser.id).slice(0, 3);
-  const recentFiles = cloudFiles.filter(f => f.sharedWith.includes(currentUser.id) && f.sharedWith.includes(otherUser?.id || -1)).slice(0, 3);
-  // -------------------------
 
   useEffect(() => {
-    if (callType === 'video') {
+    if (callType === 'video' && otherUser) {
       const getCameraPermission = async () => {
         try {
           const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -67,18 +60,37 @@ export default function CallPage() {
         }
       };
     }
-  }, [callType, toast]);
+  }, [callType, toast, otherUser]);
   
   if (!otherUser) {
     return (
       <div className="p-6 fade-in h-full flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-foreground">Utilizador não encontrado</h1>
-          <p className="text-muted-foreground">O utilizador que procura não existe ou não está disponível.</p>
+          <p className="text-muted-foreground">O utilizador com quem está a tentar ligar não existe.</p>
+           <Link href="/dashboard">
+                <Button variant="outline" className="mt-4">
+                    Voltar ao Dashboard
+                </Button>
+           </Link>
         </div>
       </div>
     );
   }
+
+  // --- Contextual Data (Safe to run now that otherUser is confirmed) ---
+  const sharedTasks = tasks.filter(t => 
+    (t.assignedTo === currentUser.id && t.assignedBy === otherUser.id) || 
+    (t.assignedTo === otherUser.id && t.assignedBy === currentUser.id)
+  ).slice(0, 3);
+
+  const recentFiles = cloudFiles.filter(f => 
+    f.sharedWith.includes(currentUser.id) && f.sharedWith.includes(otherUser.id)
+  ).slice(0, 3);
+  // -------------------------------------------------------------------
+
+  const otherUserAvatar = PlaceHolderImages.find(p => p.id === `user-avatar-${otherUser.id}`)?.imageUrl;
+  const currentUserAvatar = PlaceHolderImages.find(p => p.id === `user-avatar-${currentUser.id}`)?.imageUrl;
 
   const handleToggleMute = () => setIsMuted(!isMuted);
   const handleToggleCamera = () => {
@@ -115,8 +127,8 @@ export default function CallPage() {
             </div>
             
             {/* Local User Video */}
-            <div className={`absolute bottom-24 right-6 w-64 h-40 rounded-2xl overflow-hidden shadow-2xl border-2 border-primary/50 transition-all duration-300 ${isCameraOff ? 'hidden' : 'block'}`}>
-                {callType === 'video' ? (
+            <div className={`absolute bottom-24 right-6 w-64 h-40 rounded-2xl overflow-hidden shadow-2xl border-2 border-primary/50 transition-all duration-300 ${isCameraOff || callType === 'voice' ? 'hidden' : 'block'}`}>
+                {callType === 'video' && hasCameraPermission ? (
                     <video ref={videoRef} className="w-full h-full object-cover" autoPlay muted playsInline />
                 ) : (
                     <div className="w-full h-full bg-slate-800 flex items-center justify-center">
@@ -205,4 +217,3 @@ export default function CallPage() {
     </div>
   );
 }
-

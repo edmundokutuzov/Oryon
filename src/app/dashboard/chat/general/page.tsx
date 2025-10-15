@@ -6,13 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger, PopoverAnchor } from "@/components/ui/popover";
 import { getCurrentUser, messages as initialMessages, users, departments as allDepartments } from "@/lib/data";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { Paperclip, Send, Smile, MoreHorizontal, Pin, Reply, Trash2, Forward, UserCheck, Keyboard, X, Eye, Users, Check, Search, MessageSquare, CornerDownLeft, Delete } from "lucide-react";
+import { Paperclip, Send, Smile, MoreHorizontal, Pin, Reply, Trash2, Forward, UserCheck, Keyboard, X, Eye, Users, Check, Search, MessageSquare, CornerDownLeft, Delete, Wand2, Loader2 } from "lucide-react";
 import { useMemo, useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
+import { summarizeChat } from "@/ai/flows/summarize-chat";
 
 type Message = (typeof initialMessages.geral)[0] & { replyTo?: Message, isDeleted?: boolean };
 type ForwardRecipient = { type: 'user' | 'department'; id: number | string; name: string };
@@ -36,6 +37,8 @@ export default function GeneralChatPage() {
     const [viewingDetails, setViewingDetails] = useState<Message | null>(null);
     const [forwardingMessage, setForwardingMessage] = useState<Message | null>(null);
     const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+    const [isSummarizing, setIsSummarizing] = useState(false);
+    const [summary, setSummary] = useState<string | null>(null);
     
     const allOtherUsers = useMemo(() => users.filter(m => m.id !== currentUser.id), []);
 
@@ -140,12 +143,44 @@ export default function GeneralChatPage() {
         inputRef.current?.focus();
     };
 
+    const handleSummarize = async () => {
+        setIsSummarizing(true);
+        setSummary(null);
+        try {
+            const recentMessages = channelMessages.slice(-50).map(msg => ({
+                author: users.find(u => u.id === msg.userId)?.name || 'Desconhecido',
+                content: msg.content
+            }));
+
+            const response = await summarizeChat({ messages: recentMessages });
+            setSummary(response.summary);
+
+        } catch (error) {
+            console.error("Failed to summarize chat:", error);
+            setSummary("Não foi possível gerar o resumo. Por favor, tente novamente.");
+            toast({
+                title: "Erro ao Resumir",
+                description: "Não foi possível contactar a IA para gerar o resumo.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsSummarizing(false);
+        }
+    };
+
+
     return (
         <>
             <div className="p-6 fade-in h-full flex flex-col">
-                 <div className="flex-shrink-0 mb-6">
-                    <h1 className="text-3xl font-bold text-foreground">Chat Geral</h1>
-                    <p className="text-muted-foreground">Canal de comunicação para toda a empresa.</p>
+                 <div className="flex-shrink-0 mb-6 flex justify-between items-center">
+                    <div>
+                        <h1 className="text-3xl font-bold text-foreground">Chat Geral</h1>
+                        <p className="text-muted-foreground">Canal de comunicação para toda a empresa.</p>
+                    </div>
+                    <Button variant="outline" onClick={handleSummarize} disabled={isSummarizing}>
+                        {isSummarizing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4 text-yellow-300" />}
+                        Resumir Conversa
+                    </Button>
                 </div>
 
                 {pinnedMessages.length > 0 && (
@@ -388,6 +423,29 @@ export default function GeneralChatPage() {
                 isOpen={!!forwardingMessage}
                 onOpenChange={(isOpen) => !isOpen && setForwardingMessage(null)}
             />
+
+            <AlertDialog open={!!summary || isSummarizing} onOpenChange={(isOpen) => !isOpen && setSummary(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="flex items-center gap-2"><Wand2 className="text-yellow-300"/>Resumo da Conversa</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            A OryonAI analisou as últimas mensagens e preparou este resumo para si.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <div className="max-h-80 overflow-y-auto custom-scrollbar -mr-4 pr-4 mt-4 text-sm text-foreground/90 whitespace-pre-wrap">
+                        {isSummarizing ? (
+                             <div className="flex items-center justify-center py-10">
+                                <Loader2 className="w-8 h-8 animate-spin text-primary"/>
+                            </div>
+                        ) : (
+                            summary
+                        )}
+                    </div>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel onClick={() => setSummary(null)}>Fechar</AlertDialogCancel>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </>
     );
 }
@@ -516,5 +574,3 @@ function VirtualKeyboard({ onKeyPress }: { onKeyPress: (key: string) => void }) 
         </div>
     );
 }
-
-    

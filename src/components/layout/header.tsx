@@ -31,16 +31,28 @@ const getBreadcrumb = (pathname: string) => {
   const pathParts = pathname.split('/').filter(p => p);
   if (pathParts.length < 2) return 'Dashboard';
   
+  // Handle /dashboard case
+  if (pathParts.length === 1 && pathParts[0] === 'dashboard') return 'Dashboard';
+
+  // Handle dynamic routes before generic ones
+  if (pathParts[1] === 'call' && pathParts.length > 2) return 'Chamada';
+  if (pathParts[1] === 'workspaces' && pathParts.length > 2) return 'Workspace';
+  if (pathParts[1] === 'departments' && pathParts.length > 2) {
+      const dept = departments.find(d => d.slug === pathParts[2]);
+      return dept ? dept.name : 'Departamento';
+  }
+   if (pathParts[1] === 'chat' && pathParts[2] === 'direct' && pathParts.length > 3) {
+    const user = users.find(u => u.id === Number(pathParts[3]));
+    return user ? `Chat com ${user.name}` : 'Mensagem Direta';
+  }
+
+
   const pageId = pathParts.slice(1).join('/');
 
   for (const section of menuItems) {
     const item = section.items.find(i => i.id === pageId);
     if (item) return item.title;
   }
-
-  // Handle dynamic routes like /call/[userId]
-  if (pathParts[1] === 'call' && pathParts.length > 2) return 'Chamada';
-
 
   return 'Dashboard';
 }
@@ -114,21 +126,46 @@ export default function Header() {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <Input
                     type="text"
-                    placeholder="Pesquisar no Oryon..."
-                    className="pl-10 pr-4 py-2 w-64 h-auto bg-card border-border rounded-xl focus:outline-none focus:border-primary text-foreground placeholder:text-muted-foreground"
+                    placeholder="Pesquisar no Oryon... (Ctrl+K)"
+                    className="pl-10 pr-4 py-2 w-64 lg:w-96 h-auto bg-card border-border rounded-xl focus:outline-none focus:border-primary text-foreground placeholder:text-muted-foreground"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
               </PopoverAnchor>
-              <PopoverContent className="w-[450px] p-2 mt-2" align="center">
+              <PopoverContent className="w-[550px] p-2 mt-2" align="center">
                 {searchResults ? (
-                  <div className="space-y-2">
-                    {searchResults.users.length > 0 && <SearchResultsCategory title="Utilizadores" items={searchResults.users.map(u => ({ id: u.id, name: u.name, href: `/dashboard/team`, icon: <User className="w-4 h-4"/> }))} />}
-                    {searchResults.projects.length > 0 && <SearchResultsCategory title="Projetos" items={searchResults.projects.map(p => ({ id: p.id, name: p.name, href: `/dashboard/projects`, icon: <Folder className="w-4 h-4"/> }))} />}
-                    {searchResults.tasks.length > 0 && <SearchResultsCategory title="Tarefas" items={searchResults.tasks.map(t => ({ id: t.id, name: t.title, href: `/dashboard/tasks`, icon: <ListTodo className="w-4 h-4"/> }))} />}
-                    {searchResults.documents.length > 0 && <SearchResultsCategory title="Documentos" items={searchResults.documents.map(d => ({ id: d.id, name: d.title, href: `/dashboard/documents`, icon: <FileTextIcon className="w-4 h-4"/> }))} />}
-                  </div>
+                  <Tabs defaultValue="all" className="w-full">
+                    <TabsList className="grid w-full grid-cols-5">
+                        <TabsTrigger value="all">Todos</TabsTrigger>
+                        <TabsTrigger value="users">Pessoas</TabsTrigger>
+                        <TabsTrigger value="projects">Projetos</TabsTrigger>
+                        <TabsTrigger value="tasks">Tarefas</TabsTrigger>
+                        <TabsTrigger value="docs">Docs</TabsTrigger>
+                    </TabsList>
+                    <div className="max-h-96 overflow-y-auto custom-scrollbar mt-2">
+                        <TabsContent value="all" className="m-0">
+                           <div className="space-y-3">
+                                {searchResults.users.length > 0 && <SearchResultsCategory title="Utilizadores" items={searchResults.users.map(u => ({ id: u.id, name: u.name, href: `/dashboard/team`, icon: <User className="w-4 h-4 text-primary"/>, context: u.role }))} />}
+                                {searchResults.projects.length > 0 && <SearchResultsCategory title="Projetos" items={searchResults.projects.map(p => ({ id: p.id, name: p.name, href: `/dashboard/projects`, icon: <Folder className="w-4 h-4 text-primary"/>, context: p.department }))} />}
+                                {searchResults.tasks.length > 0 && <SearchResultsCategory title="Tarefas" items={searchResults.tasks.map(t => ({ id: t.id, name: t.title, href: `/dashboard/tasks`, icon: <ListTodo className="w-4 h-4 text-primary"/>, context: `Prazo: ${new Date(t.dueDate).toLocaleDateString()}` }))} />}
+                                {searchResults.documents.length > 0 && <SearchResultsCategory title="Documentos" items={searchResults.documents.map(d => ({ id: d.id, name: d.title, href: `/dashboard/documents`, icon: <FileTextIcon className="w-4 h-4 text-primary"/>, context: d.type }))} />}
+                           </div>
+                        </TabsContent>
+                         <TabsContent value="users" className="m-0">
+                             {searchResults.users.length > 0 ? <SearchResultsCategory items={searchResults.users.map(u => ({ id: u.id, name: u.name, href: `/dashboard/team`, icon: <User className="w-4 h-4 text-primary"/>, context: u.role }))} /> : <p className="text-center text-sm text-muted-foreground p-4">Nenhum utilizador encontrado.</p>}
+                         </TabsContent>
+                         <TabsContent value="projects" className="m-0">
+                             {searchResults.projects.length > 0 ? <SearchResultsCategory items={searchResults.projects.map(p => ({ id: p.id, name: p.name, href: `/dashboard/projects`, icon: <Folder className="w-4 h-4 text-primary"/>, context: p.department }))} /> : <p className="text-center text-sm text-muted-foreground p-4">Nenhum projeto encontrado.</p>}
+                         </TabsContent>
+                         <TabsContent value="tasks" className="m-0">
+                             {searchResults.tasks.length > 0 ? <SearchResultsCategory items={searchResults.tasks.map(t => ({ id: t.id, name: t.title, href: `/dashboard/tasks`, icon: <ListTodo className="w-4 h-4 text-primary"/>, context: `Prazo: ${new Date(t.dueDate).toLocaleDateString()}` }))} /> : <p className="text-center text-sm text-muted-foreground p-4">Nenhuma tarefa encontrada.</p>}
+                         </TabsContent>
+                          <TabsContent value="docs" className="m-0">
+                             {searchResults.documents.length > 0 ? <SearchResultsCategory items={searchResults.documents.map(d => ({ id: d.id, name: d.title, href: `/dashboard/documents`, icon: <FileTextIcon className="w-4 h-4 text-primary"/>, context: d.type }))} /> : <p className="text-center text-sm text-muted-foreground p-4">Nenhum documento encontrado.</p>}
+                         </TabsContent>
+                    </div>
+                  </Tabs>
                 ) : (
                   <div className="p-4 text-center text-sm text-muted-foreground">
                     Nenhum resultado encontrado para "{searchQuery}".
@@ -234,15 +271,20 @@ const NotificationItem = ({ notification }: { notification: (typeof notification
     );
 };
 
-const SearchResultsCategory = ({ title, items }: { title: string; items: { id: number | string; name: string; href: string; icon: React.ReactNode }[] }) => (
+const SearchResultsCategory = ({ title, items }: { title?: string; items: { id: number | string; name: string; href: string; icon: React.ReactNode, context: string }[] }) => (
     <div>
-        <h4 className="text-xs font-semibold text-muted-foreground px-2 mb-1">{title}</h4>
+        {title && <h4 className="text-xs font-semibold text-muted-foreground px-2 mb-1">{title}</h4>}
         <div className="space-y-1">
             {items.map(item => (
                 <Link href={item.href} key={item.id}>
-                    <div className="flex items-center gap-3 p-2 rounded-md hover:bg-muted/50 cursor-pointer">
-                        {item.icon}
-                        <span className="text-sm text-foreground">{item.name}</span>
+                    <div className="flex items-center justify-between gap-3 p-2 rounded-md hover:bg-muted/50 cursor-pointer">
+                        <div className="flex items-center gap-3">
+                             <div className="p-2 bg-card rounded-md">{item.icon}</div>
+                            <div>
+                                <span className="text-sm font-medium text-foreground">{item.name}</span>
+                                <p className="text-xs text-muted-foreground">{item.context}</p>
+                            </div>
+                        </div>
                     </div>
                 </Link>
             ))}

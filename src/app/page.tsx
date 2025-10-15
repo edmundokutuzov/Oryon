@@ -9,12 +9,15 @@ import OryonLogo from '@/components/icons/oryon-logo';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, getIdToken } from 'firebase/auth';
 import { useAuth } from '@/firebase';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const { toast } = useToast();
   const auth = useAuth();
+  const router = useRouter();
+
   const [email, setEmail] = useState('admin@standardbank.com');
   const [password, setPassword] = useState('Oryon@2024!');
   const [showPassword, setShowPassword] = useState(false);
@@ -27,31 +30,49 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      // First, try to sign in
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      
+      const idToken = await userCredential.user.getIdToken(true);
+
+      // Placeholder for backend session creation
+      // In a real app, this would call a Cloud Function or API route
+      // to exchange the ID token for a session cookie.
+      // await fetch('/api/sessionLogin', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ idToken })
+      // });
+      
       toast({
         title: 'Login bem-sucedido!',
         description: 'Bem-vindo de volta ao Oryon.',
       });
-      // The AuthGuard will handle the redirection.
+
+      // Redirection is handled by the AuthGuard
     } catch (err: any) {
-      // If the user doesn't exist, create the account (for the admin user)
       if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
-         if (email === 'admin@standardbank.com') {
-            try {
-                await createUserWithEmailAndPassword(auth, email, password);
-                await signInWithEmailAndPassword(auth, email, password); // Sign in after creation
-                toast({
-                    title: 'Conta de administrador criada!',
-                    description: 'A conta de administrador foi criada com sucesso e a sessão iniciada.',
-                });
-                 // The AuthGuard will handle the redirection.
-            } catch (signupErr: any) {
-                setError('Falha ao criar e autenticar a conta de administrador.');
-            }
-         } else {
-             setError('Credenciais inválidas. Verifique o seu email e password.');
-         }
+        if (email === 'admin@standardbank.com') {
+          try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const idToken = await userCredential.user.getIdToken(true);
+            
+            // Placeholder for backend session creation
+            // await fetch('/api/sessionLogin', {
+            //   method: 'POST',
+            //   headers: { 'Content-Type': 'application/json' },
+            //   body: JSON.stringify({ idToken })
+            // });
+
+            toast({
+              title: 'Conta de administrador criada!',
+              description: 'A conta de administrador foi criada com sucesso e a sessão iniciada.',
+            });
+          } catch (signupErr: any) {
+            setError('Falha ao criar e autenticar a conta de administrador.');
+          }
+        } else {
+          setError('Credenciais inválidas. Verifique o seu email e password.');
+        }
       } else {
         let errorMessage = 'Ocorreu um erro desconhecido.';
         switch (err.code) {

@@ -31,7 +31,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { departments, getCurrentUser, menuItems } from '@/lib/data';
+import { departments, menuItems } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { cn } from '@/lib/utils';
 import OryonLogo from '../icons/oryon-logo';
@@ -43,7 +43,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { handleLogout } from '@/app/auth/actions';
+import { signOut } from 'firebase/auth';
+import { useAuth } from '@/firebase';
 
 const statusClasses: { [key: string]: string } = {
   online: 'bg-green-500',
@@ -108,18 +109,27 @@ const NavLink = ({ href, children, icon, badge }: { href: string; children: Reac
 };
 
 export default function AppSidebar() {
-  const currentUser = getCurrentUser();
-  const avatar = PlaceHolderImages.find(p => p.id === `user-avatar-${currentUser.id}`)?.imageUrl;
+  const auth = useAuth();
+  const currentUser = auth.currentUser;
+  // This is a temporary solution for the user data until it's stored in Firestore
+  const mockUser = {
+      name: currentUser?.email || 'Utilizador',
+      role: 'Standard',
+      status: 'online',
+      permissions: [],
+  };
 
   const userHasPermission = (requiredPermissions?: string[]) => {
     if (!requiredPermissions || requiredPermissions.length === 0) {
       return true; // No specific permissions required
     }
-    if (currentUser.permissions.includes('all')) {
+    if (mockUser.permissions.includes('all')) {
       return true; // Admin has all permissions
     }
-    return requiredPermissions.some(p => currentUser.permissions.includes(p));
+    return requiredPermissions.some(p => mockUser.permissions.includes(p));
   }
+  
+  const avatarUrl = currentUser ? PlaceHolderImages.find(p => p.id === `user-avatar-${currentUser.uid}`)?.imageUrl : '';
 
   return (
     <aside className="w-64 h-full flex flex-col flex-shrink-0 gradient-surface shadow-2xl transition-all duration-300 fixed md:relative z-40 md:translate-x-0 -translate-x-full">
@@ -162,14 +172,14 @@ export default function AppSidebar() {
         <div className="flex items-center space-x-3">
           <div className="relative">
             <Avatar className="h-10 w-10 border-2 border-primary">
-              <AvatarImage src={avatar} alt={currentUser.name} data-ai-hint="person portrait" />
-              <AvatarFallback>{currentUser.name.charAt(0)}</AvatarFallback>
+              <AvatarImage src={avatarUrl} alt={mockUser.name} data-ai-hint="person portrait" />
+              <AvatarFallback>{mockUser.name.charAt(0)}</AvatarFallback>
             </Avatar>
-            <span className={cn("absolute bottom-0 right-0 block h-3 w-3 rounded-full ring-2 ring-card", statusClasses[currentUser.status])} />
+            <span className={cn("absolute bottom-0 right-0 block h-3 w-3 rounded-full ring-2 ring-card", statusClasses[mockUser.status])} />
           </div>
           <div className="flex-grow overflow-hidden">
-            <p className="text-sm font-medium text-foreground truncate">{currentUser.name}</p>
-            <p className="text-xs text-muted-foreground truncate">{currentUser.role}</p>
+            <p className="text-sm font-medium text-foreground truncate">{mockUser.name}</p>
+            <p className="text-xs text-muted-foreground truncate">{mockUser.role}</p>
           </div>
            <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -191,7 +201,7 @@ export default function AppSidebar() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onSelect={() => handleLogout()}>
+                <DropdownMenuItem onSelect={() => signOut(auth)}>
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>

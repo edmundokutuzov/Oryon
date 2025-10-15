@@ -7,12 +7,19 @@ import type { FormState } from '@/lib/types';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { initializeFirebase } from '@/firebase';
 
-// NOTE: Cannot initialize Firebase on the server side in this file as it's a client module.
-// Auth logic should be handled on the client. Only server-specific actions like cookie management should be here.
+// NOTE: Firebase Auth operations are now handled on the client-side to avoid server/client module conflicts.
+// This file is intended for server-only logic, like managing session cookies in a more advanced setup.
 
 export async function handleLogout() {
-  cookies().delete('oryon_user_session');
-  redirect('/');
+  // This is a placeholder for a more secure, backend-driven logout.
+  // In a session-cookie-based system, this would call an API route
+  // to clear the HttpOnly cookie.
+  // For now, we will rely on the client-side Firebase SDK to sign out,
+  // and this action can be removed or repurposed.
+  const response = await fetch('/api/logout', { method: 'POST' });
+  if (response.ok) {
+      redirect('/');
+  }
 }
 
 
@@ -20,10 +27,9 @@ export async function handleForgotPassword(
   prevState: FormState | null,
   formData: FormData
 ): Promise<FormState> {
-  // This might also need refactoring if initializeFirebase is client-only.
-  // For now, let's assume it can be initialized on the server for specific actions like this,
-  // but it's better to do this on the client.
-  // To avoid the error, we must not call initializeFirebase() at the top level.
+  // This action remains on the server because sending a password reset email
+  // doesn't require an active user session and can be called safely.
+  // To avoid the client-side module error, we initialize Firebase just-in-time inside the action.
   const { auth } = initializeFirebase();
   const email = formData.get('email') as string;
 

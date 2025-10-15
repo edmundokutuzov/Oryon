@@ -40,6 +40,15 @@ export default function SignupPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       // You would typically also update the user's profile with their name here
       // await updateProfile(userCredential.user, { displayName: name });
+      
+      const idToken = await userCredential.user.getIdToken(true);
+
+      // Placeholder for backend session creation
+      // await fetch('/api/sessionLogin', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ idToken })
+      // });
 
       // And send a verification email
       await sendEmailVerification(userCredential.user);

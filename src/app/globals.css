@@ -5,48 +5,66 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 243 75% 58%;
-    --primary-foreground: 210 40% 98%;
+    --background: 210 20% 98%;
+    --foreground: 215 14% 24%;
+    --card: 210 20% 100%;
+    --card-foreground: 215 14% 24%;
+    --popover: 210 20% 100%;
+    --popover-foreground: 215 14% 24%;
+    --primary: 208 67% 41%;
+    --primary-foreground: 210 20% 98%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
+    --accent: 33 100% 50%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 208 67% 41%;
     --radius: 0.5rem;
+
+    /* Custom Tokens from Design System */
+    --primary-900: 211 82% 18%; /* #062D56 */
+    --primary-600: 208 67% 41%; /* #1B6FA8 */
+    --accent-500: 33 100% 50%; /* #FF8A00 */
+    --success-500: 149 58% 40%; /* #2AA15E */
+    --danger-500: 0 74% 56%;  /* #E03F3F */
+    --neutral-100: 208 60% 98%; /* #F7F9FB */
+    --neutral-700: 211 15% 26%; /* #333F4B */
   }
 
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
-    --card: 216 28% 20%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 11%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 243 75% 58%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 188 95% 42%;
+    --background: 211 82% 10%; /* Darker than #062D56 */
+    --foreground: 208 60% 98%; /* Lighter than #F7F9FB */
+    --card: 211 82% 14%; /* Slightly lighter than background */
+    --card-foreground: 208 60% 98%;
+    --popover: 211 82% 10%;
+    --popover-foreground: 208 60% 98%;
+    --primary: 208 67% 51%; /* Brighter Blue */
+    --primary-foreground: 210 20% 98%;
+    --secondary: 149 58% 40%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 217 33% 17%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 63% 31%;
+    --muted: 211 82% 18%;
+    --muted-foreground: 215 15% 65%;
+    --accent: 33 100% 60%; /* Brighter Orange */
+    --accent-foreground: 211 82% 10%;
+    --destructive: 0 74% 56%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217 33% 25%;
-    --input: 217 33% 22%;
-    --ring: 243 75% 58%;
+    --border: 211 82% 22%;
+    --input: 211 82% 20%;
+    --ring: 208 67% 51%;
+
+    /* Custom Tokens */
+    --primary-900: 211 82% 18%;
+    --primary-600: 208 67% 41%;
+    --accent-500: 33 100% 50%;
+    --success-500: 149 58% 40%;
+    --danger-500: 0 74% 56%;
+    --neutral-100: 208 60% 98%;
+    --neutral-700: 211 15% 26%;
   }
 }
 
@@ -60,11 +78,11 @@
   }
 
   .dark body {
-    background: linear-gradient(135deg, hsl(222 47% 11%) 0%, hsl(215 30% 18%) 100%);
+    background: linear-gradient(135deg, hsl(211, 82%, 12%) 0%, hsl(215, 40%, 15%) 100%);
   }
 
   .light body {
-    background-color: hsl(210 40% 98%);
+    background-color: hsl(var(--neutral-100));
   }
 }
 
@@ -74,7 +92,7 @@
   }
 
   .dark .gradient-surface {
-     background: linear-gradient(135deg, rgba(51, 65, 85, 0.8) 0%, rgba(30, 41, 59, 0.9) 100%);
+     background: linear-gradient(135deg, hsla(var(--primary-900), 0.5) 0%, hsla(var(--background), 0.7) 100%);
      @apply border-white/10;
   }
 
@@ -85,11 +103,11 @@
 
 
   .btn-primary-gradient {
-      background: linear-gradient(90deg, #4f46e5 0%, hsl(var(--primary)) 100%);
+      background: linear-gradient(90deg, hsl(var(--accent-500)) 0%, hsl(var(--primary)) 100%);
       @apply transition-all duration-200 rounded-xl text-primary-foreground;
   }
   .btn-primary-gradient:hover {
-      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+      box-shadow: 0 6px 20px hsla(var(--accent-500), 0.4);
       transform: translateY(-2px);
   }
 
@@ -144,8 +162,8 @@
 }
 
 @keyframes pulseSoft {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
-    50% { box-shadow: 0 0 0 8px rgba(22, 163, 74, 0); }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(42, 161, 94, 0.7); }
+    50% { box-shadow: 0 0 0 8px rgba(42, 161, 94, 0); }
 }
 
 @keyframes bounceIn {

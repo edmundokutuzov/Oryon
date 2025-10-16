@@ -5,11 +5,11 @@
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "UserProfile",
       "type": "object",
-      "description": "Represents a user profile within the Oryon Enterprise platform.",
+      "description": "Represents a user profile within the Oryon Insurance platform (e.g., agent, claims manager, executive).",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier for the UserProfile entity."
+          "description": "Unique identifier for the UserProfile entity, matching Firebase Auth UID."
         },
         "name": {
           "type": "string",
@@ -22,810 +22,100 @@
         },
         "role": {
           "type": "string",
-          "description": "The user's role within the organization (e.g., 'admin', 'designer')."
+          "description": "The user's role within the insurance company (e.g., 'agent', 'claims_manager', 'executive')."
         },
         "department": {
           "type": "string",
-          "description": "The department the user belongs to."
+          "description": "The department the user belongs to (e.g., 'Claims', 'Sales', 'Underwriting')."
         },
         "avatar": {
           "type": "string",
           "description": "URL of the user's avatar image.",
           "format": "uri"
         },
-        "status": {
-          "type": "string",
-          "description": "The user's current status (e.g., 'online', 'offline')."
-        },
-        "lastSeen": {
-          "type": "string",
-          "description": "Timestamp of the user's last activity.",
-          "format": "date-time"
-        },
-        "lastLogin": {
-          "type": "string",
-          "description": "Timestamp of the user's last login.",
-          "format": "date-time"
-        },
-        "phone": {
-          "type": "string",
-          "description": "The user's phone number."
-        },
-        "location": {
-          "type": "string",
-          "description": "The user's geographical location."
-        },
-        "bio": {
-          "type": "string",
-          "description": "A short biography or description of the user."
-        },
         "permissions": {
           "type": "array",
-          "description": "An array of permission strings for the user (e.g., 'read', 'write').",
+          "description": "An array of permission strings for the user (e.g., 'approve_claim', 'view_reports').",
           "items": {
             "type": "string"
           }
         }
       },
-      "required": [
-        "id",
-        "name",
-        "email",
-        "role",
-        "department",
-        "avatar",
-        "status",
-        "lastSeen",
-        "lastLogin",
-        "permissions"
-      ]
+      "required": ["id", "name", "email", "role", "department", "avatar", "permissions"]
     },
-    "Department": {
+    "Policy": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Department",
+      "title": "Policy",
       "type": "object",
-      "description": "Represents a department within the organization.",
+      "description": "Represents an insurance policy.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Department entity."
-        },
-        "name": {
-          "type": "string",
-          "description": "The name of the department."
-        },
-        "slug": {
-          "type": "string",
-          "description": "A URL-friendly slug for the department name."
-        },
-        "head": {
-          "type": "string",
-          "description": "The name of the department head."
-        },
-        "memberCount": {
-          "type": "number",
-          "description": "The number of members in the department."
-        },
-        "color": {
-          "type": "string",
-          "description": "A color associated with the department, used for UI theming."
-        },
-        "budget": {
-          "type": "number",
-          "description": "The department's budget."
-        },
-        "projects": {
-          "type": "number",
-          "description": "The number of active projects in the department."
-        },
-        "description": {
-          "type": "string",
-          "description": "A description of the department's function."
-        },
-        "goals": {
-          "type": "array",
-          "description": "An array of goals for the department.",
-          "items": {
-            "type": "string"
-          }
-        }
+        "id": { "type": "string", "description": "Unique identifier for the policy." },
+        "policyNumber": { "type": "string", "description": "The unique number identifying the policy." },
+        "policyholderName": { "type": "string", "description": "Name of the person or entity insured." },
+        "policyholderId": { "type": "string", "description": "ID of the insured client." },
+        "type": { "type": "string", "enum": ["auto", "home", "life", "health"], "description": "Type of insurance policy." },
+        "status": { "type": "string", "enum": ["active", "expired", "cancelled"], "description": "Current status of the policy." },
+        "startDate": { "type": "string", "format": "date", "description": "The effective date of the policy." },
+        "endDate": { "type": "string", "format": "date", "description": "The expiration date of the policy." },
+        "premium": { "type": "number", "description": "The premium amount for the policy." },
+        "coverageDetails": { "type": "string", "description": "A summary of what the policy covers." }
       },
-      "required": [
-        "id",
-        "name",
-        "slug",
-        "head",
-        "memberCount",
-        "color",
-        "budget",
-        "projects",
-        "description",
-        "goals"
-      ]
+      "required": ["id", "policyNumber", "policyholderName", "type", "status", "startDate", "endDate", "premium"]
     },
-    "Task": {
+    "Claim": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Task",
+      "title": "Claim",
       "type": "object",
-      "description": "Represents a task within the Oryon platform. Tasks can be assigned to multiple users and have dependencies.",
+      "description": "Represents an insurance claim process from start to finish.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Task entity."
-        },
-        "title": {
-          "type": "string",
-          "description": "The title of the task."
-        },
-        "description": {
-          "type": "string",
-          "description": "A detailed description of the task."
-        },
-        "projectId": {
-          "type": ["string", "null"],
-          "description": "Reference to Project. The ID of the project this task belongs to."
-        },
-        "assignedTo": {
-          "type": "array",
-          "description": "References to UserProfiles. An array of user IDs the task is assigned to.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "createdBy": {
-          "type": "string",
-          "description": "Reference to UserProfile. The ID of the user who created the task."
-        },
-        "priority": {
-          "type": "string",
-          "description": "The priority of the task.",
-          "enum": ["low", "medium", "high", "urgent"]
-        },
-        "status": {
-          "type": "string",
-          "description": "The current status of the task in the workflow.",
-          "enum": ["backlog", "todo", "in_progress", "blocked", "done"]
-        },
-        "labels": {
-          "type": "array",
-          "description": "An array of tags associated with the task for categorization.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "dueDate": {
-          "type": ["string", "null"],
-          "description": "The due date of the task.",
-          "format": "date-time"
-        },
-        "progress": {
-          "type": "number",
-          "description": "The progress of the task, as a percentage (0-100)."
-        },
-        "attachments": {
-          "type": "array",
-          "description": "An array of files attached to the task.",
-          "items": {
-            "type": "object",
-            "properties": {
-              "fileId": { "type": "string" },
-              "name": { "type": "string" },
-              "size": { "type": "string" }
-            },
-            "required": ["fileId", "name", "size"]
-          }
-        },
-        "checklist": {
-          "type": "array",
-          "description": "A list of sub-tasks or to-do items within the main task.",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": { "type": "string" },
-              "text": { "type": "string" },
-              "checked": { "type": "boolean" }
-            },
-            "required": ["id", "text", "checked"]
-          }
-        },
-        "dependencies": {
-          "type": "array",
-          "description": "An array of task IDs that this task depends on.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "watchers": {
-          "type": "array",
-          "description": "An array of user IDs who are watching this task for notifications.",
-          "items": {
-            "type": "string"
-          }
-        },
-        "commentsCount": {
-          "type": "number",
-          "description": "The total number of comments on the task."
-        },
-        "createdAt": {
-          "type": "string",
-          "description": "Timestamp of when the task was created.",
-          "format": "date-time"
-        },
-        "updatedAt": {
-          "type": "string",
-          "description": "Timestamp of when the task was last updated.",
-          "format": "date-time"
-        }
+        "id": { "type": "string", "description": "Unique identifier for the claim." },
+        "claimNumber": { "type": "string", "description": "The unique number identifying the claim." },
+        "policyId": { "type": "string", "description": "Reference to Policy. The ID of the policy this claim is against." },
+        "claimantId": { "type": "string", "description": "ID of the person making the claim." },
+        "assignedManagerId": { "type": "string", "description": "Reference to UserProfile. The ID of the claims manager assigned to this claim." },
+        "status": { "type": "string", "enum": ["received", "in_analysis", "inspection_scheduled", "awaiting_documents", "approved_for_payment", "closed", "denied"], "description": "The current status of the claim in the workflow." },
+        "dateOfIncident": { "type": "string", "format": "date", "description": "The date the incident occurred." },
+        "description": { "type": "string", "description": "A detailed description of the incident." },
+        "estimatedAmount": { "type": "number", "description": "The estimated financial amount of the claim." },
+        "paidAmount": { "type": "number", "description": "The final amount paid out for the claim." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of when the claim was filed." },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Timestamp of when the claim was last updated." }
       },
-      "required": [
-        "id",
-        "title",
-        "assignedTo",
-        "createdBy",
-        "priority",
-        "status",
-        "createdAt",
-        "updatedAt"
-      ]
+      "required": ["id", "claimNumber", "policyId", "assignedManagerId", "status", "dateOfIncident", "description", "createdAt", "updatedAt"]
     },
-    "Comment": {
+    "ClaimDocument": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Comment",
+      "title": "ClaimDocument",
       "type": "object",
-      "description": "Represents a comment on a task.",
+      "description": "Represents a document associated with a specific claim.",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Comment entity."
-        },
-        "userId": {
-          "type": "string",
-          "description": "Reference to UserProfile. The ID of the user who made the comment. (Relationship: UserProfile 1:N Comment)"
-        },
-        "content": {
-          "type": "string",
-          "description": "The content of the comment."
-        },
-        "timestamp": {
-          "type": "string",
-          "description": "Timestamp of when the comment was made.",
-          "format": "date-time"
-        },
-        "taskId": {
-          "type": "string",
-          "description": "Reference to Task. ID of the task the comment belongs to. (Relationship: Task 1:N Comment)"
-        }
+        "id": { "type": "string", "description": "Unique identifier for the document." },
+        "claimId": { "type": "string", "description": "Reference to Claim. The ID of the claim this document belongs to." },
+        "documentName": { "type": "string", "description": "The name of the document (e.g., 'Police Report', 'Invoice')." },
+        "fileUrl": { "type": "string", "format": "uri", "description": "The URL to the stored document in the cloud." },
+        "uploadedAt": { "type": "string", "format": "date-time", "description": "Timestamp of when the document was uploaded." }
       },
-      "required": [
-        "id",
-        "userId",
-        "content",
-        "timestamp",
-        "taskId"
-      ]
+      "required": ["id", "claimId", "documentName", "fileUrl", "uploadedAt"]
     },
-    "Attachment": {
+    "ClaimTask": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Attachment",
+      "title": "ClaimTask",
       "type": "object",
-      "description": "Represents a file attached to a task.",
+      "description": "Represents a specific task to be completed as part of a claim process.",
       "properties": {
-        "name": {
-          "type": "string",
-          "description": "The name of the file."
-        },
-        "size": {
-          "type": "string",
-          "description": "The size of the file (e.g., '2.4 MB')."
-        },
-        "type": {
-          "type": "string",
-          "description": "The file type (e.g., 'pdf', 'psd')."
-        },
-        "taskId": {
-          "type": "string",
-          "description": "Reference to Task. ID of the task the attachment belongs to. (Relationship: Task 1:N Attachment)"
-        }
+        "id": { "type": "string", "description": "Unique identifier for the task." },
+        "claimId": { "type": "string", "description": "Reference to Claim. The ID of the claim this task belongs to." },
+        "title": { "type": "string", "description": "The title of the task." },
+        "type": { "type": "string", "enum": ["verification", "approval", "contact", "inspection"], "description": "The predefined type of the task." },
+        "isCompleted": { "type": "boolean", "description": "Whether the task has been completed." },
+        "dueDate": { "type": ["string", "null"], "format": "date", "description": "The due date for the task." }
       },
-      "required": [
-        "name",
-        "size",
-        "type"
-      ]
-    },
-    "Project": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Project",
-      "type": "object",
-      "description": "Represents a project within the organization.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Project entity."
-        },
-        "name": {
-          "type": "string",
-          "description": "The name of the project."
-        },
-        "department": {
-          "type": "string",
-          "description": "The department the project belongs to."
-        },
-        "progress": {
-          "type": "number",
-          "description": "The progress of the project, as a percentage."
-        },
-        "status": {
-          "type": "string",
-          "description": "The status of the project (e.g., 'active', 'planning')."
-        },
-        "startDate": {
-          "type": "string",
-          "description": "The start date of the project.",
-          "format": "date"
-        },
-        "endDate": {
-          "type": "string",
-          "description": "The end date of the project.",
-          "format": "date"
-        },
-        "members": {
-          "type": "array",
-          "description": "References to UserProfiles. An array of user IDs that are members of the project. (Relationship: UserProfile N:N Project)",
-          "items": {
-            "type": "string"
-          }
-        },
-        "budget": {
-          "type": "number",
-          "description": "The project's budget."
-        },
-        "spent": {
-          "type": "number",
-          "description": "The amount spent on the project."
-        },
-        "tasks": {
-          "type": "number",
-          "description": "The number of tasks in the project."
-        },
-        "completedTasks": {
-          "type": "number",
-          "description": "The number of completed tasks in the project."
-        },
-        "description": {
-          "type": "string",
-          "description": "A description of the project."
-        },
-        "risks": {
-          "type": "string",
-          "description": "A description of the project's risks."
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "department",
-        "progress",
-        "status",
-        "startDate",
-        "endDate",
-        "members",
-        "budget",
-        "spent",
-        "tasks",
-        "completedTasks",
-        "description",
-        "risks"
-      ]
-    },
-    "Meeting": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Meeting",
-      "type": "object",
-      "description": "Represents a scheduled meeting.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Meeting entity."
-        },
-        "title": {
-          "type": "string",
-          "description": "The title of the meeting."
-        },
-        "description": {
-          "type": "string",
-          "description": "A description of the meeting."
-        },
-        "scheduledBy": {
-          "type": "string",
-          "description": "Reference to UserProfile. ID of the user who scheduled the meeting. (Relationship: UserProfile 1:N Meeting)"
-        },
-        "date": {
-          "type": "string",
-          "description": "The date of the meeting.",
-          "format": "date"
-        },
-        "time": {
-          "type": "string",
-          "description": "The time of the meeting."
-        },
-        "duration": {
-          "type": "number",
-          "description": "The duration of the meeting, in minutes."
-        },
-        "participants": {
-          "type": "array",
-          "description": "References to UserProfiles. An array of user IDs that are participating in the meeting. (Relationship: UserProfile N:N Meeting)",
-          "items": {
-            "type": "string"
-          }
-        },
-        "status": {
-          "type": "string",
-          "description": "The status of the meeting (e.g., 'scheduled', 'active', 'completed')."
-        },
-        "joinUrl": {
-          "type": "string",
-          "description": "The URL to join the meeting.",
-          "format": "uri"
-        },
-        "recording": {
-          "type": "string",
-          "description": "URL of the recording, if available.",
-          "format": "uri"
-        },
-        "transcript": {
-          "type": "string",
-          "description": "URL of the meeting transcript, if available.",
-          "format": "uri"
-        }
-      },
-      "required": [
-        "id",
-        "title",
-        "description",
-        "scheduledBy",
-        "date",
-        "time",
-        "duration",
-        "participants",
-        "status",
-        "joinUrl"
-      ]
-    },
-    "Message": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Message",
-      "type": "object",
-      "description": "Represents a message sent in a chat channel.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Message entity."
-        },
-        "userId": {
-          "type": "string",
-          "description": "Reference to UserProfile. The ID of the user who sent the message. (Relationship: UserProfile 1:N Message)"
-        },
-        "channel": {
-          "type": "string",
-          "description": "The channel the message was sent to (e.g., 'general', 'marketing')."
-        },
-        "content": {
-          "type": "string",
-          "description": "The content of the message."
-        },
-        "timestamp": {
-          "type": "string",
-          "description": "Timestamp of when the message was sent.",
-          "format": "date-time"
-        },
-        "type": {
-          "type": "string",
-          "description": "The type of message (e.g., 'text', 'image')."
-        }
-      },
-      "required": [
-        "id",
-        "userId",
-        "channel",
-        "content",
-        "timestamp",
-        "type"
-      ]
-    },
-    "CalendarEvent": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "CalendarEvent",
-      "type": "object",
-      "description": "Represents an event in the calendar.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the CalendarEvent entity."
-        },
-        "title": {
-          "type": "string",
-          "description": "The title of the event."
-        },
-        "description": {
-          "type": "string",
-          "description": "A description of the event."
-        },
-        "start": {
-          "type": "string",
-          "description": "The start date and time of the event.",
-          "format": "date-time"
-        },
-        "end": {
-          "type": "string",
-          "description": "The end date and time of the event.",
-          "format": "date-time"
-        },
-        "createdBy": {
-          "type": "string",
-          "description": "Reference to UserProfile. ID of the user who created the event. (Relationship: UserProfile 1:N CalendarEvent)"
-        },
-        "participants": {
-          "type": "array",
-          "description": "References to UserProfiles. An array of user IDs that are participating in the event. (Relationship: UserProfile N:N CalendarEvent)",
-          "items": {
-            "type": "string"
-          }
-        },
-        "type": {
-          "type": "string",
-          "description": "The type of event (e.g., 'meeting', 'presentation')."
-        },
-        "department": {
-          "type": "string",
-          "description": "The department the event belongs to."
-        },
-        "location": {
-          "type": "string",
-          "description": "The location of the event."
-        },
-        "color": {
-          "type": "string",
-          "description": "A color associated with the event, used for UI theming."
-        }
-      },
-      "required": [
-        "id",
-        "title",
-        "description",
-        "start",
-        "end",
-        "createdBy",
-        "participants",
-        "type",
-        "department",
-        "location",
-        "color"
-      ]
-    },
-    "UserNotification": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "UserNotification",
-      "type": "object",
-      "description": "Represents a notification for a user.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Notification entity."
-        },
-        "userId": {
-          "type": "string",
-          "description": "Reference to UserProfile. ID of the user the notification is for. (Relationship: UserProfile 1:N UserNotification)"
-        },
-        "type": {
-          "type": "string",
-          "description": "The type of notification (e.g., 'new_task', 'meeting_invite')."
-        },
-        "data": {
-          "type": "string",
-          "description": "Data associated with the notification (e.g., task ID, meeting title)."
-        },
-        "timestamp": {
-          "type": "string",
-          "description": "Timestamp of when the notification was created.",
-          "format": "date-time"
-        },
-        "read": {
-          "type": "boolean",
-          "description": "Whether the notification has been read."
-        }
-      },
-      "required": [
-        "id",
-        "userId",
-        "type",
-        "data",
-        "timestamp",
-        "read"
-      ]
-    },
-    "SecurityLog": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "SecurityLog",
-      "type": "object",
-      "description": "Represents a security-related event log.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the SecurityLog entity."
-        },
-        "type": {
-          "type": "string",
-          "description": "The type of security event (e.g., 'login_success', 'login_failed')."
-        },
-        "timestamp": {
-          "type": "string",
-          "description": "Timestamp of when the security event occurred.",
-          "format": "date-time"
-        },
-        "userId": {
-          "type": "string",
-          "description": "Reference to UserProfile. ID of the user associated with the event, if applicable. (Relationship: UserProfile 1:N SecurityLog)"
-        },
-        "userAgent": {
-          "type": "string",
-          "description": "The user agent string of the client."
-        },
-        "ip": {
-          "type": "string",
-          "description": "The IP address of the client (simulated in this case)."
-        },
-        "details": {
-          "type": "string",
-          "description": "Additional details about the security event."
-        }
-      },
-      "required": [
-        "id",
-        "type",
-        "timestamp",
-        "userId",
-        "userAgent",
-        "ip",
-        "details"
-      ]
-    },
-    "Workspace": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Workspace",
-      "type": "object",
-      "description": "Represents a collaborative workspace for a team or project.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the Workspace entity."
-        },
-        "name": {
-          "type": "string",
-          "description": "The name of the workspace."
-        },
-        "description": {
-          "type": "string",
-          "description": "A short description of the workspace's purpose."
-        },
-        "members": {
-          "type": "array",
-          "description": "Array of user IDs who are members of this workspace.",
-          "items": {
-            "type": "number"
-          }
-        },
-        "owner_id": {
-          "type": "number",
-          "description": "The user ID of the workspace owner."
-        },
-        "privacy": {
-          "type": "string",
-          "enum": ["public", "private"],
-          "description": "The privacy setting of the workspace."
-        },
-        "linked_tasks": {
-          "type": "array",
-          "items": { "type": "number" }
-        },
-        "linked_projects": {
-          "type": "array",
-          "items": { "type": "number" }
-        },
-        "linked_files": {
-          "type": "array",
-          "items": { "type": "number" }
-        },
-        "linked_chat_channel_id": {
-          "type": "string"
-        },
-        "linked_knowledge_base_articles": {
-          "type": "array",
-          "items": { "type": "number" }
-        }
-      },
-      "required": ["id", "name", "owner_id", "members", "privacy"]
-    },
-    "FeedItem": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "FeedItem",
-      "type": "object",
-      "description": "Represents a single item in the Oryon Pulse feed. It can be a user post, a system-generated event, or a recognition (kudos).",
-      "properties": {
-        "item_id": { "type": "string", "description": "Unique ID for the feed item." },
-        "timestamp": { "type": "string", "format": "date-time", "description": "Timestamp of creation." },
-        "author_user_id": { "type": "string", "description": "ID of the authoring user, or 'system' for automated posts." },
-        "item_type": { "type": "string", "enum": ["post", "poll", "kudos", "system_event"], "description": "The type of feed item." },
-        "content": {
-          "type": "object",
-          "description": "Main content of the feed item.",
-          "properties": {
-            "text": { "type": "string", "description": "The main text content, may contain HTML for rich formatting." },
-            "media_urls": {
-              "type": "array",
-              "description": "An array of URLs for images or videos attached to the post.",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "type": { "type": "string", "enum": ["image", "video"] },
-                  "url": { "type": "string", "format": "uri" }
-                },
-                "required": ["type", "url"]
-              }
-            }
-          },
-          "required": ["text"]
-        },
-        "poll_options": {
-          "type": "array",
-          "description": "Options for a poll, only applicable if item_type is 'poll'.",
-          "items": {
-            "type": "object",
-            "properties": {
-              "option_id": { "type": "string" },
-              "text": { "type": "string" },
-              "votes": { "type": "number" }
-            },
-            "required": ["option_id", "text", "votes"]
-          }
-        },
-        "system_event_details": {
-          "type": "object",
-          "description": "Details for system-generated events.",
-          "properties": {
-            "event": { "type": "string", "enum": ["project.milestone.completed", "project.created", "user.joined"] },
-            "project_id": { "type": "string" },
-            "project_name": { "type": "string" },
-            "user_name": { "type": "string" },
-            "department_name": { "type": "string" },
-            "milestone_name": { "type": "string" }
-          }
-        },
-        "mentions": { "type": "array", "description": "Array of user IDs mentioned in the post.", "items": { "type": "string" } },
-        "hashtags": { "type": "array", "description": "Array of hashtags used in the post.", "items": { "type": "string" } },
-        "reactions": {
-          "type": "array",
-          "description": "Array of reactions from users.",
-          "items": {
-            "type": "object",
-            "properties": {
-              "user_id": { "type": "string" },
-              "reaction_type": { "type": "string", "enum": ["like", "celebrate", "idea", "thanks"] }
-            },
-            "required": ["user_id", "reaction_type"]
-          }
-        },
-        "comments_count": { "type": "number", "description": "Total number of comments on the item." },
-        "is_pinned": { "type": "boolean", "description": "If true, the item is pinned to the top of the feed." }
-      },
-      "required": ["item_id", "timestamp", "author_user_id", "item_type", "content", "reactions", "comments_count", "is_pinned"]
+      "required": ["id", "claimId", "title", "type", "isCompleted"]
     }
   },
   "auth": {
     "providers": [
-      "password",
-      "anonymous"
+      "password"
     ]
   },
   "firestore": {
@@ -834,141 +124,54 @@
         "path": "/users/{userId}",
         "definition": {
           "entityName": "UserProfile",
-          "schema": {
-            "$ref": "#/backend/entities/UserProfile"
-          },
-          "description": "Stores user profile data. Access is restricted to the user themselves (owner) and potentially admins. Includes standard profile information (name, email, role, department).",
+          "schema": { "$ref": "#/backend/entities/UserProfile" },
+          "description": "Stores user profiles for agents, managers, and executives.",
+          "params": [{ "name": "userId", "description": "The user's unique ID from Firebase Auth." }]
+        }
+      },
+      {
+        "path": "/policies/{policyId}",
+        "definition": {
+          "entityName": "Policy",
+          "schema": { "$ref": "#/backend/entities/Policy" },
+          "description": "Central collection for all insurance policies.",
+          "params": [{ "name": "policyId", "description": "The unique identifier for the policy." }]
+        }
+      },
+      {
+        "path": "/claims/{claimId}",
+        "definition": {
+          "entityName": "Claim",
+          "schema": { "$ref": "#/backend/entities/Claim" },
+          "description": "Central collection for all insurance claims, serving as the core of the claims management module.",
+          "params": [{ "name": "claimId", "description": "The unique identifier for the claim." }]
+        }
+      },
+      {
+        "path": "/claims/{claimId}/documents/{documentId}",
+        "definition": {
+          "entityName": "ClaimDocument",
+          "schema": { "$ref": "#/backend/entities/ClaimDocument" },
+          "description": "Sub-collection storing all documents related to a specific claim.",
           "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier for the user, matching the Firebase Auth UID."
-            }
+            { "name": "claimId", "description": "The ID of the parent claim." },
+            { "name": "documentId", "description": "The unique ID for the document." }
           ]
         }
       },
       {
-        "path": "/tasks/{taskId}",
+        "path": "/claims/{claimId}/tasks/{taskId}",
         "definition": {
-          "entityName": "Task",
-          "schema": {
-            "$ref": "#/backend/entities/Task"
-          },
-          "description": "Stores tasks in a centralized collection for collaborative access.",
+          "entityName": "ClaimTask",
+          "schema": { "$ref": "#/backend/entities/ClaimTask" },
+          "description": "Sub-collection storing all tasks associated with a specific claim.",
           "params": [
-            {
-              "name": "taskId",
-              "description": "The unique identifier for the task."
-            }
+            { "name": "claimId", "description": "The ID of the parent claim." },
+            { "name": "taskId", "description": "The unique ID for the task." }
           ]
         }
-      },
-      {
-        "path": "/tasks/{taskId}/comments/{commentId}",
-        "definition": {
-          "entityName": "Comment",
-          "schema": {
-            "$ref": "#/backend/entities/Comment"
-          },
-          "description": "Stores comments associated with a specific task.",
-          "params": [
-            {
-              "name": "taskId",
-              "description": "The unique identifier for the task the comment belongs to."
-            },
-            {
-              "name": "commentId",
-              "description": "The unique identifier for the comment."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/users/{userId}/calendarEvents/{calendarEventId}",
-        "definition": {
-          "entityName": "CalendarEvent",
-          "schema": {
-            "$ref": "#/backend/entities/CalendarEvent"
-          },
-          "description": "Stores calendar events associated with a specific user. Includes `userId` for authorization independence.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier for the user who owns the calendar event."
-            },
-            {
-              "name": "calendarEventId",
-              "description": "The unique identifier for the calendar event."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/departments/{departmentId}",
-        "definition": {
-          "entityName": "Department",
-          "schema": {
-            "$ref": "#/backend/entities/Department"
-          },
-          "description": "Stores department information. Access control based on roles or membership. Could potentially include a `members` map if collaborative access is required at the department level.",
-          "params": [
-            {
-              "name": "departmentId",
-              "description": "The unique identifier for the department."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/securityLogs/{securityLogId}",
-        "definition": {
-          "entityName": "SecurityLog",
-          "schema": {
-            "$ref": "#/backend/entities/SecurityLog"
-          },
-          "description": "Stores security logs for auditing and monitoring purposes. Access should be restricted to admins.",
-          "params": [
-            {
-              "name": "securityLogId",
-              "description": "The unique identifier for the security log entry."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/workspaces/{workspaceId}",
-        "definition": {
-          "entityName": "Workspace",
-          "schema": {
-            "$ref": "#/backend/entities/Workspace"
-          },
-          "description": "Stores workspace data, linking various resources like tasks, files, and projects. Access is managed by workspace membership.",
-          "params": [
-            {
-              "name": "workspaceId",
-              "description": "The unique identifier for the workspace."
-            }
-          ]
-        }
-      },
-      {
-        "path": "/feedItems/{feedItemId}",
-        "definition": {
-            "entityName": "FeedItem",
-            "schema": {
-                "$ref": "#/backend/entities/FeedItem"
-            },
-            "description": "Stores individual items for the Oryon Pulse feed. Publicly readable by all authenticated users, with write access controlled by the author_user_id.",
-            "params": [
-                {
-                    "name": "feedItemId",
-                    "description": "The unique identifier for the feed item."
-                }
-            ]
-        }
-    }
+      }
     ],
-    "reasoning": "The Firestore data structure is designed to support the features described in the user request, focusing on authentication, user profiles, task management, meetings, and departmental organization, while adhering to the core design principles of Authorization Independence, Clarity of Intent, DBAC, and QAPs. This design avoids `get()` calls in security rules, enabling atomic operations and improving debuggability. It utilizes denormalization, structural segregation, and consistent access modeling patterns.\n\n**Authorization Independence (Denormalization):**\n\n*   Authorization data (e.g., user roles, membership) is denormalized into subcollections to avoid `get()` calls in security rules.\n\n**QAPs (Rules are Not Filters):**\n\n*   Structural Segregation: Different types of data with different access requirements are stored in separate collections.\n\n**Access Modeling:**\n\n*   User Profiles: Stored in `/users/{userId}`, providing path-based ownership.\n*   Tasks: Stored in `/tasks/{taskId}` as a root collection for better query flexibility and collaboration.\n*   Comments: Stored in `/tasks/{taskId}/comments/{commentId}` maintaining hierarchy and ownership.\n*   Calendar Events: Stored in `/users/{userId}/calendarEvents/{calendarEventId}`.\n\n**Security and Integrity:**\n\n*   Path-based ownership is used where applicable (e.g., `/users/{userId}/calendarEvents/{calendarEventId}`) to simplify security rules.\n*   Timestamps (createdAt, lastModified) are included to track data changes.\n*   Radical Consistency is applied through consistent naming conventions (e.g., always using `userId` for user IDs).\n"
+    "reasoning": "The new Firestore structure is designed around the core entities of the insurance business: Policies and Claims. Claims are the central hub, with sub-collections for related Documents and Tasks, allowing for efficient querying and data organization within a single claim context. This structure is scalable and aligns with Firestore's best practices for managing related data."
   }
 }
-
-    

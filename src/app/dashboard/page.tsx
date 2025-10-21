@@ -15,7 +15,7 @@ import {
   Target,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getTasksForUser, getUpcomingMeetings, users as mockUsers, feedItems } from '@/lib/data';
+import { getTasksForUser, getUpcomingMeetings, users as mockUsers, feedItems, campaigns, meetings as allMeetings } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
@@ -113,13 +113,16 @@ const DailyBriefing = ({ user }: { user: any }) => {
   useEffect(() => {
     if (!currentUser) return;
 
-    const tasks = getTasksForUser(currentUser.id);
-    const today = new Date().toISOString().split('T')[0];
-    const meetings = getUpcomingMeetings(currentUser.id).filter(m => m.date === today);
-
     async function fetchBriefing() {
       setIsLoading(true);
       setError(null);
+      
+      const tasks = getTasksForUser(currentUser.id);
+      const today = new Date().toISOString().split('T')[0];
+      const meetings = allMeetings.filter(m => 
+          m.participants.includes(currentUser.id) && m.date === today
+      );
+      
       try {
         const relevantTasks = tasks
           .filter(t => t.status !== 'done')
@@ -151,7 +154,11 @@ const DailyBriefing = ({ user }: { user: any }) => {
 
       } catch (err: any) {
         console.error("Erro ao gerar resumo diário:", err);
-        setError("Não foi possível carregar o seu resumo diário. A equipa de engenharia foi notificada.");
+        if (typeof err.message === 'string' && (err.message.includes('503') || err.message.includes('overloaded'))) {
+            setError("A OryonAI está com um volume elevado de pedidos. Por favor, tente novamente dentro de momentos.");
+        } else {
+            setError("Não foi possível carregar o seu resumo diário. A equipa de engenharia foi notificada.");
+        }
       } finally {
         setIsLoading(false);
       }
@@ -274,7 +281,7 @@ const ContextPanel = () => {
 
   const tasks = getTasksForUser(currentUserData.id);
   const today = new Date().toISOString().split('T')[0];
-  const meetings = getUpcomingMeetings(currentUserData.id).filter(m => m.date === today);
+  const meetings = allMeetings.filter(m => m.participants.includes(currentUserData.id) && m.date === today);
 
   return (
     <div className="p-6 h-full flex flex-col">
@@ -350,7 +357,7 @@ export default function DashboardPage() {
 
   const tasks = getTasksForUser(currentUserData.id);
   const today = new Date().toISOString().split('T')[0];
-  const meetings = getUpcomingMeetings(currentUserData.id).filter(m => m.date === today);
+  const meetings = allMeetings.filter(m => m.participants.includes(currentUserData.id) && m.date === today);
 
   return (
     <div className="flex h-full">
@@ -364,7 +371,7 @@ export default function DashboardPage() {
 
         <DailyBriefing user={user} />
         
-        {user.role === ROLES.ADMIN && <AdminPanel />}
+        {currentUserData.role === ROLES.ADMIN && <AdminPanel />}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {kpis.map((kpi) => (
@@ -430,7 +437,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-    
-
-    

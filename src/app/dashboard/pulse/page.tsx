@@ -23,6 +23,8 @@ import {
   BrainCircuit,
   PartyPopper,
   Handshake,
+  TrendingUp,
+  AlertTriangle,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -36,6 +38,8 @@ const eventIcons = {
     'project.created': Rocket,
     'user.joined': UserPlus,
     'project.milestone.completed': Sparkles,
+    'market.opened': TrendingUp,
+    'risk.alert': AlertTriangle,
 }
 
 
@@ -49,7 +53,7 @@ const SystemEventCard = ({ item }: { item: any }) => {
                 <Icon className="w-5 h-5 text-primary" />
             </div>
             <div>
-                <p className="text-sm text-muted-foreground">{item.content.text}</p>
+                <p className="text-sm text-foreground/90" dangerouslySetInnerHTML={{ __html: item.content.text }}></p>
                 <span className="text-xs text-muted-foreground/80">{new Date(item.timestamp).toLocaleString('pt-PT', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
             </div>
         </div>
@@ -84,7 +88,7 @@ const KudosCard = ({ item }: { item: any }) => {
 const FeedItemCard = ({ item }: { item: any }) => {
   const author = users.find(u => u.id === item.author_user_id);
   const authorAvatar = author ? PlaceHolderImages.find(p => p.id === `user-avatar-${author.id}`)?.imageUrl : '';
-  const feedImage = item.content.media_urls?.[0] ? PlaceHolderImages.find(p => p.id === 'pulse-feed-image-1') : null;
+  const feedImage = item.content.media_urls?.[0] ? PlaceHolderImages.find(p => p.id === item.content.media_urls[0].url) : null;
 
 
   if (item.item_type === 'system_event') {
@@ -113,7 +117,7 @@ const FeedItemCard = ({ item }: { item: any }) => {
         </div>
       </CardHeader>
       <CardContent className="p-6 pt-0">
-        <p className="text-foreground/90 whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: item.content.text.replace(/#(\w+)/g, '<span class="text-primary font-semibold">#$1</span>').replace(/@(\w+\s\w+)/g, '<span class="text-cyan-400 font-semibold">@$1</span>') }}></p>
+        <div className="text-foreground/90 whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: item.content.text.replace(/#(\w+)/g, '<span class="text-primary font-semibold">#$1</span>').replace(/@(\w+\s\w+)/g, '<span class="text-cyan-400 font-semibold">@$1</span>') }}></div>
         {feedImage && (
             <div className="mt-4 rounded-lg overflow-hidden border border-border">
                 <Image 
@@ -154,7 +158,7 @@ const FeedItemCard = ({ item }: { item: any }) => {
 
 
 export default function PulsePage() {
-    const popularHashtags = ['#anuncios', '#feedback', '#marketingdigital', '#cultura', '#tecnologia', '#design'];
+    const popularHashtags = ['#sportsbook', '#risco', '#marketingdigital', '#casino', '#tecnologia', '#performance'];
   return (
     <div className="p-6 fade-in">
         <h1 className="text-3xl font-bold text-foreground mb-8 flex items-center gap-3">

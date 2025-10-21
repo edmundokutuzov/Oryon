@@ -1,3 +1,4 @@
+
 // This file mocks a database.
 // In a real application, you would fetch this data from a server.
 
@@ -98,7 +99,7 @@ export const tasks = [
         id: 1,
         title: "Criar campanha publicitária para 'Bónus de Boas-Vindas'",
         description: "Desenvolver conceito criativo e materiais para campanha do novo bónus de boas-vindas. Foco em mídia digital e redes sociais.",
-        context: { type: 'campaign', id: 'C001', name: 'Campanha de Marketing Q4' },
+        context: { type: 'campaign', id: 'C001', name: 'Campanha de Marketing Q4' } as Context,
         assignedTo: [2, 3],
         createdBy: 3,
         priority: "urgent" as "urgent" | "high" | "medium" | "low",
@@ -172,7 +173,7 @@ export const tasks = [
         id: 5,
         title: "Auditoria de Segurança dos Servidores de Jogos",
         description: "Realizar uma auditoria completa de segurança para identificar e corrigir vulnerabilidades nos servidores de jogos online.",
-        context: { type: 'game_operation', id: 'GO002', name: 'Fortune Tiger' },
+        context: { type: 'game_operation', id: 'GO002', name: 'Fortune Tiger' } as Context,
         assignedTo: [1, 4],
         createdBy: 1,
         priority: "high" as "urgent" | "high" | "medium" | "low",
@@ -196,7 +197,7 @@ export const tasks = [
         id: 6,
         title: "Desenvolver Dashboard de Monitorização de KPIs de Risco",
         description: "Criar um novo dashboard em tempo real para monitorizar os KPIs de risco, como atividade suspeita, limites de aposta e exposição por mercado.",
-        context: { type: 'game_operation', id: 'GO002', name: 'Fortune Tiger' },
+        context: { type: 'game_operation', id: 'GO002', name: 'Fortune Tiger' } as Context,
         assignedTo: [1],
         createdBy: 1,
         priority: "medium" as "urgent" | "high" | "medium" | "low",
@@ -242,7 +243,7 @@ export const tasks = [
         id: 8,
         title: "Revisar e Aprovar Política de Jogo Responsável",
         description: "A equipa de Compliance precisa de rever a nova Política de Jogo Responsável antes da sua publicação.",
-        context: { type: 'game_operation', id: 'GO001', name: 'Aviator 2.0' },
+        context: { type: 'game_operation', id: 'GO001', name: 'Aviator 2.0' } as Context,
         assignedTo: [1, 4],
         createdBy: 1,
         priority: "high" as "urgent" | "high" | "medium" | "low",
@@ -262,7 +263,7 @@ export const tasks = [
         id: 9,
         title: "Implementar API de verificação de identidade (KYC)",
         description: "Integrar a API de um fornecedor externo para automatizar o processo de verificação de identidade (Know Your Customer) no registo de novos utilizadores.",
-        context: { type: 'game_operation', id: 'GO002', name: 'Fortune Tiger' },
+        context: { type: 'game_operation', id: 'GO002', name: 'Fortune Tiger' } as Context,
         assignedTo: [1],
         createdBy: 1,
         priority: "high" as "urgent" | "high" | "medium" | "low",
@@ -287,7 +288,7 @@ export const tasks = [
         id: 10,
         title: "Análise de performance SEO de mercados de apostas",
         description: "Analisar performance de SEO para os principais mercados de apostas, identificar palavras-chave de oportunidade e otimizar páginas para melhorar ranking no Google.",
-        context: { type: 'campaign', id: 'C001', name: 'Campanha de Marketing Q4' },
+        context: { type: 'campaign', id: 'C001', name: 'Campanha de Marketing Q4' } as Context,
         assignedTo: [3],
         createdBy: 3,
         priority: "low" as "urgent" | "high" | "medium" | "low",
@@ -337,7 +338,7 @@ export const meetings = [
     },
     {
         id: 3,
-        title: "Workshop de Novas Funcionalidades da Plataforma",
+        title: "Workshop de Inovação",
         description: "Sessão de brainstorming para identificar oportunidades de novas funcionalidades para o Sportsbook e Casino.",
         department: "Plataforma",
         date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -644,6 +645,13 @@ export const cloudFiles = [
     { id: 5, name: 'Logos_Campanha_Natal.zip', size: '15.8 MB', type: 'zip', lastModified: '2024-11-05T12:00:00Z', sharedWith: [3] },
 ];
 
+export type Context = {
+  type: 'campaign' | 'game_operation' | 'user' | 'meeting';
+  id: string;
+  name: string;
+};
+
+
 export type Workspace = {
     id: string;
     name: string;
@@ -698,7 +706,7 @@ export type FeedItem = {
     };
     poll_options?: { option_id: string, text: string, votes: number }[];
     system_event_details?: {
-        event: 'project.milestone.completed' | 'project.created' | 'user.joined';
+        event: 'project.milestone.completed' | 'project.created' | 'user.joined' | 'market.opened' | 'risk.alert';
         project_id?: number;
         project_name?: string;
         user_name?: string;
@@ -716,13 +724,21 @@ export const feedItems: FeedItem[] = [
     {
         item_id: 'pulse-1',
         timestamp: new Date().toISOString(),
-        author_user_id: 1, // Admin
+        author_user_id: 3, // Maria Silva
         item_type: 'post',
-        content: { text: "<b>Anúncio Importante:</b> A partir da próxima segunda-feira, teremos um novo sistema de ponto eletrónico. Por favor, consultem o artigo na Base de Conhecimento para mais detalhes. #anuncios" },
-        mentions: [],
-        hashtags: ['anuncios', 'rh'],
-        reactions: [{user_id: 2, reaction_type: 'like'}, {user_id: 5, reaction_type: 'like'}],
-        comments_count: 2,
+        content: { 
+            text: "🚀 <b>Lançamento da Campanha de Natal!</b> 🚀<br>A nossa maior campanha do ano está oficialmente <b>ATIVA</b>. Todos os banners, bónus e comunicações foram lançados. <br><br>Um grande obrigado a toda a equipa de #marketing, #design e #tecnologia por tornarem isto possível! <br><br>Vamos monitorizar os KPIs de perto. Força equipa! 💪 #casadeapostas #natal",
+            media_urls: [{ type: 'image', url: 'pulse-image-natal' }]
+        },
+        mentions: [2, 1],
+        hashtags: ['marketing', 'design', 'tecnologia', 'natal', 'casadeapostas'],
+        reactions: [
+            {user_id: 2, reaction_type: 'celebrate'}, 
+            {user_id: 5, reaction_type: 'like'},
+            {user_id: 1, reaction_type: 'celebrate'},
+            {user_id: 4, reaction_type: 'like'}
+        ],
+        comments_count: 8,
         is_pinned: true,
     },
     {
@@ -730,11 +746,10 @@ export const feedItems: FeedItem[] = [
         timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
         author_user_id: 'system',
         item_type: 'system_event',
-        content: { text: "A campanha 'Lançamento da App Mobile' foi iniciada." },
+        content: { text: "<b>Novo mercado de risco elevado aberto:</b> 'Vencedor da Final da Champions League'. Limites iniciais definidos pela equipa de risco." },
         system_event_details: {
-            event: 'project.created', // This should be campaign.created, but we keep it for demo
-            project_id: 2,
-            project_name: 'Lançamento da App Mobile'
+            event: 'market.opened',
+            project_name: 'Final Champions League'
         },
         reactions: [],
         comments_count: 0,
@@ -743,25 +758,28 @@ export const feedItems: FeedItem[] = [
     {
         item_id: 'pulse-3',
         timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-        author_user_id: 2, // Edmundo
+        author_user_id: 4, // Carlos Santos
         item_type: 'post',
-        content: { text: "Equipa de #design, partilho aqui algumas inspirações para a nova identidade visual. O que acham da abordagem com gradientes mais subtis? @Maria Silva, gostaria do seu feedback.", media_urls: [{ type: 'image', url: 'https://picsum.photos/seed/design-inspiration/800/400' }] },
-        mentions: [3],
-        hashtags: ['design', 'feedback', 'branding'],
-        reactions: [{user_id: 3, reaction_type: 'idea'}, {user_id: 1, reaction_type: 'like'}],
-        comments_count: 3,
+        content: { 
+            text: "⚠️ <b>Alerta de Risco:</b> Padrão de apostas invulgar detectado no mercado 'Cantos Asiáticos' para o jogo FC Porto vs Sporting CP. A monitorizar de perto. @Admin Sistema, por favor verifique os logs do utilizador 'PlayerX123'.",
+            media_urls: [{ type: 'image', url: 'pulse-image-risk' }]
+        },
+        mentions: [1],
+        hashtags: ['risco', 'fraude', 'sportsbook'],
+        reactions: [{user_id: 1, reaction_type: 'like'}],
+        comments_count: 2,
         is_pinned: false,
     },
      {
         item_id: 'pulse-5',
         timestamp: new Date(Date.now() - 10 * 60 * 60 * 1000).toISOString(),
-        author_user_id: 1, // Admin
+        author_user_id: 1,
         item_type: 'post',
-        content: { text: "Alguém tem experiência com a implementação de WebSockets para notificações em tempo real em larga escala? A pensar na arquitetura para a nova #appmobile. #devs #tecnologia" },
+        content: { text: "Discussão técnica: Estamos a avaliar a implementação de um novo motor de odds em tempo real usando Rust para máxima performance. Quais são os vossos pensamentos sobre a integração com a nossa stack atual? #tecnologia #backend #rust" },
         mentions: [],
-        hashtags: ['devs', 'tecnologia', 'appmobile'],
-        reactions: [{user_id: 1, reaction_type: 'idea'}, {user_id: 1, reaction_type: 'idea'}],
-        comments_count: 4,
+        hashtags: ['tecnologia', 'backend', 'rust'],
+        reactions: [{user_id: 4, reaction_type: 'idea'}],
+        comments_count: 6,
         is_pinned: false,
     },
     {
@@ -769,8 +787,26 @@ export const feedItems: FeedItem[] = [
         timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
         author_user_id: 'system',
         item_type: 'kudos',
-        content: { text: "Parabéns à <b>Ana Costa</b> por ter recebido 'Kudos' do <b>Admin Sistema</b> pelo seu excelente trabalho na organização do evento de team-building! #cultura" },
-        reactions: [{user_id: 3, reaction_type: 'celebrate'}, {user_id: 4, reaction_type: 'celebrate'}, {user_id: 2, reaction_type: 'celebrate'}],
+        content: { text: "🏆 Parabéns ao <b>Carlos Santos</b> por ter atingido um novo recorde de rentabilidade (+15%) nos mercados da Premier League este mês! Excelente trabalho de gestão de risco. #sportsbook #performance" },
+        reactions: [
+            {user_id: 1, reaction_type: 'celebrate'}, 
+            {user_id: 3, reaction_type: 'celebrate'},
+            {user_id: 2, reaction_type: 'celebrate'}
+        ],
+        comments_count: 5,
+        is_pinned: false,
+    },
+    {
+        item_id: 'pulse-6',
+        timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        author_user_id: 2, // Edmundo Kutuzov
+        item_type: 'post',
+        content: { text: "Feedback sobre o novo design do banner do 'Fortune Tiger'. A versão A teve um CTR 20% superior à versão B nos testes iniciais. Vamos avançar com a A. #design #casino #analytics",
+            media_urls: [{ type: 'image', url: 'pulse-image-casino' }]
+        },
+        mentions: [3],
+        hashtags: ['design', 'casino', 'analytics'],
+        reactions: [{user_id: 3, reaction_type: 'like'}, {user_id: 1, reaction_type: 'like'}],
         comments_count: 1,
         is_pinned: false,
     }
@@ -824,3 +860,24 @@ export const getWorkspaceTasks = (taskIds: number[]) => tasks.filter(t => taskId
 export const getWorkspaceFiles = (fileIds: number[]) => cloudFiles.filter(f => fileIds.includes(f.id));
 export const getCampaignById = (campaignId: string) => campaigns.find(c => c.id === campaignId);
 export const projects = campaigns;
+
+export type Bet = {
+    id: string;
+    playerId: string;
+    market: string;
+    stake: number;
+    odds: number;
+    status: 'pending' | 'won' | 'lost' | 'cashed_out';
+    timestamp: string;
+};
+
+export const bets: Bet[] = [];
+
+export type Affiliate = {
+    id: string;
+    name: string;
+    trackingCode: string;
+    commissionRate: number;
+};
+
+export const affiliates: Affiliate[] = [];

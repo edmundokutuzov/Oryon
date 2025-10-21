@@ -15,7 +15,7 @@ import {
   Target,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getTasksForUser, getUpcomingMeetings, users, feedItems } from '@/lib/data';
+import { getTasksForUser, getUpcomingMeetings, users as mockUsers, feedItems } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
@@ -103,10 +103,12 @@ const AdminPanel = () => {
   );
 };
 
-const DailyBriefing = ({currentUser}: {currentUser: any}) => {
+const DailyBriefing = ({ user }: { user: any }) => {
   const [briefing, setBriefing] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const currentUser = mockUsers.find(u => u.email === user?.email);
 
   useEffect(() => {
     if (!currentUser) return;
@@ -116,6 +118,8 @@ const DailyBriefing = ({currentUser}: {currentUser: any}) => {
     const meetings = getUpcomingMeetings(currentUser.id).filter(m => m.date === today);
 
     async function fetchBriefing() {
+      setIsLoading(true);
+      setError(null);
       try {
         const relevantTasks = tasks
           .filter(t => t.status !== 'done')
@@ -233,7 +237,7 @@ const PulseFeedSnippet = () => {
             <CardContent>
               <div className="space-y-4">
                 {feedSnippet.map(item => {
-                    const author = users.find(u => u.id === item.author_user_id)
+                    const author = mockUsers.find(u => u.id === item.author_user_id)
                     return (
                         <Link href="/dashboard/pulse" key={item.item_id}>
                           <div className="p-4 rounded-xl bg-card/5 hover:bg-card/10 transition-colors cursor-pointer">
@@ -256,16 +260,21 @@ const PulseFeedSnippet = () => {
 }
 
 const ContextPanel = () => {
-  const onlineUsers = users.filter(u => u.status === 'online');
+  const onlineUsers = mockUsers.filter(u => u.status === 'online');
   const { user } = useUser();
   
   if (!user) {
     return <div className="p-6 h-full flex flex-col"><Loader2 className="h-5 w-5 animate-spin"/></div>
   }
 
-  const tasks = getTasksForUser(user.id);
+  const currentUserData = mockUsers.find(u => u.email === user.email);
+  if (!currentUserData) {
+      return <div className="p-6 h-full flex flex-col"><p className="text-muted-foreground">Utilizador não encontrado.</p></div>
+  }
+
+  const tasks = getTasksForUser(currentUserData.id);
   const today = new Date().toISOString().split('T')[0];
-  const meetings = getUpcomingMeetings(user.id).filter(m => m.date === today);
+  const meetings = getUpcomingMeetings(currentUserData.id).filter(m => m.date === today);
 
   return (
     <div className="p-6 h-full flex flex-col">
@@ -330,9 +339,18 @@ export default function DashboardPage() {
       )
   }
   
-  const tasks = getTasksForUser(user.id);
+  const currentUserData = mockUsers.find(u => u.email === user.email);
+  if (!currentUserData) {
+      return (
+        <div className="flex h-full items-center justify-center">
+            <p className="text-muted-foreground">Utilizador não encontrado no sistema.</p>
+        </div>
+      )
+  }
+
+  const tasks = getTasksForUser(currentUserData.id);
   const today = new Date().toISOString().split('T')[0];
-  const meetings = getUpcomingMeetings(user.id).filter(m => m.date === today);
+  const meetings = getUpcomingMeetings(currentUserData.id).filter(m => m.date === today);
 
   return (
     <div className="flex h-full">
@@ -344,7 +362,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <DailyBriefing currentUser={user} />
+        <DailyBriefing user={user} />
         
         {user.role === ROLES.ADMIN && <AdminPanel />}
 
@@ -412,5 +430,7 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    
 
     

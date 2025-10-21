@@ -1,3 +1,4 @@
+
 'use client';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -105,8 +106,10 @@ const TasksListView = () => {
                     bValue = statusOrder[b.status] || 0;
                     break;
                 case 'project':
-                    aValue = projects.find(p => p.id === a.projectId)?.name || 'zzzz';
-                    bValue = projects.find(p => p.id === b.projectId)?.name || 'zzzz';
+                    const projectA = projects.find(p => p.id === a.contextId);
+                    const projectB = projects.find(p => p.id === b.contextId);
+                    aValue = projectA?.name || 'zzzz';
+                    bValue = projectB?.name || 'zzzz';
                     return aValue.localeCompare(bValue) * (sortConfig.direction === 'ascending' ? 1 : -1);
                 default: // title
                     aValue = a.title;
@@ -134,14 +137,14 @@ const TasksListView = () => {
         urgent: 'text-destructive',
         high: 'text-destructive',
         medium: 'text-accent-500',
-        low: 'text-success-500',
+        low: 'text-green-500',
     };
      const statusStyles: { [key: string]: string } = {
         'in-progress': 'text-accent-500',
         blocked: 'text-destructive',
         todo: 'text-primary',
         backlog: 'text-slate-400',
-        done: 'text-success-500',
+        done: 'text-green-500',
     };
 
     const priorityIcons: { [key: string]: string } = { urgent: '🔴', high: '🔴', medium: '🟡', low: '🟢' };
@@ -157,7 +160,7 @@ const TasksListView = () => {
                                 <span className="flex items-center gap-2">Tarefa <ArrowUpDown className="w-4 h-4"/></span>
                             </TableHead>
                             <TableHead onClick={() => requestSort('project')} className="cursor-pointer">
-                                <span className="flex items-center gap-2">Projeto <ArrowUpDown className="w-4 h-4"/></span>
+                                <span className="flex items-center gap-2">Contexto <ArrowUpDown className="w-4 h-4"/></span>
                             </TableHead>
                              <TableHead onClick={() => requestSort('priority')} className="cursor-pointer">
                                 <span className="flex items-center gap-2">Prioridade <ArrowUpDown className="w-4 h-4"/></span>
@@ -172,11 +175,11 @@ const TasksListView = () => {
                     </TableHeader>
                     <TableBody>
                         {sortedTasks.map(task => {
-                             const project = projects.find(p => p.id === task.projectId);
+                             const context = task.contextType === 'campaign' ? campaigns.find(c => c.id === task.contextId) : null;
                              return (
                                 <TableRow key={task.id} className="border-b-border/50 hover:bg-muted/50">
                                     <TableCell className="font-medium text-foreground">{task.title}</TableCell>
-                                    <TableCell className="text-muted-foreground">{project?.name || '-'}</TableCell>
+                                    <TableCell className="text-muted-foreground">{context?.name || '-'}</TableCell>
                                     <TableCell className={cn('font-medium capitalize', priorityStyles[task.priority])}>
                                         <span className="flex items-center gap-2">{priorityIcons[task.priority]} {task.priority}</span>
                                     </TableCell>
@@ -202,7 +205,7 @@ function TaskColumn({title, tasks}: {title: string, tasks: typeof userTasks}) {
         "A Fazer": { border: "border-primary" },
         "Em Progresso": { border: "border-accent-500" },
         "Bloqueado": { border: "border-destructive" },
-        "Concluído": { border: "border-success-500" },
+        "Concluído": { border: "border-green-500" },
     }
     const style = columnStyles[title] || { border: "border-gray-400" };
     return (
@@ -223,11 +226,11 @@ function TaskCard({ task }: { task: (typeof userTasks)[0] }) {
     urgent: { text: 'text-destructive', icon: '🔴' },
     high: { text: 'text-destructive', icon: '🔴' },
     medium: { text: 'text-accent-500', icon: '🟡' },
-    low: { text: 'text-success-500', icon: '🟢' },
+    low: { text: 'text-green-500', icon: '🟢' },
   };
    const assignedUsers = task.assignedTo.map(userId => users.find(u => u.id === userId)).filter(Boolean);
    const isDone = task.status === 'done';
-   const project = projects.find(p => p.id === task.projectId);
+   const context = task.contextType === 'campaign' ? campaigns.find(c => c.id === task.contextId) : null;
 
   return (
     <div className={cn("p-4 bg-card/80 rounded-lg shadow-sm cursor-grab active:cursor-grabbing", { 'opacity-60': isDone }, { 'border-l-2 border-destructive': task.status === 'blocked'})}>
@@ -235,8 +238,8 @@ function TaskCard({ task }: { task: (typeof userTasks)[0] }) {
             {task.title}
         </p>
 
-        {project && (
-            <p className="text-xs text-primary/80 font-medium mt-2">{project.name}</p>
+        {context && (
+            <p className="text-xs text-primary/80 font-medium mt-2">🔗 Campanha: {context.name}</p>
         )}
         
         {task.status === 'blocked' && (
@@ -292,3 +295,5 @@ function TaskCard({ task }: { task: (typeof userTasks)[0] }) {
     </div>
   );
 };
+
+    

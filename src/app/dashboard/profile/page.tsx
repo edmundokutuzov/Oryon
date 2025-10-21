@@ -132,15 +132,15 @@ export default function ProfilePage() {
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <div className="flex items-start gap-3 text-sm">
-                            <div className="bg-blue-500/20 text-blue-300 p-2 rounded-full"><User className="w-4 h-4"/></div>
+                            <div className="bg-primary/20 text-primary p-2 rounded-full"><User className="w-4 h-4"/></div>
                             <p className="text-muted-foreground">Você atualizou a tarefa <span className="font-semibold text-foreground">"Criar campanha..."</span> para "Em Progresso".<span className="block text-xs text-muted-foreground">há 2 horas</span></p>
                         </div>
                          <div className="flex items-start gap-3 text-sm">
-                            <div className="bg-green-500/20 text-green-300 p-2 rounded-full"><Key className="w-4 h-4"/></div>
+                            <div className="bg-success-500/20 text-success-500 p-2 rounded-full"><Key className="w-4 h-4"/></div>
                             <p className="text-muted-foreground">Sessão iniciada a partir de um novo dispositivo.<span className="block text-xs text-muted-foreground">há 1 dia</span></p>
                         </div>
                          <div className="flex items-start gap-3 text-sm">
-                            <div className="bg-purple-500/20 text-purple-300 p-2 rounded-full"><Bell className="w-4 h-4"/></div>
+                            <div className="bg-accent-500/20 text-accent-500 p-2 rounded-full"><Bell className="w-4 h-4"/></div>
                             <p className="text-muted-foreground">Você foi mencionado por <span className="font-semibold text-foreground">Maria Silva</span> no canal de Marketing.<span className="block text-xs text-muted-foreground">há 3 dias</span></p>
                         </div>
                     </CardContent>

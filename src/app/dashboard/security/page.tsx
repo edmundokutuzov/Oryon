@@ -80,8 +80,8 @@ export default function SecurityPage() {
                                     </div>
                                     <div className="text-right">
                                         {session.isCurrent ? 
-                                            <span className="text-xs font-semibold text-green-400">Sessão Atual</span> :
-                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-red-400/80 hover:text-red-400" onClick={() => handleLogoutSession(session.id)}><LogOut className="w-4 h-4"/></Button>
+                                            <span className="text-xs font-semibold text-success-500">Sessão Atual</span> :
+                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive/80 hover:text-destructive" onClick={() => handleLogoutSession(session.id)}><LogOut className="w-4 h-4"/></Button>
                                         }
                                         <p className="text-xs text-muted-foreground">{session.lastActive}</p>
                                     </div>
@@ -134,7 +134,7 @@ export default function SecurityPage() {
                                     {securityLogs.map(log => (
                                         <TableRow key={log.id} className="border-b-border/50 hover:bg-muted/50">
                                             <TableCell>
-                                                <span className={`mr-2 h-2 w-2 rounded-full inline-block ${log.status === 'Success' ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                                                <span className={`mr-2 h-2 w-2 rounded-full inline-block ${log.status === 'Success' ? 'bg-success-500' : 'bg-destructive'}`}></span>
                                                 {log.event}
                                             </TableCell>
                                             <TableCell className="text-muted-foreground">{log.location}</TableCell>

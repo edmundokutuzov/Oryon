@@ -65,7 +65,7 @@ const MeetingSection = ({ title, meetings, active = false }: { title: string, me
                              <div className="flex justify-between items-start">
                                 <CardTitle className="text-lg font-bold">{meeting.title}</CardTitle>
                                 {active ? (
-                                     <Button size="sm" className="bg-green-500/20 text-green-300 hover:bg-green-500/30 animate-pulse" onClick={() => handleJoinMeeting(meeting.title)}>
+                                     <Button size="sm" className="bg-success-500/20 text-success-500 hover:bg-success-500/30 animate-pulse" onClick={() => handleJoinMeeting(meeting.title)}>
                                         <Video className="mr-2 h-4 w-4" /> Entrar
                                     </Button>
                                 ) : (

@@ -19,7 +19,7 @@ export default function ReportsPage() {
                     <CardContent>
                         <div className="flex justify-between items-center">
                             <div className="flex items-center gap-4">
-                                <Badge variant="secondary" className="capitalize bg-green-500/20 text-green-300">
+                                <Badge variant="secondary" className="capitalize bg-success-500/20 text-success-500">
                                     {report.type}
                                 </Badge>
                                 <div className="flex items-center gap-1.5 text-sm text-muted-foreground">

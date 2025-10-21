@@ -131,17 +131,17 @@ const TasksListView = () => {
     };
 
     const priorityStyles: { [key: string]: string } = {
-        urgent: 'text-red-400',
-        high: 'text-red-400',
-        medium: 'text-yellow-400',
-        low: 'text-green-400',
+        urgent: 'text-destructive',
+        high: 'text-destructive',
+        medium: 'text-accent-500',
+        low: 'text-success-500',
     };
      const statusStyles: { [key: string]: string } = {
-        'in-progress': 'text-yellow-400',
-        blocked: 'text-red-400',
-        todo: 'text-blue-400',
+        'in-progress': 'text-accent-500',
+        blocked: 'text-destructive',
+        todo: 'text-primary',
         backlog: 'text-slate-400',
-        done: 'text-green-400',
+        done: 'text-success-500',
     };
 
     const priorityIcons: { [key: string]: string } = { urgent: '🔴', high: '🔴', medium: '🟡', low: '🟢' };
@@ -199,10 +199,10 @@ const TasksListView = () => {
 function TaskColumn({title, tasks}: {title: string, tasks: typeof userTasks}) {
     const columnStyles: { [key: string]: { border: string } } = {
         "Backlog": { border: "border-slate-500" },
-        "A Fazer": { border: "border-blue-500" },
-        "Em Progresso": { border: "border-yellow-500" },
-        "Bloqueado": { border: "border-red-500" },
-        "Concluído": { border: "border-green-500" },
+        "A Fazer": { border: "border-primary" },
+        "Em Progresso": { border: "border-accent-500" },
+        "Bloqueado": { border: "border-destructive" },
+        "Concluído": { border: "border-success-500" },
     }
     const style = columnStyles[title] || { border: "border-gray-400" };
     return (
@@ -220,17 +220,17 @@ function TaskColumn({title, tasks}: {title: string, tasks: typeof userTasks}) {
 
 function TaskCard({ task }: { task: (typeof userTasks)[0] }) {
   const priorityStyles: { [key: string]: { text: string; icon: string } } = {
-    urgent: { text: 'text-red-400', icon: '🔴' },
-    high: { text: 'text-red-400', icon: '🔴' },
-    medium: { text: 'text-yellow-400', icon: '🟡' },
-    low: { text: 'text-green-400', icon: '🟢' },
+    urgent: { text: 'text-destructive', icon: '🔴' },
+    high: { text: 'text-destructive', icon: '🔴' },
+    medium: { text: 'text-accent-500', icon: '🟡' },
+    low: { text: 'text-success-500', icon: '🟢' },
   };
    const assignedUsers = task.assignedTo.map(userId => users.find(u => u.id === userId)).filter(Boolean);
    const isDone = task.status === 'done';
    const project = projects.find(p => p.id === task.projectId);
 
   return (
-    <div className={cn("p-4 bg-card/80 rounded-lg shadow-sm cursor-grab active:cursor-grabbing", { 'opacity-60': isDone }, { 'border-l-2 border-red-500': task.status === 'blocked'})}>
+    <div className={cn("p-4 bg-card/80 rounded-lg shadow-sm cursor-grab active:cursor-grabbing", { 'opacity-60': isDone }, { 'border-l-2 border-destructive': task.status === 'blocked'})}>
         <p className={cn("font-semibold text-foreground text-sm", {'line-through text-muted-foreground': isDone})}>
             {task.title}
         </p>
@@ -240,7 +240,7 @@ function TaskCard({ task }: { task: (typeof userTasks)[0] }) {
         )}
         
         {task.status === 'blocked' && (
-            <p className="text-xs font-semibold text-red-500 mt-2">Bloqueio: Aguardando aprovação do orçamento.</p>
+            <p className="text-xs font-semibold text-destructive mt-2">Bloqueio: Aguardando aprovação do orçamento.</p>
         )}
 
         <p className={cn("text-xs text-muted-foreground mt-2 line-clamp-2", {'line-through': isDone})}>{task.description}</p>

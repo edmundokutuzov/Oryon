@@ -106,7 +106,7 @@ export default function AiAssistant({
       <DialogContent className="gradient-surface border-primary/50 max-w-2xl p-0 flex flex-col h-[70vh]">
         <DialogHeader className="p-6 pb-4">
           <DialogTitle className="flex items-center gap-3 text-2xl">
-            <Bot className="h-8 w-8 text-yellow-300" />
+            <Bot className="h-8 w-8 text-primary" />
             OryonAI Assistant
           </DialogTitle>
           <DialogDescription>
@@ -123,7 +123,7 @@ export default function AiAssistant({
           )}
           {history.map((message, index) => (
             <div key={index} className={`flex items-start gap-4 ${message.role === 'user' ? 'justify-end' : ''}`}>
-               {message.role === 'model' && <Bot className="h-6 w-6 text-yellow-300 flex-shrink-0" />}
+               {message.role === 'model' && <Bot className="h-6 w-6 text-primary flex-shrink-0" />}
                <div className={`max-w-xl p-4 rounded-xl whitespace-pre-wrap text-sm ${message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-card/50'}`}>
                  {message.content.map((part, partIndex) => {
                     if (part.text) return <p key={partIndex}>{part.text}</p>;
@@ -136,7 +136,7 @@ export default function AiAssistant({
           ))}
           {loading && (
              <div className="flex items-start gap-4">
-                <Bot className="h-6 w-6 text-yellow-300 flex-shrink-0" />
+                <Bot className="h-6 w-6 text-primary flex-shrink-0" />
                 <div className="max-w-xl p-4 rounded-xl bg-card/50">
                     <Loader2 className="h-5 w-5 animate-spin" />
                 </div>

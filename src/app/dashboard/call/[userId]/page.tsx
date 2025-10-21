@@ -80,8 +80,7 @@ export default function CallPage() {
 
   // --- Contextual Data (Safe to run now that otherUser is confirmed) ---
   const sharedTasks = tasks.filter(t => 
-    (t.assignedTo === currentUser.id && t.assignedBy === otherUser.id) || 
-    (t.assignedTo === otherUser.id && t.assignedBy === currentUser.id)
+    (t.assignedTo.includes(currentUser.id) && t.assignedTo.includes(otherUser.id))
   ).slice(0, 3);
 
   const recentFiles = cloudFiles.filter(f => 
@@ -121,8 +120,8 @@ export default function CallPage() {
                     <p className="text-muted-foreground text-lg">Chamando...</p>
                 </div>
                 <div className="absolute top-4 right-4 bg-card/50 p-2 rounded-lg flex items-center gap-2">
-                    <Volume2 className="text-green-400" />
-                    <div className="w-16 h-1 bg-muted rounded-full"><div className="w-10 h-1 bg-green-400 rounded-full"></div></div>
+                    <Volume2 className="text-success-500" />
+                    <div className="w-16 h-1 bg-muted rounded-full"><div className="w-10 h-1 bg-success-500 rounded-full"></div></div>
                 </div>
             </div>
             

@@ -178,7 +178,7 @@ export default function GeneralChatPage() {
                         <p className="text-muted-foreground">Canal de comunicação para toda a empresa.</p>
                     </div>
                     <Button variant="outline" onClick={handleSummarize} disabled={isSummarizing}>
-                        {isSummarizing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4 text-yellow-300" />}
+                        {isSummarizing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Wand2 className="mr-2 h-4 w-4 text-primary" />}
                         Resumir Conversa
                     </Button>
                 </div>
@@ -427,7 +427,7 @@ export default function GeneralChatPage() {
             <AlertDialog open={!!summary || isSummarizing} onOpenChange={(isOpen) => !isOpen && setSummary(null)}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle className="flex items-center gap-2"><Wand2 className="text-yellow-300"/>Resumo da Conversa</AlertDialogTitle>
+                        <AlertDialogTitle className="flex items-center gap-2"><Wand2 className="text-primary"/>Resumo da Conversa</AlertDialogTitle>
                         <AlertDialogDescription>
                             A OryonAI analisou as últimas mensagens e preparou este resumo para si.
                         </AlertDialogDescription>

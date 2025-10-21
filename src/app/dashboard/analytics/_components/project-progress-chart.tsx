@@ -3,17 +3,18 @@
 import { analyticsData } from '@/lib/data';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
 
-const projectProgressColors = {
-    'Campanha Q4': '#8884d8',
-    'Identidade Visual': '#82ca9d',
-    'Relatório Trimestral': '#ffc658',
-    'Otimização SEO': '#ff8042',
-};
+// Using theme colors for the chart
+const projectProgressColors = [
+    'hsl(var(--primary))',
+    'hsla(var(--primary), 0.8)',
+    'hsla(var(--primary), 0.6)',
+    'hsla(var(--primary), 0.4)',
+];
 
 const projectData = analyticsData.projectProgress.labels.map((label, i) => ({
     name: label,
     value: analyticsData.projectProgress.data[i],
-    fill: projectProgressColors[label as keyof typeof projectProgressColors] || '#8884d8'
+    fill: projectProgressColors[i % projectProgressColors.length]
 }));
 
 export default function ProjectProgressChart() {

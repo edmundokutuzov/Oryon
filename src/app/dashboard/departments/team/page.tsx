@@ -11,9 +11,9 @@ import { useParams } from "next/navigation";
 import Link from 'next/link';
 
 const statusClasses: { [key: string]: { bg: string, text: string } } = {
-  online: { bg: 'bg-green-500', text: 'text-green-400' },
-  away: { bg: 'bg-yellow-500', text: 'text-yellow-400' },
-  busy: { bg: 'bg-red-500', text: 'text-red-400' },
+  online: { bg: 'bg-success-500', text: 'text-success-500' },
+  away: { bg: 'bg-yellow-500', text: 'text-yellow-500' },
+  busy: { bg: 'bg-red-500', text: 'text-red-500' },
   dnd: { bg: 'bg-purple-500', text: 'text-purple-400' },
   offline: { bg: 'bg-slate-500', text: 'text-slate-400' },
 };

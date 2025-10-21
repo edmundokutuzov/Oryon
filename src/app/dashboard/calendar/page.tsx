@@ -101,7 +101,7 @@ export default function CalendarPage() {
               className="p-4"
               modifiers={{ holiday: holidayDates }}
               modifiersClassNames={{
-                holiday: 'bg-red-500/10 text-red-400 border-red-500/20',
+                holiday: 'bg-destructive/10 text-destructive border-destructive/20',
               }}
               classNames={{
                 root: "w-full",
@@ -132,14 +132,14 @@ export default function CalendarPage() {
                     <>
                       <div className="flex items-center justify-center w-full">
                         <span>{date.getDate()}</span>
-                        {isHoliday && <Flag className="w-3 h-3 text-red-400 absolute top-2 right-2" />}
+                        {isHoliday && <Flag className="w-3 h-3 text-destructive absolute top-2 right-2" />}
                       </div>
                       <div className="flex flex-col gap-1 mt-1 w-full">
                         {dailyEvents.map(event => (
-                           <div key={event.id} className={`w-full h-1.5 rounded-full ${event.type === 'meeting' ? 'bg-blue-400' : event.type === 'presentation' ? 'bg-purple-400' : 'bg-green-400'}`} title={event.title}></div>
+                           <div key={event.id} className={'w-full h-1.5 rounded-full bg-primary'} title={event.title}></div>
                         ))}
                          {dailyTasks.length > 0 && dailyTasks.map(task => (
-                            <div key={task.id} className="w-full h-1.5 rounded-full bg-orange-400" title={task.title}></div>
+                            <div key={task.id} className="w-full h-1.5 rounded-full bg-accent-500" title={task.title}></div>
                         ))}
                         {dailyNotes.length > 0 && (
                             <div className="w-full h-1.5 rounded-full bg-yellow-400" title={`${dailyNotes.length} nota(s)`}></div>
@@ -162,14 +162,14 @@ export default function CalendarPage() {
             <CardContent>
                 <div className="space-y-4">
                     {holidayForSelectedDay && (
-                       <div className="p-4 rounded-xl bg-red-500/10 border-l-4 border-red-500">
-                            <h3 className="font-semibold text-red-300 flex items-center gap-2"><Flag className="w-4 h-4"/> Feriado Nacional</h3>
+                       <div className="p-4 rounded-xl bg-destructive/10 border-l-4 border-destructive">
+                            <h3 className="font-semibold text-destructive flex items-center gap-2"><Flag className="w-4 h-4"/> Feriado Nacional</h3>
                             <p className="text-foreground/90 text-sm mt-1">{holidayForSelectedDay.name}</p>
                         </div>
                     )}
                     
                     {eventsForSelectedDay.length > 0 && eventsForSelectedDay.map(event => (
-                        <div key={event.id} className={`p-4 rounded-xl bg-card/5 border-l-4 border-blue-400`}>
+                        <div key={event.id} className={`p-4 rounded-xl bg-card/5 border-l-4 border-primary`}>
                             <h3 className="font-semibold text-foreground">{event.title}</h3>
                             <p className="text-muted-foreground text-sm mt-1">{event.description}</p>
                             <div className="text-xs text-muted-foreground mt-3 space-y-1">
@@ -185,8 +185,8 @@ export default function CalendarPage() {
                     ))}
 
                     {tasksForSelectedDay.length > 0 && tasksForSelectedDay.map(task => (
-                        <div key={task.id} className={`p-4 rounded-xl bg-card/5 border-l-4 border-orange-400`}>
-                            <h3 className="font-semibold text-foreground flex items-center gap-2"><CheckCircle className="w-4 h-4 text-orange-400"/> Prazo de Tarefa</h3>
+                        <div key={task.id} className={`p-4 rounded-xl bg-card/5 border-l-4 border-accent-500`}>
+                            <h3 className="font-semibold text-foreground flex items-center gap-2"><CheckCircle className="w-4 h-4 text-accent-500"/> Prazo de Tarefa</h3>
                             <p className="text-foreground/90 text-sm mt-1">{task.title}</p>
                             <Badge variant={task.priority === 'high' || task.priority === 'urgent' ? 'destructive' : 'secondary'} className="mt-2 text-xs">{task.priority}</Badge>
                         </div>

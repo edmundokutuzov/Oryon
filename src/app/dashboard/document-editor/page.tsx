@@ -21,10 +21,10 @@ import {
 
 const toneStyles = {
     'Neutro': 'text-muted-foreground',
-    'Formal': 'text-blue-400',
-    'Confiante': 'text-green-400',
+    'Formal': 'text-primary',
+    'Confiante': 'text-success-500',
     'Analítico': 'text-purple-400',
-    'Amigável': 'text-yellow-400',
+    'Amigável': 'text-accent-500',
 }
 
 type AiAction = 'summarize' | 'translate' | 'correct' | null;
@@ -179,7 +179,7 @@ export default function DocumentEditorPage() {
                 <div className="w-1/4 space-y-6">
                     <Card className="gradient-surface border-0 rounded-2xl">
                         <CardContent className="p-4">
-                            <h3 className="font-semibold text-lg flex items-center gap-2 mb-3"><Wand2 className="text-yellow-300"/>Nexus Assist</h3>
+                            <h3 className="font-semibold text-lg flex items-center gap-2 mb-3"><Wand2 className="text-primary"/>Nexus Assist</h3>
                             <p className="text-sm text-muted-foreground mb-4">Selecione texto no editor e use os comandos, ou escreva /nexus no documento.</p>
                              <Button variant="outline" className="w-full justify-start bg-card/50 mt-2" onClick={() => handleAiAction('summarize')} disabled={loadingAiAction === 'summarize'}>
                                 {loadingAiAction === 'summarize' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
@@ -197,7 +197,7 @@ export default function DocumentEditorPage() {
                     </Card>
                      <Card className="gradient-surface border-0 rounded-2xl">
                         <CardContent className="p-4">
-                            <h3 className="font-semibold text-lg flex items-center gap-2 mb-3"><Sparkles className="text-cyan-300"/>Análise de Tom</h3>
+                            <h3 className="font-semibold text-lg flex items-center gap-2 mb-3"><Sparkles className="text-primary"/>Análise de Tom</h3>
                             <p className="text-sm text-muted-foreground mb-4">A IA analisa o tom do seu texto em tempo real.</p>
                             <div className="text-center p-4 bg-card/50 rounded-lg">
                                 <p className={cn("text-2xl font-bold transition-colors", toneStyles[documentTone])}>{documentTone}</p>

@@ -30,12 +30,12 @@ export default function AutomationsPage() {
                         <div key={auto.id} className="flex items-center justify-between py-4">
                             <div>
                                 <h3 className="font-medium text-foreground flex items-center gap-2">
-                                    <Bot className="text-yellow-300 w-5 h-5"/>
+                                    <Bot className="text-primary w-5 h-5"/>
                                     {auto.name}
                                 </h3>
                             </div>
                             <div className="flex items-center space-x-4">
-                                <span className={`text-sm font-medium ${auto.active ? 'text-green-400' : 'text-red-400'}`}>
+                                <span className={`text-sm font-medium ${auto.active ? 'text-success-500' : 'text-destructive'}`}>
                                     {auto.active ? 'Ativa' : 'Inativa'}
                                 </span>
                                 <Switch

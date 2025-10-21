@@ -5,7 +5,7 @@ import { Menu, Search, Bot, Bell, Video, Plus, User, Key, CheckCircle, FilePlus,
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { usePathname } from 'next/navigation';
-import { menuItems, users, projects, tasks, documents } from '@/lib/data';
+import { menuItems, users, projects, tasks, documents, departments } from '@/lib/data';
 import AiAssistant from '@/components/ai-assistant';
 import Link from 'next/link';
 import {
@@ -58,9 +58,9 @@ const getBreadcrumb = (pathname: string) => {
 }
 
 const notifications = [
-    { id: 1, type: 'task', content: 'Você atualizou a tarefa "Criar campanha..." para "Em Progresso".', time: 'há 2 horas', icon: <CheckCircle className="w-4 h-4 text-blue-400"/>, read: false, category: 'tasks'},
-    { id: 2, type: 'security', content: 'Sessão iniciada a partir de um novo dispositivo.', time: 'há 1 dia', icon: <Key className="w-4 h-4 text-green-400"/>, read: false, category: 'security' },
-    { id: 3, type: 'mention', content: 'Você foi mencionado por Maria Silva no canal de Marketing.', time: 'há 3 dias', icon: <User className="w-4 h-4 text-purple-400"/>, read: true, category: 'mentions' },
+    { id: 1, type: 'task', content: 'Você atualizou a tarefa "Criar campanha..." para "Em Progresso".', time: 'há 2 horas', icon: <CheckCircle className="w-4 h-4 text-primary"/>, read: false, category: 'tasks'},
+    { id: 2, type: 'security', content: 'Sessão iniciada a partir de um novo dispositivo.', time: 'há 1 dia', icon: <Key className="w-4 h-4 text-success-500"/>, read: false, category: 'security' },
+    { id: 3, type: 'mention', content: 'Você foi mencionado por Maria Silva no canal de Marketing.', time: 'há 3 dias', icon: <User className="w-4 h-4 text-accent-500"/>, read: true, category: 'mentions' },
 ];
 
 export default function Header() {
@@ -175,7 +175,7 @@ export default function Header() {
             </Popover>
 
           <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="icon" className="rounded-full bg-yellow-500/20 text-yellow-300 hover:bg-yellow-500/30 hover:text-yellow-300" title="OryonAI" onClick={() => setIsAiAssistantOpen(true)}>
+            <Button variant="ghost" size="icon" className="rounded-full bg-primary/20 text-primary hover:bg-primary/30 hover:text-primary" title="OryonAI" onClick={() => setIsAiAssistantOpen(true)}>
               <Bot />
             </Button>
             
@@ -185,8 +185,8 @@ export default function Header() {
                   <Bell />
                   {notifications.filter(n => !n.read).length > 0 &&
                     <span className="absolute -top-1 -right-1 flex h-5 w-5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-5 w-5 bg-red-500 text-xs items-center justify-center">{notifications.filter(n => !n.read).length}</span>
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-5 w-5 bg-destructive text-xs items-center justify-center">{notifications.filter(n => !n.read).length}</span>
                     </span>
                   }
                 </Button>
@@ -257,15 +257,15 @@ export default function Header() {
 const NotificationItem = ({ notification }: { notification: (typeof notifications)[0] }) => {
     return (
         <div className="group flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 relative">
-            {!notification.read && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-blue-400 rounded-full"></span>}
+            {!notification.read && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-primary rounded-full"></span>}
             <div className="p-2 bg-card rounded-full">{notification.icon}</div>
             <div className="flex-grow">
                 <p className="text-sm text-foreground/90">{notification.content}</p>
                 <p className="text-xs text-muted-foreground">{notification.time}</p>
             </div>
             <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
-                <Button variant="ghost" size="icon" className="h-7 w-7"><CheckCircle className="w-4 h-4 text-green-500" title="Marcar como lida" /></Button>
-                <Button variant="ghost" size="icon" className="h-7 w-7"><Trash2 className="w-4 h-4 text-red-500" title="Apagar"/></Button>
+                <Button variant="ghost" size="icon" className="h-7 w-7"><CheckCircle className="w-4 h-4 text-success-500" title="Marcar como lida" /></Button>
+                <Button variant="ghost" size="icon" className="h-7 w-7"><Trash2 className="w-4 h-4 text-destructive" title="Apagar"/></Button>
             </div>
         </div>
     );
@@ -291,5 +291,3 @@ const SearchResultsCategory = ({ title, items }: { title?: string; items: { id: 
         </div>
     </div>
 );
-
-    

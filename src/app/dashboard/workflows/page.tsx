@@ -24,7 +24,7 @@ export default function WorkflowsPage() {
                 <Card key={wf.id} className="gradient-surface border-0 rounded-2xl">
                     <CardHeader>
                         <CardTitle className="text-lg font-bold text-foreground flex items-center gap-2">
-                            <Workflow className="text-cyan-400 w-5 h-5"/>
+                            <Workflow className="text-primary w-5 h-5"/>
                             {wf.name}
                         </CardTitle>
                         <CardDescription className="pt-2">Departamento: {wf.department}</CardDescription>

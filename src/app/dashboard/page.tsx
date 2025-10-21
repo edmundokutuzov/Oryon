@@ -52,7 +52,7 @@ const AdminPanel = () => {
         <CardContent className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             <Link href="#">
               <div className="flex items-center gap-3 p-4 rounded-xl hover:bg-muted/50 transition-colors">
-                  <div className="p-3 rounded-xl bg-green-500/20 text-green-300"><Users/></div>
+                  <div className="p-3 rounded-xl bg-success-500/20 text-success-500"><Users/></div>
                   <div>
                       <p className="text-2xl font-bold">245</p>
                       <p className="text-sm text-muted-foreground">Utilizadores Ativos</p>
@@ -61,7 +61,7 @@ const AdminPanel = () => {
             </Link>
             <Link href="#">
               <div className="flex items-center gap-3 p-4 rounded-xl hover:bg-muted/50 transition-colors">
-                  <div className="p-3 rounded-xl bg-blue-500/20 text-blue-300"><TrendingUp/></div>
+                  <div className="p-3 rounded-xl bg-primary/20 text-primary"><TrendingUp/></div>
                   <div>
                       <p className="text-2xl font-bold">+12%</p>
                       <p className="text-sm text-muted-foreground">Crescimento (30d)</p>
@@ -69,7 +69,7 @@ const AdminPanel = () => {
               </div>
             </Link>
              <button onClick={() => setIsAlertsModalOpen(true)} className="flex items-center gap-3 p-4 rounded-xl hover:bg-muted/50 transition-colors text-left">
-                  <div className="p-3 rounded-xl bg-red-500/20 text-red-300"><Activity/></div>
+                  <div className="p-3 rounded-xl bg-destructive/20 text-destructive"><Activity/></div>
                   <div>
                       <p className="text-2xl font-bold">4</p>
                       <p className="text-sm text-muted-foreground">Alertas de Sistema</p>
@@ -111,7 +111,7 @@ const DailyBriefing = () => {
   useEffect(() => {
     async function fetchBriefing() {
       try {
-        const relevantTasks = tasks.filter(t => t.status !== 'completed').map(t => ({ id: t.id, title: t.title, description: t.description, status: t.status, priority: t.priority, dueDate: t.dueDate }));
+        const relevantTasks = tasks.filter(t => t.status !== 'done').map(t => ({ id: t.id, title: t.title, description: t.description, status: t.status, priority: t.priority, dueDate: t.dueDate }));
         const relevantMeetings = meetings.map(m => ({ id: m.id, title: m.title, description: m.description, date: m.date, time: m.time, duration: m.duration }));
 
         const response = await getDailyBriefing({
@@ -134,7 +134,7 @@ const DailyBriefing = () => {
      <Card className="gradient-surface border-0 rounded-2xl mb-8">
         <CardContent className="p-6">
            <div className="flex items-start gap-4">
-            <Bot className="w-8 h-8 text-yellow-300 flex-shrink-0 mt-1" />
+            <Bot className="w-8 h-8 text-primary flex-shrink-0 mt-1" />
             <div className='w-full'>
               <h3 className="font-bold text-lg text-foreground">O seu Resumo Diário da OryonAI</h3>
                {isLoading ? (
@@ -154,10 +154,10 @@ const DailyBriefing = () => {
 
 const TaskPreviewCard = ({ task }: { task: (typeof tasks)[0] }) => {
   const priorityStyles: { [key: string]: string } = {
-    high: 'bg-red-500/20 text-red-300',
-    medium: 'bg-yellow-500/20 text-yellow-300',
-    low: 'bg-green-500/20 text-green-300',
-    urgent: 'bg-red-500/20 text-red-300',
+    high: 'bg-destructive/20 text-destructive-foreground',
+    medium: 'bg-accent-500/20 text-accent-500',
+    low: 'bg-success-500/20 text-success-500',
+    urgent: 'bg-destructive/20 text-destructive-foreground',
   };
   return (
     <Link href="/dashboard/tasks">
@@ -181,7 +181,7 @@ const MeetingPreviewCard = ({ meeting }: { meeting: (typeof meetings)[0] }) => (
     <div className="p-4 rounded-xl bg-card/5 hover:bg-card/10 transition-colors cursor-pointer">
       <div className="flex justify-between items-start mb-2">
         <h3 className="font-semibold text-foreground text-sm" dangerouslySetInnerHTML={{ __html: meeting.title }}></h3>
-        <Button size="icon" variant="ghost" className="h-8 w-8 bg-green-500/20 text-green-300 hover:bg-green-500/30">
+        <Button size="icon" variant="ghost" className="h-8 w-8 bg-success-500/20 text-success-500 hover:bg-success-500/30">
           <Video className="h-4 w-4" />
         </Button>
       </div>
@@ -244,7 +244,7 @@ const ContextPanel = () => {
             </div>
             <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">Prazo final:</span>
-                <span className="font-bold text-red-400">{tasks.filter(t => t.priority === 'high' && t.dueDate === today).length}</span>
+                <span className="font-bold text-destructive">{tasks.filter(t => t.priority === 'high' && t.dueDate === today).length}</span>
             </div>
         </div>
         
@@ -260,7 +260,7 @@ const ContextPanel = () => {
                           <AvatarImage src={avatar} alt={user.name} data-ai-hint="person portrait" />
                           <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                         </Avatar>
-                        <span className="absolute bottom-0 right-0 block h-2 w-2 rounded-full bg-green-500 ring-2 ring-background"></span>
+                        <span className="absolute bottom-0 right-0 block h-2 w-2 rounded-full bg-success-500 ring-2 ring-background"></span>
                       </div>
                       <div>
                           <p className="text-sm font-medium text-foreground">{user.name}</p>
@@ -277,9 +277,9 @@ const ContextPanel = () => {
 
 export default function DashboardPage() {
   const kpis = [
-      { title: 'Tarefas Pendentes', value: tasks.filter(t => t.status !== 'done').length, icon: ListTodo, color: 'text-blue-300', href: '/dashboard/tasks' },
-      { title: 'Reuniões Hoje', value: meetings.length, icon: Video, color: 'text-green-300', href: '/dashboard/meetings' },
-      { title: 'Mensagens Não Lidas', value: 12, icon: MessagesSquare, color: 'text-purple-300', href: '/dashboard/chat/general' },
+      { title: 'Tarefas Pendentes', value: tasks.filter(t => t.status !== 'done').length, icon: ListTodo, color: 'text-primary', href: '/dashboard/tasks' },
+      { title: 'Reuniões Hoje', value: meetings.length, icon: Video, color: 'text-success-500', href: '/dashboard/meetings' },
+      { title: 'Mensagens Não Lidas', value: 12, icon: MessagesSquare, color: 'text-accent-500', href: '/dashboard/chat/general' },
       { title: 'Produtividade', value: '84%', icon: Activity, color: 'text-yellow-300', href: '#', tooltip: 'Calculado com base em 12 de 15 tarefas concluídas no prazo este mês.' },
   ]
   return (

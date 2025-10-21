@@ -9,11 +9,11 @@ import { useState, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
 
 const fileIcons: { [key: string]: React.ReactNode } = {
-    PDF: <FileText className="w-5 h-5 text-red-400" />,
+    PDF: <FileText className="w-5 h-5 text-destructive" />,
     DOCX: <FileText className="w-5 h-5 text-blue-400" />,
     PPTX: <FileVideo className="w-5 h-5 text-orange-400" />,
     ZIP: <FileArchive className="w-5 h-5 text-yellow-400" />,
-    folder: <Folder className="w-5 h-5 text-yellow-500" />,
+    folder: <Folder className="w-5 h-5 text-accent-500" />,
     default: <FileText className="w-5 h-5" />,
 }
 

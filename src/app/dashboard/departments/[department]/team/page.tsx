@@ -12,9 +12,9 @@ import { useState } from "react";
 import Link from "next/link";
 
 const statusClasses: { [key: string]: { bg: string, text: string, ring: string } } = {
-  online: { bg: 'bg-green-500', text: 'text-green-300', ring: 'ring-green-500/50' },
-  away: { bg: 'bg-yellow-500', text: 'text-yellow-300', ring: 'ring-yellow-500/50' },
-  busy: { bg: 'bg-red-500', text: 'text-red-300', ring: 'ring-red-500/50' },
+  online: { bg: 'bg-success-500', text: 'text-success-500', ring: 'ring-success-500/50' },
+  away: { bg: 'bg-yellow-500', text: 'text-yellow-500', ring: 'ring-yellow-500/50' },
+  busy: { bg: 'bg-red-500', text: 'text-red-500', ring: 'ring-red-500/50' },
   dnd: { bg: 'bg-purple-500', text: 'text-purple-300', ring: 'ring-purple-500/50' },
   offline: { bg: 'bg-slate-500', text: 'text-slate-400', ring: 'ring-slate-500/50' },
 };

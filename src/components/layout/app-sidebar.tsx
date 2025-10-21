@@ -36,7 +36,6 @@ import { usePathname } from 'next/navigation';
 import { departments, menuItems } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { cn } from '@/lib/utils';
-import OryonLogo from '../icons/oryon-logo';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,6 +46,7 @@ import {
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { signOut } from 'firebase/auth';
 import { useAuth } from '@/firebase';
+import TxunaLogo from '../icons/txuna-logo';
 
 const statusClasses: { [key: string]: string } = {
   online: 'bg-green-500',
@@ -138,13 +138,7 @@ export default function AppSidebar() {
   return (
     <aside className="w-64 h-full flex flex-col flex-shrink-0 gradient-surface shadow-2xl transition-all duration-300 fixed md:relative z-40 md:translate-x-0 -translate-x-full">
       <div className="p-6 flex items-center h-24 border-b border-border">
-        <div className="flex items-center gap-3">
-          <OryonLogo />
-          <div>
-            <h1 className="text-xl font-extrabold text-foreground leading-none">Oryon</h1>
-            <p className="text-xs text-muted-foreground">STANDARD BANK</p>
-          </div>
-        </div>
+        <TxunaLogo className="w-32" />
       </div>
 
       <nav className="flex-grow p-4 overflow-y-auto custom-scrollbar">

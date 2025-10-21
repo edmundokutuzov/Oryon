@@ -47,7 +47,7 @@ export const users = [
         bio: "Chefe de Departamento de Marketing com 10 anos de experiência em estratégia digital e gestão de equipas.",
         phone: "+258 84 345 6789",
         location: "Maputo, Moçambique",
-        permissions: ["read", "write", "comment", "manage", "approve", "2fa"],
+        permissions: ["read", "write", "comment", "manage", "approve"],
     },
     {
         id: 4,
@@ -100,7 +100,7 @@ export const users = [
         email: "joao.almeida@txunabet.com",
         password: "Oryon@2024!",
         role: "Analista de Risco",
-        department: "Financeiro",
+        department: "Risco e Fraude",
         avatar: "https://images.unsplash.com/photo-1590086782792-42dd2350140d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTk3Nzk4MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
         status: "online" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
@@ -130,7 +130,7 @@ export const users = [
         email: "pedro.nunes@txunabet.com",
         password: "Oryon@2024!",
         role: "Engenheiro de Software Sénior",
-        department: "Tecnologia",
+        department: "Plataforma",
         avatar: "https://images.unsplash.com/photo-1557862921-37829c790f19?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTk3Nzk4MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
         status: "online" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
@@ -160,7 +160,7 @@ export const users = [
         email: "daniela.pereira@txunabet.com",
         password: "Oryon@2024!",
         role: "Oficial de Compliance Sénior",
-        department: "Compliance",
+        department: "Risco e Fraude",
         avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTk3Nzk4MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
         status: "online" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
@@ -265,7 +265,7 @@ export const users = [
         email: "vasco.monteiro@txunabet.com",
         password: "Oryon@2024!",
         role: "Engenheiro de DevOps",
-        department: "Tecnologia",
+        department: "Plataforma",
         avatar: "https://picsum.photos/seed/18/400/400",
         status: "online" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
@@ -280,7 +280,7 @@ export const users = [
         email: "telma.borges@txunabet.com",
         password: "Oryon@2024!",
         role: "Administradora de Sistemas",
-        department: "Tecnologia",
+        department: "Plataforma",
         avatar: "https://picsum.photos/seed/19/400/400",
         status: "dnd" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
@@ -295,7 +295,7 @@ export const users = [
         email: "bruno.paixao@txunabet.com",
         password: "Oryon@2024!",
         role: "Engenheiro de Software Júnior",
-        department: "Tecnologia",
+        department: "Plataforma",
         avatar: "https://picsum.photos/seed/20/400/400",
         status: "offline" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
@@ -325,7 +325,7 @@ export const users = [
         email: "catarina.valente@txunabet.com",
         password: "Oryon@2024!",
         role: "Analista de KYC",
-        department: "Compliance",
+        department: "Risco e Fraude",
         avatar: "https://picsum.photos/seed/22/400/400",
         status: "online" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
@@ -430,7 +430,7 @@ export const users = [
         email: "nuno.gomes@txunabet.com",
         password: "Oryon@2024!",
         role: "Chefe de Compliance",
-        department: "Compliance",
+        department: "Risco e Fraude",
         avatar: "https://picsum.photos/seed/29/400/400",
         status: "online" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
@@ -445,7 +445,7 @@ export const users = [
         email: "rita.marques@txunabet.com",
         password: "Oryon@2024!",
         role: "Oficial de Compliance Sénior",
-        department: "Compliance",
+        department: "Risco e Fraude",
         avatar: "https://picsum.photos/seed/30/400/400",
         status: "online" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
@@ -460,7 +460,7 @@ export const users = [
         email: "david.antunes@txunabet.com",
         password: "Oryon@2024!",
         role: "Auditor de Compliance",
-        department: "Compliance",
+        department: "Risco e Fraude",
         avatar: "https://picsum.photos/seed/31/400/400",
         status: "away" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
@@ -475,7 +475,7 @@ export const users = [
         email: "ines.faria@txunabet.com",
         password: "Oryon@2024!",
         role: "Especialista em Prevenção à Lavagem de Dinheiro",
-        department: "Compliance",
+        department: "Risco e Fraude",
         avatar: "https://picsum.photos/seed/32/400/400",
         status: "online" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
@@ -490,7 +490,7 @@ export const users = [
         email: "miguel.loureiro@txunabet.com",
         password: "Oryon@2024!",
         role: "Analista Regulatório",
-        department: "Compliance",
+        department: "Risco e Fraude",
         avatar: "https://picsum.photos/seed/33/400/400",
         status: "busy" as "online" | "away" | "busy" | "offline" | "dnd",
         lastSeen: new Date().toISOString(),
@@ -580,13 +580,13 @@ export const tasks = [
     // --- Marketing Tasks ---
     {
         id: 1,
-        title: "Criar campanha publicitária para 'Conta Pro'",
-        description: "Desenvolver conceito criativo e materiais para campanha do novo produto bancário digital 'Conta Pro'. Foco em mídia digital e redes sociais.",
+        title: "Criar campanha publicitária para 'Bónus de Boas-Vindas'",
+        description: "Desenvolver conceito criativo e materiais para campanha do novo bónus de boas-vindas. Foco em mídia digital e redes sociais.",
         projectId: 1,
         assignedTo: [2, 13, 14],
         createdBy: 3,
         priority: "urgent" as "urgent" | "high" | "medium" | "low",
-        status: "in_progress" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
+        status: "in-progress" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
         labels: ["design", "campanha", "2024-Q4"],
         dueDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 10 days from now
         progress: 65,
@@ -608,59 +608,59 @@ export const tasks = [
     },
     {
         id: 2,
-        title: "Atualizar identidade visual da marca para 2025",
-        description: "Revisar e atualizar guidelines da marca para 2025 incluindo logotipo, tipografia, cores e aplicações.",
+        title: "Atualizar banners do website com odds da Champions League",
+        description: "Revisar e atualizar os banners da página principal para refletir as odds dos jogos da próxima jornada da Champions League.",
         projectId: null,
         assignedTo: [2],
         createdBy: 3,
         priority: "medium" as "urgent" | "high" | "medium" | "low",
         status: "todo" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
-        labels: ["branding", "design"],
-        dueDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 45 days from now
+        labels: ["branding", "design", "sportsbook"],
+        dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 10,
         attachments: [],
         checklist: [],
         dependencies: [],
         watchers: [3],
         commentsCount: 1,
-        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
     },
     // --- Finance Tasks ---
     {
         id: 3,
-        title: "Preparar relatório financeiro Q3",
-        description: "Compilar dados de performance dos últimos 3 meses e preparar relatório para apresentação à direção.",
+        title: "Análise Semanal de GGR (Gross Gaming Revenue)",
+        description: "Compilar dados de GGR dos últimos 7 dias e preparar relatório de performance por vertical (Sportsbook, Casino).",
         projectId: null,
         assignedTo: [4, 6],
         createdBy: 26,
         priority: "high" as "urgent" | "high" | "medium" | "low",
-        status: "in_progress" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
-        labels: ["relatório", "financeiro"],
-        dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 5 days from now
+        status: "in-progress" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
+        labels: ["relatório", "financeiro", "ggr"],
+        dueDate: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 40,
-        attachments: [{ name: "dados-setembro.xlsx", size: "3.2 MB", type: "excel" }],
+        attachments: [{ name: "dados-ggr.xlsx", size: "3.2 MB", type: "excel" }],
         checklist: [
-            { id: 'c3-1', text: 'Coletar dados de vendas de todos os canais', checked: true },
-            { id: 'c3-2', text: 'Analisar despesas operacionais e de marketing', checked: false },
+            { id: 'c3-1', text: 'Extrair dados do sistema de reporting', checked: true },
+            { id: 'c3-2', text: 'Analisar desvios face à previsão', checked: false },
             { id: 'c3-3', text: 'Elaborar sumário executivo com principais conclusões', checked: false },
         ],
         dependencies: [],
         watchers: [25, 26],
         commentsCount: 2,
-        createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
     },
     // --- IT Tasks ---
     {
         id: 5,
-        title: "Auditoria de Segurança dos Servidores Cloud",
-        description: "Realizar uma auditoria completa de segurança para identificar e corrigir vulnerabilidades nos servidores AWS.",
+        title: "Auditoria de Segurança dos Servidores de Jogos",
+        description: "Realizar uma auditoria completa de segurança para identificar e corrigir vulnerabilidades nos servidores de jogos online.",
         projectId: 2,
         assignedTo: [12, 23],
         createdBy: 1,
         priority: "high" as "urgent" | "high" | "medium" | "low",
-        status: "in_progress" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
+        status: "in-progress" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
         labels: ["segurança", "cloud", "auditoria"],
         dueDate: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 30,
@@ -678,20 +678,20 @@ export const tasks = [
     },
     {
         id: 6,
-        title: "Desenvolver Dashboard de Monitorização de KPIs",
-        description: "Criar um novo dashboard em tempo real para monitorizar os principais indicadores de performance (KPIs) da plataforma, usando Recharts.",
+        title: "Desenvolver Dashboard de Monitorização de KPIs de Risco",
+        description: "Criar um novo dashboard em tempo real para monitorizar os KPIs de risco, como atividade suspeita, limites de aposta e exposição por mercado.",
         projectId: 2,
         assignedTo: [9, 20],
         createdBy: 28,
         priority: "medium" as "urgent" | "high" | "medium" | "low",
         status: "backlog" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
-        labels: ["dashboard", "kpi", "bi", "frontend"],
+        labels: ["dashboard", "kpi", "risco", "frontend"],
         dueDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 5,
         attachments: [],
         checklist: [],
         dependencies: [],
-        watchers: [1, 28],
+        watchers: [1, 28, 7],
         commentsCount: 0,
         createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
@@ -724,8 +724,8 @@ export const tasks = [
     // --- Compliance & Operations ---
     {
         id: 8,
-        title: "Revisar e Aprovar Política de AML",
-        description: "A equipa de Compliance precisa de rever a nova Política de Prevenção à Lavagem de Dinheiro (AML) antes da sua publicação interna.",
+        title: "Revisar e Aprovar Política de Jogo Responsável",
+        description: "A equipa de Compliance precisa de rever a nova Política de Jogo Responsável antes da sua publicação.",
         projectId: null,
         assignedTo: [11, 29, 32],
         createdBy: 27,
@@ -734,7 +734,7 @@ export const tasks = [
         labels: ["compliance", "aml", "revisão"],
         dueDate: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 50,
-        attachments: [{ name: "AML-policy-draft-v3.docx", size: "250 KB", type: "docx" }],
+        attachments: [{ name: "jogo-responsavel-draft-v3.docx", size: "250 KB", type: "docx" }],
         checklist: [],
         dependencies: [],
         watchers: [27, 25],
@@ -744,14 +744,14 @@ export const tasks = [
     },
      {
         id: 9,
-        title: "Implementar endpoint da API para parceiros",
-        description: "Desenvolver e documentar o novo endpoint da API que será usado por parceiros externos para consulta de taxas de câmbio.",
+        title: "Implementar API de verificação de identidade (KYC)",
+        description: "Integrar a API de um fornecedor externo para automatizar o processo de verificação de identidade (Know Your Customer) no registo de novos utilizadores.",
         projectId: 2,
         assignedTo: [9, 18],
         createdBy: 1,
         priority: "high" as "urgent" | "high" | "medium" | "low",
         status: "todo" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
-        labels: ["api", "backend", "devops"],
+        labels: ["api", "backend", "kyc"],
         dueDate: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 0,
         attachments: [],
@@ -762,21 +762,21 @@ export const tasks = [
             {id: 'c9-4', text: 'Documentar na plataforma de desenvolvedores', checked: false},
         ],
         dependencies: [],
-        watchers: [1, 28],
+        watchers: [1, 28, 22],
         commentsCount: 0,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
     },
     {
         id: 10,
-        title: "Análise de performance SEO do blog corporativo",
-        description: "Analisar performance do blog, identificar palavras-chave de oportunidade e otimizar os 10 artigos mais populares para melhorar ranking no Google.",
+        title: "Análise de performance SEO de mercados de apostas",
+        description: "Analisar performance de SEO para os principais mercados de apostas, identificar palavras-chave de oportunidade e otimizar páginas para melhorar ranking no Google.",
         projectId: 1,
         assignedTo: [13],
         createdBy: 3,
         priority: "low" as "urgent" | "high" | "medium" | "low",
         status: "done" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
-        labels: ["seo", "marketing"],
+        labels: ["seo", "marketing", "sportsbook"],
         dueDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 100,
         attachments: [{ name: "relatorio_seo_outubro.pdf", size: "1.2 MB", type: "pdf" }],
@@ -795,54 +795,60 @@ export const tasks = [
 export const meetings = [
     {
         id: 1,
-        title: "Reunião de Planeamento - Campanha Q4",
-        description: "Discussão da estratégia de marketing para o último trimestre e preparação do lançamento da nova conta digital 'Conta Pro'.",
+        title: "Reunião de Planeamento - Campanha de Natal",
+        description: "Discussão da estratégia de marketing para o Natal, incluindo bónus e promoções especiais.",
         department: "Marketing",
-        date: "2024-11-20",
+        date: new Date().toISOString().split('T')[0],
         time: "14:00",
         duration: 60,
-        participants: [2, 3, 13, 14],
-        status: "scheduled" as "scheduled" | "active" | "completed",
+        participants: [2, 3, 13, 14, 1],
+        status: "active" as "scheduled" | "active" | "completed",
+        location: "Videochamada",
+        type: "meeting"
     },
     {
         id: 2,
-        title: "Review Mensal de Projetos Estratégicos",
-        description: "Análise do progresso dos projetos em andamento, identificação de bloqueios e ajustes de planeamento para garantir o cumprimento dos prazos.",
-        department: "Geral",
-        date: "2024-11-25",
+        title: "Review Mensal de Risco e Fraude",
+        description: "Análise dos padrões de fraude, atividade suspeita e eficácia das regras de risco atuais.",
+        department: "Risco e Fraude",
+        date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         time: "10:00",
         duration: 90,
-        participants: [1, 2, 3, 4, 5, 25, 26, 28],
+        participants: [1, 7, 11, 22, 29, 26, 28],
         status: "scheduled" as "scheduled" | "active" | "completed",
+        location: "Sala de Reuniões 3",
+        type: "meeting"
     },
     {
         id: 3,
-        title: "Workshop de Inovação Digital e Fintechs",
-        description: "Sessão de brainstorming para identificar oportunidades de inovação nos serviços bancários, analisando o mercado de fintechs.",
-        department: "Tecnologia",
-        date: "2024-12-05",
+        title: "Workshop de Novas Funcionalidades da Plataforma",
+        description: "Sessão de brainstorming para identificar oportunidades de novas funcionalidades para o Sportsbook e Casino.",
+        department: "Plataforma",
+        date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         time: "09:30",
         duration: 120,
-        participants: [1, 2, 4, 9, 18, 28],
+        participants: [1, 2, 9, 18, 20, 28, 34],
         status: "scheduled" as "scheduled" | "active" | "completed",
+        location: "Auditório",
+        type: "workshop"
     }
 ];
 
 export const departments = [
-    { id: 1, name: "Marketing", slug: "marketing", head: 3, memberCount: 12, budget: 450000, projects: 8, description: "Responsável pela imagem da marca, estratégias de comunicação, campanhas publicitárias e marketing digital.", goals: ["Aumentar notoriedade da marca em 25%", "Lançar 3 novas campanhas digitais", "Aumentar leads qualificados em 40%"] },
-    { id: 2, name: "Financeiro", slug: "finance", head: 26, memberCount: 8, budget: 1200000, projects: 5, description: "Gestão financeira, contabilidade, tesouraria, planeamento e relatórios económicos para a tomada de decisão.", goals: ["Reduzir custos operacionais em 15%", "Otimizar fluxo de caixa", "Melhorar precisão das previsões finance"] },
-    { id: 3, name: "Recursos Humanos", slug: "hr", head: 5, memberCount: 6, budget: 300000, projects: 3, description: "Gestão de talentos, desenvolvimento profissional, recrutamento, e promoção do bem-estar dos colaboradores.", goals: ["Reduzir turnover para 8%", "Implementar novo programa de formação contínua", "Melhorar índice de satisfação dos colaboradores"] },
-    { id: 4, name: "Tecnologia", slug: "it", head: 1, memberCount: 15, budget: 2000000, projects: 12, description: "Desenvolvimento e manutenção de sistemas, infraestrutura tecnológica, segurança da informação e suporte técnico.", goals: ["Migrar 50% dos sistemas para a cloud", "Implementar nova API de Open Banking", "Reduzir tempo de resposta de incidentes em 30%"] },
-    { id: 5, name: "Operações", slug: "operations", head: 34, memberCount: 10, budget: 800000, projects: 6, description: "Otimização de processos operacionais bancários, gestão da qualidade, e eficiência dos serviços.", goals: ["Aumentar eficiência operacional em 20%", "Reduzir tempo de processamento de transações", "Automatizar 5 processos manuais"] },
-    { id: 6, name: "Compliance", slug: "compliance", head: 29, memberCount: 5, budget: 400000, projects: 4, description: "Garantia de conformidade com regulamentações financeiras, políticas internas e prevenção de riscos.", goals: ["Implementar novo sistema de monitorização de transações (AML)", "Realizar auditorias de conformidade trimestrais", "Atualizar todas as políticas internas (RGPD, etc)"] },
-    { id: 7, name: "Segurança", slug: "security", head: 12, memberCount: 4, budget: 600000, projects: 3, description: "Proteção de dados, cibersegurança, segurança física das instalações e prevenção de fraudes.", goals: ["Implementar autenticação multi-fator (MFA) para todos os sistemas críticos", "Realizar testes de penetração trimestrais", "Reduzir falsos positivos em alertas de fraude em 15%"] },
-    { id: 8, name: "Administração", slug: "administration", head: 25, memberCount: 1, budget: 100000, projects: 1, description: "Gestão geral e administrativa da plataforma Oryon.", goals: [] },
+    { id: 1, name: "Marketing", slug: "marketing", head: 3, memberCount: 4, budget: 450000, projects: 8, description: "Responsável pela imagem da marca, estratégias de comunicação, campanhas publicitárias e marketing digital.", goals: ["Aumentar notoriedade da marca em 25%", "Lançar 3 novas campanhas digitais", "Aumentar leads qualificados em 40%"] },
+    { id: 2, name: "Financeiro", slug: "finance", head: 26, memberCount: 4, budget: 1200000, projects: 5, description: "Gestão financeira, contabilidade, tesouraria, planeamento e relatórios económicos para a tomada de decisão.", goals: ["Reduzir custos operacionais em 15%", "Otimizar fluxo de caixa", "Melhorar precisão das previsões finance"] },
+    { id: 3, name: "Recursos Humanos", slug: "hr", head: 5, memberCount: 3, budget: 300000, projects: 3, description: "Gestão de talentos, desenvolvimento profissional, recrutamento, e promoção do bem-estar dos colaboradores.", goals: ["Reduzir turnover para 8%", "Implementar novo programa de formação contínua", "Melhorar índice de satisfação dos colaboradores"] },
+    { id: 4, name: "Plataforma", slug: "it", head: 1, memberCount: 4, budget: 2000000, projects: 12, description: "Desenvolvimento e manutenção de sistemas, infraestrutura tecnológica, e suporte técnico da plataforma de apostas.", goals: ["Garantir uptime de 99.99%", "Implementar nova API de Odds", "Reduzir tempo de resposta de incidentes em 30%"] },
+    { id: 5, name: "Operações", slug: "operations", head: 34, memberCount: 5, budget: 800000, projects: 6, description: "Otimização de processos operacionais, gestão da qualidade, e eficiência dos serviços.", goals: ["Aumentar eficiência operacional em 20%", "Reduzir tempo de processamento de transações", "Automatizar 5 processos manuais"] },
+    { id: 6, name: "Risco e Fraude", slug: "compliance", head: 29, memberCount: 5, budget: 400000, projects: 4, description: "Garantia de conformidade com regulamentações, políticas internas e prevenção de riscos de fraude e lavagem de dinheiro.", goals: ["Implementar novo sistema de monitorização de transações (AML)", "Realizar auditorias de conformidade trimestrais", "Atualizar todas as políticas internas"] },
+    { id: 7, name: "Segurança", slug: "security", head: 12, memberCount: 2, budget: 600000, projects: 3, description: "Proteção de dados, cibersegurança, e prevenção de ataques à plataforma.", goals: ["Implementar autenticação multi-fator (MFA) para todos os sistemas críticos", "Realizar testes de penetração trimestrais", "Reduzir falsos positivos em alertas de fraude em 15%"] },
+    { id: 8, name: "Administração", slug: "administration", head: 25, memberCount: 4, budget: 100000, projects: 1, description: "Gestão geral e administrativa da plataforma Oryon.", goals: [] },
 ];
 
 export const projects = [
     {
         id: 1,
-        name: "Lançamento Novo Produto Digital 'Conta Pro'",
+        name: "Campanha de Marketing Q4 - Bónus de Natal",
         department: "Marketing",
         progress: 65,
         status: "active",
@@ -853,13 +859,13 @@ export const projects = [
         spent: 156000,
         tasksCount: 24,
         completedTasks: 16,
-        description: "Desenvolvimento e lançamento da nova conta digital 'Conta Pro' com funcionalidades avançadas para empresas e freelancers. O projeto inclui desde a concepção da campanha até a execução e análise de resultados.",
-        risks: "Concorrência agressiva no segmento, possíveis atrasos no desenvolvimento técnico da app."
+        description: "Desenvolvimento e lançamento da campanha de marketing de Natal, com foco em bónus de depósito, apostas grátis e promoções sazonais.",
+        risks: "Concorrência agressiva no período natalício, ROI abaixo do esperado."
     },
     {
         id: 2,
-        name: "Modernização da Plataforma de Homebanking",
-        department: "Tecnologia",
+        name: "Desenvolvimento da Nova App Mobile Txuna Bet",
+        department: "Plataforma",
         progress: 30,
         status: "active",
         startDate: "2024-09-15",
@@ -869,13 +875,13 @@ export const projects = [
         spent: 145000,
         tasksCount: 45,
         completedTasks: 14,
-        description: "Atualização completa da plataforma de homebanking com nova interface (UI/UX), migração para nova arquitetura de micro-serviços e implementação de novas funcionalidades de gestão financeira pessoal (PFM).",
-        risks: "Compatibilidade com sistemas legados, segurança durante a transição de dados dos clientes."
+        description: "Desenvolvimento da nova aplicação móvel nativa para iOS e Android, com nova interface (UI/UX) e funcionalidades melhoradas.",
+        risks: "Atrasos na aprovação pelas App Stores, problemas de performance em dispositivos mais antigos."
     },
     {
         id: 3,
-        name: "Otimização de Processos Operacionais com RPA",
-        department: "Operações",
+        name: "Otimização do Motor de Risco",
+        department: "Risco e Fraude",
         progress: 20,
         status: "planning",
         startDate: "2024-12-01",
@@ -885,8 +891,8 @@ export const projects = [
         spent: 45000,
         tasksCount: 18,
         completedTasks: 4,
-        description: "Reengenharia de processos para aumentar eficiência e reduzir custos operacionais através da implementação de Robotic Process Automation (RPA) em tarefas manuais e repetitivas.",
-        risks: "Resistência à mudança por parte dos colaboradores, necessidade de formação extensiva para as novas ferramentas."
+        description: "Melhoria do motor de análise de risco para detetar padrões de apostas suspeitas e fraude de forma mais eficaz, usando machine learning.",
+        risks: "Complexidade do modelo de ML, necessidade de grande volume de dados para treino."
     }
 ];
 
@@ -913,9 +919,9 @@ export const menuItems = [
             { id: 'departments/marketing', title: 'Marketing', department: 'marketing', status: 'online' },
             { id: 'departments/finance', title: 'Financeiro', department: 'finance', status: 'online' },
             { id: 'departments/hr', title: 'Recursos Humanos', department: 'hr', status: 'away' },
-            { id: 'departments/it', title: 'Tecnologia', department: 'it', status: 'online' },
+            { id: 'departments/it', title: 'Plataforma', department: 'it', status: 'online' },
             { id: 'departments/operations', title: 'Operações', department: 'operations', status: 'busy' },
-            { id: 'departments/compliance', title: 'Compliance', department: 'compliance', status: 'online' },
+            { id: 'departments/compliance', title: 'Risco e Fraude', department: 'compliance', status: 'online' },
             { id: 'departments/security', title: 'Segurança', department: 'security', status: 'dnd' },
         ],
     },
@@ -958,7 +964,7 @@ export const menuItems = [
 export const knowledgeBase = [
     {
         id: 1,
-        title: "Guia de Boas-Vindas ao Txuna Bet",
+        title: "Guia de Boas-Vindas à Txuna Bet",
         category: "Recursos Humanos",
         views: 1250,
         tags: ["onboarding", "cultura", "beneficios"]
@@ -972,29 +978,29 @@ export const knowledgeBase = [
     },
     {
         id: 3,
-        title: "Como Solicitar Férias no Portal do Colaborador",
-        category: "Recursos Humanos",
+        title: "Como Gerir Limites de Aposta de Utilizadores",
+        category: "Risco e Fraude",
         views: 2340,
-        tags: ["férias", "portal", "processo"]
+        tags: ["risco", "limites", "processo"]
     },
     {
         id: 4,
-        title: "Brand Guidelines do Txuna Bet",
+        title: "Brand Guidelines da Txuna Bet",
         category: "Marketing",
         views: 780,
         tags: ["marca", "design", "logo"]
     },
     {
         id: 5,
-        title: "Procedimentos de Abertura de Conta para Clientes",
+        title: "Procedimentos de Verificação de Identidade (KYC)",
         category: "Operações",
         views: 1560,
-        tags: ["contas", "clientes", "operações"]
+        tags: ["kyc", "utilizadores", "operações"]
     }
 ];
 
 export const documents = [
-    { id: 1, title: "Relatório Financeiro Anual 2023", type: "PDF", size: "5.8 MB", lastModified: "2024-03-15" },
+    { id: 1, title: "Relatório de GGR Anual 2023", type: "PDF", size: "5.8 MB", lastModified: "2024-03-15" },
     { id: 2, title: "Plano de Marketing Q4 2024", type: "DOCX", size: "1.2 MB", lastModified: "2024-10-28" },
     { id: 3, title: "Apresentação Institucional", type: "PPTX", size: "12.3 MB", lastModified: "2024-09-05" },
     { id: 4, title: "Formulário de Avaliação de Desempenho", type: "PDF", size: "350 KB", lastModified: "2024-01-10" },
@@ -1002,10 +1008,10 @@ export const documents = [
 ];
 
 export const reports = [
-    { id: 1, title: "Desempenho de Vendas - Outubro 2024", summary: "Análise detalhada das métricas de vendas, incluindo performance por região e produto.", type: "mensal", department: "Marketing" },
-    { id: 2, title: "Satisfação do Cliente - Q3 2024", summary: "Resultados da pesquisa trimestral de satisfação do cliente e principais insights.", type: "trimestral", department: "Operações" },
-    { id: 3, title: "Análise de Risco de Crédito", summary: "Relatório sobre a carteira de crédito atual e avaliação de riscos.", type: "anual", department: "Financeiro" },
-    { id: 4, title: "Performance da Campanha 'Conta Pro'", summary: "KPIs e ROI da campanha de lançamento do novo produto digital.", type: "semanal", department: "Marketing" },
+    { id: 1, title: "Performance de Mercados - Outubro 2024", summary: "Análise detalhada da performance por desporto e tipo de aposta.", type: "mensal", department: "Sportsbook" },
+    { id: 2, title: "Análise de Churn de Utilizadores - Q3 2024", summary: "Resultados do estudo sobre a taxa de abandono de utilizadores e principais motivos.", type: "trimestral", department: "Marketing" },
+    { id: 3, title: "Análise de Risco de Mercados", summary: "Relatório sobre a exposição da casa por mercado e evento.", type: "semanal", department: "Risco e Fraude" },
+    { id: 4, title: "Performance da Campanha 'Bónus de Verão'", summary: "KPIs e ROI da campanha de verão.", type: "final", department: "Marketing" },
 ];
 
 export const analyticsData = {
@@ -1014,34 +1020,27 @@ export const analyticsData = {
         data: [65, 59, 80, 81, 56, 55, 40]
     },
     projectProgress: {
-        labels: ["Campanha Q4", "Identidade Visual", "Relatório Trimestral", "Otimização SEO"],
-        data: [65, 10, 40, 100]
+        labels: ["Campanha Q4", "App Mobile", "Motor de Risco", "Otimização SEO"],
+        data: [65, 30, 20, 100]
     }
 };
 
 export const workflows = [
     { id: 1, name: "Onboarding de Novo Colaborador", department: "Recursos Humanos", steps: 12 },
-    { id: 2, name: "Aprovação de Proposta Comercial", department: "Financeiro", steps: 5 },
+    { id: 2, name: "Gestão de Incidente de Segurança", department: "Segurança", steps: 5 },
     { id: 3, name: "Lançamento de Campanha de Marketing", department: "Marketing", steps: 8 },
-    { id: 4, name: "Solicitação de Acesso a Sistemas", department: "Tecnologia", steps: 4 },
+    { id: 4, name: "Aprovação de Novo Mercado de Apostas", department: "Sportsbook", steps: 4 },
 ];
 
 export const automations = [
-    { id: 1, name: "Enviar email de boas-vindas a novos clientes", active: true },
-    { id: 2, name: "Gerar relatório de performance semanal automaticamente", active: true },
-    { id: 3, name: "Notificar gestor sobre tarefas com prazo iminente", active: true },
-    { id: 4, name: "Criar ticket de suporte TI a partir de email para 'suporte@oryon.com'", active: true },
-    { id: 5, name: "Arquivar projetos concluídos há mais de 90 dias", active: false },
-    { id: 6, name: "Solicitar aprovação para despesas acima de €1000", active: true },
-    { id: 7, name: "Lembrete de preenchimento de timesheet semanal", active: true },
+    { id: 1, name: "Enviar email de boas-vindas a novos utilizadores", active: true },
+    { id: 2, name: "Gerar relatório de GGR diário automaticamente", active: true },
+    { id: 3, name: "Notificar gestor de risco sobre apostas de alto valor", active: true },
+    { id: 4, name: "Criar ticket de suporte a partir de email para 'suporte@txunabet.com'", active: true },
+    { id: 5, name: "Suspender mercados 5 minutos antes do início do evento", active: true },
+    { id: 6, name: "Solicitar aprovação para pagamentos de afiliados acima de €5000", active: true },
+    { id: 7, name: "Lembrete de jogos importantes do dia para equipa de traders", active: true },
     { id: 8, name: "Sincronizar eventos do calendário com o Google Calendar", active: false },
-    { id: 9, name: "Criar relatório de despesas mensal para cada departamento", active: true },
-    { id: 10, name: "Revogar acessos de ex-colaboradores automaticamente", active: true },
-    { id: 11, name: "Alertar sobre baixo stock de material de escritório", active: false },
-    { id: 12, name: "Publicar atualizações importantes no canal #geral do chat", active: true },
-    { id: 13, name: "Backup diário da base de dados de clientes", active: true },
-    { id: 14, name: "Análise de sentimento em feedback de clientes", active: true },
-    { id: 15, name: "Lembrete de formação de compliance obrigatória", active: true }
 ];
 
 export const integrations = [
@@ -1071,7 +1070,7 @@ export const nationalHolidays = [
 export const calendarEvents = [
     { id: 1, title: "Reunião de Equipa - Marketing", description: "Reunião semanal da equipa de Marketing", start: "2024-11-20T10:00:00", end: "2024-11-20T11:00:00", createdBy: 3, participants: [2, 3, 13, 14], type: "meeting", department: "Marketing", location: "Sala de Reuniões A", color: "purple" },
     { id: 2, title: "Apresentação aos Investidores", description: "Apresentação dos resultados do trimestre aos investidores", start: "2024-11-22T14:00:00", end: "2024-11-22T16:00:00", createdBy: 1, participants: [1, 3, 4, 26, 28], type: "presentation", department: "Administração", location: "Auditório Principal", color: "blue" },
-    { id: 3, title: "Workshop de Inovação", description: "Workshop sobre tendências de inovação no sector bancário", start: "2024-11-25T09:00:00", end: "2024-11-25T13:00:00", createdBy: 1, participants: [1, 2, 3, 4, 5, 9, 18], type: "workshop", department: "Tecnologia", location: "Centro de Formação", color: "green" },
+    { id: 3, title: "Workshop de Inovação", description: "Workshop sobre tendências de inovação no sector de apostas", start: "2024-11-25T09:00:00", end: "2024-11-25T13:00:00", createdBy: 1, participants: [1, 2, 3, 4, 5, 9, 18], type: "workshop", department: "Plataforma", location: "Centro de Formação", color: "green" },
 ];
 
 export const cloudFiles = [
@@ -1099,8 +1098,8 @@ export type Workspace = {
 export const workspaces: Workspace[] = [
     {
         id: 'ws-marketing-q4',
-        name: "Lançamento Produto 'Conta Pro'",
-        description: "Workspace central para a campanha de marketing do 4º trimestre para o lançamento da 'Conta Pro'.",
+        name: "Campanha de Natal Q4",
+        description: "Workspace central para a campanha de marketing do 4º trimestre, focada nas promoções de Natal.",
         owner_id: 3,
         members: [2, 3, 13, 14],
         privacy: 'private',
@@ -1112,8 +1111,8 @@ export const workspaces: Workspace[] = [
     },
     {
         id: 'ws-tech-homebanking',
-        name: "Modernização do Homebanking",
-        description: "Projeto de tecnologia para a renovação completa da plataforma de homebanking.",
+        name: "Nova App Mobile",
+        description: "Projeto de tecnologia para o desenvolvimento da nova app mobile nativa.",
         owner_id: 1,
         members: [1, 2, 4, 9, 18, 19, 20],
         privacy: 'private',
@@ -1168,11 +1167,11 @@ export const feedItems: FeedItem[] = [
         timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
         author_user_id: 'system',
         item_type: 'system_event',
-        content: { text: "O projeto 'Modernização da Plataforma de Homebanking' foi iniciado." },
+        content: { text: "O projeto 'Nova App Mobile Txuna Bet' foi iniciado." },
         system_event_details: {
             event: 'project.created',
             project_id: 2,
-            project_name: 'Modernização da Plataforma de Homebanking'
+            project_name: 'Nova App Mobile Txuna Bet'
         },
         reactions: [],
         comments_count: 0,
@@ -1195,9 +1194,9 @@ export const feedItems: FeedItem[] = [
         timestamp: new Date(Date.now() - 10 * 60 * 60 * 1000).toISOString(),
         author_user_id: 9, // Pedro Nunes
         item_type: 'post',
-        content: { text: "Alguém tem experiência com a implementação de WebSockets para notificações em tempo real em larga escala? A pensar na arquitetura para o novo #homebanking. #devs #tecnologia" },
+        content: { text: "Alguém tem experiência com a implementação de WebSockets para notificações em tempo real em larga escala? A pensar na arquitetura para a nova #appmobile. #devs #tecnologia" },
         mentions: [],
-        hashtags: ['devs', 'tecnologia', 'homebanking'],
+        hashtags: ['devs', 'tecnologia', 'appmobile'],
         reactions: [{user_id: 18, reaction_type: 'idea'}, {user_id: 20, reaction_type: 'idea'}],
         comments_count: 4,
         is_pinned: false,
@@ -1236,25 +1235,8 @@ export const messages = {
 };
 
 export const getCurrentUser = () => {
-    if (typeof window !== 'undefined') {
-        const session = document.cookie.split('; ').find(row => row.startsWith('oryon_user_session='));
-        if (session) {
-            try {
-                // Correctly parse the JSON string from the cookie
-                const userData = JSON.parse(decodeURIComponent(session.split('=')[1]));
-                // Find the user in the mock data array
-                const user = users.find(u => u.id === userData.id);
-                if (user) {
-                  return user;
-                }
-            } catch (e) {
-                console.error("Failed to parse user session cookie:", e);
-                // Fallback for server-side or if cookie is invalid
-            }
-        }
-    }
-    // Fallback for server-side rendering or if no user is logged in
-    return users.find(u => u.id === 1)!;
+    // This is a mock function. In a real app, you'd get this from your auth state.
+    return users.find(u => u.id === 1)!; 
 };
 
 
@@ -1274,3 +1256,4 @@ export const getWorkspaceFiles = (fileIds: number[]) => cloudFiles.filter(f => f
     
 
     
+

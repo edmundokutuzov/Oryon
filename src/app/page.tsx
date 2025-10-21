@@ -98,7 +98,7 @@ export default function LoginPage() {
       <div className="gradient-surface p-8 md:p-10 rounded-2xl w-full max-w-md mx-4 border-2 border-primary/50 bounce-in">
         <div className="text-center mb-8">
           <TxunaLogo className="mx-auto mb-4 h-16 w-auto" />
-          <h1 className="text-4xl font-bold text-foreground mb-1">Bem-vindo</h1>
+          <h1 className="text-4xl font-bold text-foreground mb-1">Entre para a Ação</h1>
           <p className="text-muted-foreground">Plataforma de Gestão Txuna Bet</p>
         </div>
 
@@ -177,7 +177,7 @@ export default function LoginPage() {
         <div className="mt-8 text-center">
             <p className="text-sm text-muted-foreground">Não tem uma conta?</p>
             <Link href="/signup" className="font-semibold text-primary hover:text-primary/80 transition-colors flex items-center justify-center gap-2 mt-1">
-                Registe-se agora <ArrowRight className="w-4 h-4"/>
+                Registe-se e ganhe o seu bónus <ArrowRight className="w-4 h-4"/>
             </Link>
         </div>
       </div>

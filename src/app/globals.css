@@ -123,13 +123,12 @@
 
 
   /* Department Colors */
-  .department-marketing { --dept-color: 145 63% 49%; } /* green */
-  .department-finance { --dept-color: 39 100% 50%; } /* orange */
-  .department-hr { --dept-color: 262 83% 58%; } /* violet */
-  .department-it { --dept-color: 221 83% 53%; } /* blue */
-  .department-operations { --dept-color: 188 95% 42%; } /* cyan */
-  .department-compliance { --dept-color: 0 84% 60%; } /* red */
-  .department-security { --dept-color: 48 96% 53%; } /* yellow */
+  .department-sportsbook { --dept-color: 145 63% 49%; } /* green */
+  .department-casino { --dept-color: 39 100% 50%; } /* orange */
+  .department-risk { --dept-color: 0 84% 60%; } /* red */
+  .department-marketing { --dept-color: 262 83% 58%; } /* violet */
+  .department-platform { --dept-color: 221 83% 53%; } /* blue */
+  .department-support { --dept-color: 188 95% 42%; } /* cyan */
   .department-administration { --dept-color: 215 20% 65%; } /* gray */
 
   .border-dept {

@@ -35,7 +35,7 @@ export default function AutomationsPage() {
                                 </h3>
                             </div>
                             <div className="flex items-center space-x-4">
-                                <span className={`text-sm font-medium ${auto.active ? 'text-success-500' : 'text-destructive'}`}>
+                                <span className={`text-sm font-medium ${auto.active ? 'text-green-400' : 'text-destructive'}`}>
                                     {auto.active ? 'Ativa' : 'Inativa'}
                                 </span>
                                 <Switch

@@ -10,6 +10,8 @@ import {
   Bot,
   Loader2,
   AlertTriangle,
+  BarChart,
+  Target,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getTasksForUser, getUpcomingMeetings, getCurrentUser, users, feedItems } from '@/lib/data';
@@ -34,10 +36,10 @@ const AdminPanel = () => {
   const [isAlertsModalOpen, setIsAlertsModalOpen] = useState(false);
   
   const systemAlerts = [
-      { id: "alert01", severity: "high", message: "Falha no backup do servidor principal às 03:00." },
-      { id: "alert02", severity: "medium", message: "API de pagamentos com latência elevada." },
-      { id: "alert03", severity: "low", message: "Espaço em disco do servidor de logs a 85%." },
-      { id: "alert04", severity: "low", message: "Certificado SSL expira em 30 dias." }
+      { id: "alert01", severity: "high", message: "Atividade suspeita detectada na conta do utilizador 'Player123'." },
+      { id: "alert02", severity: "medium", message: "API de pagamentos (Stripe) com latência elevada." },
+      { id: "alert03", severity: "low", message: "Servidor de jogos de Casino a 85% de CPU." },
+      { id: "alert04", severity: "high", message: "Falha na execução do job de cálculo de GGR." }
     ];
 
   return (
@@ -52,19 +54,19 @@ const AdminPanel = () => {
         <CardContent className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             <Link href="#">
               <div className="flex items-center gap-3 p-4 rounded-xl hover:bg-muted/50 transition-colors">
-                  <div className="p-3 rounded-xl bg-success-500/20 text-success-500"><Users/></div>
+                  <div className="p-3 rounded-xl bg-green-500/20 text-green-400"><Users/></div>
                   <div>
-                      <p className="text-2xl font-bold">245</p>
+                      <p className="text-2xl font-bold">1,245</p>
                       <p className="text-sm text-muted-foreground">Utilizadores Ativos</p>
                   </div>
               </div>
             </Link>
             <Link href="#">
               <div className="flex items-center gap-3 p-4 rounded-xl hover:bg-muted/50 transition-colors">
-                  <div className="p-3 rounded-xl bg-primary/20 text-primary"><TrendingUp/></div>
+                  <div className="p-3 rounded-xl bg-primary/20 text-primary"><BarChart/></div>
                   <div>
-                      <p className="text-2xl font-bold">+12%</p>
-                      <p className="text-sm text-muted-foreground">Crescimento (30d)</p>
+                      <p className="text-2xl font-bold">€1.2M</p>
+                      <p className="text-sm text-muted-foreground">GGR (Hoje)</p>
                   </div>
               </div>
             </Link>
@@ -156,7 +158,7 @@ const TaskPreviewCard = ({ task }: { task: (typeof tasks)[0] }) => {
   const priorityStyles: { [key: string]: string } = {
     high: 'bg-destructive/20 text-destructive-foreground',
     medium: 'bg-accent-500/20 text-accent-500',
-    low: 'bg-success-500/20 text-success-500',
+    low: 'bg-green-500/20 text-green-400',
     urgent: 'bg-destructive/20 text-destructive-foreground',
   };
   return (
@@ -181,7 +183,7 @@ const MeetingPreviewCard = ({ meeting }: { meeting: (typeof meetings)[0] }) => (
     <div className="p-4 rounded-xl bg-card/5 hover:bg-card/10 transition-colors cursor-pointer">
       <div className="flex justify-between items-start mb-2">
         <h3 className="font-semibold text-foreground text-sm" dangerouslySetInnerHTML={{ __html: meeting.title }}></h3>
-        <Button size="icon" variant="ghost" className="h-8 w-8 bg-success-500/20 text-success-500 hover:bg-success-500/30">
+        <Button size="icon" variant="ghost" className="h-8 w-8 bg-green-500/20 text-green-400 hover:bg-green-500/30">
           <Video className="h-4 w-4" />
         </Button>
       </div>
@@ -243,8 +245,8 @@ const ContextPanel = () => {
                 <span className="font-bold text-foreground">{meetings.length}</span>
             </div>
             <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Prazo final:</span>
-                <span className="font-bold text-destructive">{tasks.filter(t => t.priority === 'high' && t.dueDate === today).length}</span>
+                <span className="text-muted-foreground">Mercados abertos:</span>
+                <span className="font-bold text-primary">1,289</span>
             </div>
         </div>
         
@@ -260,7 +262,7 @@ const ContextPanel = () => {
                           <AvatarImage src={avatar} alt={user.name} data-ai-hint="person portrait" />
                           <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                         </Avatar>
-                        <span className="absolute bottom-0 right-0 block h-2 w-2 rounded-full bg-success-500 ring-2 ring-background"></span>
+                        <span className="absolute bottom-0 right-0 block h-2 w-2 rounded-full bg-green-500 ring-2 ring-background"></span>
                       </div>
                       <div>
                           <p className="text-sm font-medium text-foreground">{user.name}</p>
@@ -277,10 +279,10 @@ const ContextPanel = () => {
 
 export default function DashboardPage() {
   const kpis = [
-      { title: 'Tarefas Pendentes', value: tasks.filter(t => t.status !== 'done').length, icon: ListTodo, color: 'text-primary', href: '/dashboard/tasks' },
-      { title: 'Reuniões Hoje', value: meetings.length, icon: Video, color: 'text-success-500', href: '/dashboard/meetings' },
-      { title: 'Mensagens Não Lidas', value: 12, icon: MessagesSquare, color: 'text-accent-500', href: '/dashboard/chat/general' },
-      { title: 'Produtividade', value: '84%', icon: Activity, color: 'text-yellow-300', href: '#', tooltip: 'Calculado com base em 12 de 15 tarefas concluídas no prazo este mês.' },
+      { title: 'Volume de Apostas (24h)', value: '€2.3M', icon: BarChart, color: 'text-primary', href: '/dashboard/analytics' },
+      { title: 'Utilizadores Ativos', value: '1,245', icon: Users, color: 'text-green-400', href: '/dashboard/analytics' },
+      { title: 'Novas Tarefas', value: 5, icon: ListTodo, color: 'text-yellow-400', href: '/dashboard/tasks' },
+      { title: 'Metas do Q4', value: '78%', icon: Target, color: 'text-primary', href: '#', tooltip: 'Calculado com base no progresso dos projetos-chave.' },
   ]
   return (
     <div className="flex h-full">

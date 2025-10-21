@@ -3,7 +3,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getTasksForUser, getCurrentUser, users, projects } from '@/lib/data';
+import { getTasksForUser, getCurrentUser, users, campaigns } from '@/lib/data';
 import { Plus, ArrowUpDown, LayoutGrid, List, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
+import { Context, ContextTag } from '@/components/ui/context-tag';
 
 const currentUser = getCurrentUser();
 const userTasks = getTasksForUser(currentUser.id);
@@ -72,7 +73,7 @@ const TasksBoardView = () => {
 }
 
 const TasksListView = () => {
-    type SortKey = 'title' | 'priority' | 'dueDate' | 'status' | 'project';
+    type SortKey = 'title' | 'priority' | 'dueDate' | 'status' | 'context';
     const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' }>({ key: 'priority', direction: 'ascending' });
 
     const priorityOrder: { [key: string]: number } = { urgent: 4, high: 3, medium: 2, low: 1 };
@@ -92,7 +93,6 @@ const TasksListView = () => {
                 case 'dueDate':
                     aValue = a.dueDate ? new Date(a.dueDate).getTime() : Infinity;
                     bValue = b.dueDate ? new Date(b.dueDate).getTime() : Infinity;
-                    // For ascending, null/Infinity dates should go last
                     if (sortConfig.direction === 'ascending') {
                         if (aValue === Infinity && bValue !== Infinity) return 1;
                         if (aValue !== Infinity && bValue === Infinity) return -1;
@@ -105,11 +105,9 @@ const TasksListView = () => {
                     aValue = statusOrder[a.status] || 0;
                     bValue = statusOrder[b.status] || 0;
                     break;
-                case 'project':
-                    const projectA = projects.find(p => p.id === a.contextId);
-                    const projectB = projects.find(p => p.id === b.contextId);
-                    aValue = projectA?.name || 'zzzz';
-                    bValue = projectB?.name || 'zzzz';
+                case 'context':
+                    aValue = a.context?.name || 'zzzz';
+                    bValue = b.context?.name || 'zzzz';
                     return aValue.localeCompare(bValue) * (sortConfig.direction === 'ascending' ? 1 : -1);
                 default: // title
                     aValue = a.title;
@@ -159,7 +157,7 @@ const TasksListView = () => {
                             <TableHead onClick={() => requestSort('title')} className="cursor-pointer">
                                 <span className="flex items-center gap-2">Tarefa <ArrowUpDown className="w-4 h-4"/></span>
                             </TableHead>
-                            <TableHead onClick={() => requestSort('project')} className="cursor-pointer">
+                            <TableHead onClick={() => requestSort('context')} className="cursor-pointer">
                                 <span className="flex items-center gap-2">Contexto <ArrowUpDown className="w-4 h-4"/></span>
                             </TableHead>
                              <TableHead onClick={() => requestSort('priority')} className="cursor-pointer">
@@ -175,11 +173,12 @@ const TasksListView = () => {
                     </TableHeader>
                     <TableBody>
                         {sortedTasks.map(task => {
-                             const context = task.contextType === 'campaign' ? campaigns.find(c => c.id === task.contextId) : null;
                              return (
                                 <TableRow key={task.id} className="border-b-border/50 hover:bg-muted/50">
                                     <TableCell className="font-medium text-foreground">{task.title}</TableCell>
-                                    <TableCell className="text-muted-foreground">{context?.name || '-'}</TableCell>
+                                    <TableCell>
+                                        <ContextTag context={task.context} />
+                                    </TableCell>
                                     <TableCell className={cn('font-medium capitalize', priorityStyles[task.priority])}>
                                         <span className="flex items-center gap-2">{priorityIcons[task.priority]} {task.priority}</span>
                                     </TableCell>
@@ -230,16 +229,19 @@ function TaskCard({ task }: { task: (typeof userTasks)[0] }) {
   };
    const assignedUsers = task.assignedTo.map(userId => users.find(u => u.id === userId)).filter(Boolean);
    const isDone = task.status === 'done';
-   const context = task.contextType === 'campaign' ? campaigns.find(c => c.id === task.contextId) : null;
 
   return (
     <div className={cn("p-4 bg-card/80 rounded-lg shadow-sm cursor-grab active:cursor-grabbing", { 'opacity-60': isDone }, { 'border-l-2 border-destructive': task.status === 'blocked'})}>
-        <p className={cn("font-semibold text-foreground text-sm", {'line-through text-muted-foreground': isDone})}>
-            {task.title}
-        </p>
+        <div className="flex justify-between items-start">
+            <p className={cn("font-semibold text-foreground text-sm mb-2", {'line-through text-muted-foreground': isDone})}>
+                {task.title}
+            </p>
+        </div>
 
-        {context && (
-            <p className="text-xs text-primary/80 font-medium mt-2">🔗 Campanha: {context.name}</p>
+        {task.context && (
+           <div className="mb-3">
+             <ContextTag context={task.context} />
+           </div>
         )}
         
         {task.status === 'blocked' && (
@@ -295,5 +297,3 @@ function TaskCard({ task }: { task: (typeof userTasks)[0] }) {
     </div>
   );
 };
-
-    

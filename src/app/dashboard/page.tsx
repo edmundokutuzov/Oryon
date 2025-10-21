@@ -57,7 +57,7 @@ const AdminPanel = () => {
                   </div>
               </div>
             </Link>
-            <Link href="#">
+            <Link href="/dashboard/analytics">
               <div className="flex items-center gap-3 p-4 rounded-xl hover:bg-muted/50 transition-colors">
                   <div className="p-3 rounded-xl bg-primary/20 text-primary"><BarChart/></div>
                   <div>

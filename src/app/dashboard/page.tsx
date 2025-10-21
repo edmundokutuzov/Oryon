@@ -1,3 +1,4 @@
+
 'use client';
 import {
   Activity,
@@ -105,15 +106,21 @@ const AdminPanel = () => {
 const DailyBriefing = ({currentUser}: {currentUser: any}) => {
   const [briefing, setBriefing] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  const tasks = getTasksForUser(currentUser.id);
-  const today = new Date().toISOString().split('T')[0];
-  const meetings = getUpcomingMeetings(currentUser.id).filter(m => m.date === today);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!currentUser) return;
+
+    const tasks = getTasksForUser(currentUser.id);
+    const today = new Date().toISOString().split('T')[0];
+    const meetings = getUpcomingMeetings(currentUser.id).filter(m => m.date === today);
+
     async function fetchBriefing() {
       try {
-        const relevantTasks = tasks.filter(t => t.status !== 'done').map(t => ({ id: t.id, title: t.title, description: t.description, status: t.status, priority: t.priority, dueDate: t.dueDate }));
+        const relevantTasks = tasks
+          .filter(t => t.status !== 'done')
+          .map(t => ({ id: t.id, title: t.title, description: t.description, status: t.status, priority: t.priority, dueDate: t.dueDate }));
+        
         const relevantMeetings = meetings.map(m => ({ id: m.id, title: m.title, description: m.description, date: m.date, time: m.time, duration: m.duration }));
 
         const response = await getDailyBriefing({
@@ -121,16 +128,18 @@ const DailyBriefing = ({currentUser}: {currentUser: any}) => {
           tasks: relevantTasks,
           meetings: relevantMeetings,
         });
+
         setBriefing(response.briefing);
-      } catch (error) {
-        console.error("Failed to fetch daily briefing:", error);
-        setBriefing("Não foi possível carregar o seu resumo diário. Por favor, tente mais tarde.");
+
+      } catch (err: any) {
+        console.error("Erro ao gerar resumo diário:", err);
+        setError("Não foi possível carregar o seu resumo diário. A equipa de engenharia foi notificada.");
       } finally {
         setIsLoading(false);
       }
     }
     fetchBriefing();
-  }, [currentUser, tasks, meetings]);
+  }, [currentUser]);
 
   return (
      <Card className="gradient-surface border-0 rounded-2xl mb-8">
@@ -140,10 +149,12 @@ const DailyBriefing = ({currentUser}: {currentUser: any}) => {
             <div className='w-full'>
               <h3 className="font-bold text-lg text-foreground">O seu Resumo Diário da OryonAI</h3>
                {isLoading ? (
-                <div className="space-y-2 mt-2">
-                  <div className="h-4 bg-muted/50 rounded w-3/4 animate-pulse"></div>
-                  <div className="h-4 bg-muted/50 rounded w-1/2 animate-pulse"></div>
+                <div className="flex items-center gap-2 mt-2 text-muted-foreground">
+                    <Loader2 className="animate-spin h-5 w-5" /> 
+                    <p>A OryonAI está a preparar o seu dia...</p>
                 </div>
+              ) : error ? (
+                <p className="text-red-400 mt-2">{error}</p>
               ) : (
                 <p className="text-muted-foreground mt-1 whitespace-pre-wrap">{briefing}</p>
               )}
@@ -382,3 +393,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    

@@ -10,7 +10,6 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import { tasks as allTasks, meetings as allMeetings } from '@/lib/data';
 
 const TaskSchema = z.object({
   id: z.number(),
@@ -32,7 +31,7 @@ const MeetingSchema = z.object({
 
 const DailyBriefingInputSchema = z.object({
   userName: z.string().describe('The name of the user.'),
-  tasks: z.array(TaskSchema).describe('A list of the user\'s tasks.'),
+  tasks: z.array(TaskSchema).describe('A list of the user\'s tasks for today.'),
   meetings: z.array(MeetingSchema).describe('A list of the user\'s meetings for today.'),
 });
 export type DailyBriefingInput = z.infer<typeof DailyBriefingInputSchema>;
@@ -50,34 +49,40 @@ const prompt = ai.definePrompt({
   name: 'dailyBriefingPrompt',
   input: { schema: DailyBriefingInputSchema },
   output: { schema: DailyBriefingOutputSchema },
-  prompt: `Você é OryonAI, um assistente de IA especialista da plataforma Oryon, agindo como um assistente pessoal ultra-eficiente.
-
-O seu objetivo é analisar as tarefas e reuniões de hoje para o utilizador, {{userName}}, e fornecer um resumo proativo, inteligente e personalizado para o início do dia.
+  prompt: `És a OryonAI, a assistente da plataforma Txuna Bet. A tua tarefa é gerar um resumo diário curto, proativo e motivador (máximo 3-4 frases) para o utilizador {{userName}}. Com base no contexto que te forneço, cria um briefing personalizado.
 
 Regras do Resumo:
-- O tom deve ser profissional, mas amigável e encorajador. Trate o utilizador pelo nome.
-- Seja conciso e direto ao ponto. Use parágrafos curtos ou listas de itens.
-- EVITE o uso excessivo de markdown. Não use '*' para ênfase.
-- NÃO liste todas as tarefas e reuniões. Em vez disso, sintetize e extraia os pontos mais importantes.
-- Identifique as prioridades do dia (tarefas com prioridade 'high' ou com prazo a expirar).
-- Encontre sinergias. Por exemplo, se uma tarefa está relacionada com uma reunião, mencione isso. (Ex: "Vejo que tem a tarefa 'X', que é perfeita para preparar a sua reunião 'Y' à tarde.")
-- Termine com uma nota positiva e motivacional.
+- O tom deve ser profissional, mas amigável e encorajador. Trata o utilizador pelo nome.
+- Sê conciso e direto ao ponto. Usa parágrafos curtos.
+- NÃO listes todas as tarefas e reuniões. Em vez disso, sintetiza os pontos mais importantes.
+- Identifica as prioridades do dia (tarefas com prioridade 'urgent' ou 'high').
+- Encontra sinergias. Se uma tarefa está relacionada com uma reunião, menciona isso. (Ex: "Vejo que tens a tarefa 'X', que é perfeita para preparar a tua reunião 'Y' à tarde.")
+- Termina com uma nota positiva e motivacional.
 - A resposta deve ser SEMPRE em Português.
 
 Contexto do Utilizador para Hoje:
 
 Tarefas Pendentes:
+{{#if tasks}}
 {{#each tasks}}
 - Título: {{title}} (Prioridade: {{priority}}, Prazo: {{dueDate}})
 {{/each}}
+{{else}}
+Nenhuma tarefa pendente para hoje.
+{{/if}}
 
 Reuniões Agendadas para Hoje:
+{{#if meetings}}
 {{#each meetings}}
 - Título: {{title}} (Hora: {{time}}, Duração: {{duration}} min)
 {{/each}}
+{{else}}
+Nenhuma reunião agendada para hoje.
+{{/if}}
 
-Agora, com base nesta informação, gere o resumo diário para {{userName}}.`,
+Agora, com base nesta informação, gera o resumo diário para {{userName}}.`,
 });
+
 
 const getDailyBriefingFlow = ai.defineFlow(
   {
@@ -86,7 +91,14 @@ const getDailyBriefingFlow = ai.defineFlow(
     outputSchema: DailyBriefingOutputSchema,
   },
   async input => {
+    // If there's nothing to report, return a friendly message.
+    if (input.tasks.length === 0 && input.meetings.length === 0) {
+      return { briefing: `Bom dia, ${input.userName}! Parece que tem um dia tranquilo pela frente. Sem tarefas ou reuniões urgentes. Aproveite para planear a sua semana!` };
+    }
+    
     const { output } = await prompt(input);
     return output!;
   }
 );
+
+    

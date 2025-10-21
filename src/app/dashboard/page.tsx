@@ -119,9 +119,23 @@ const DailyBriefing = ({currentUser}: {currentUser: any}) => {
       try {
         const relevantTasks = tasks
           .filter(t => t.status !== 'done')
-          .map(t => ({ id: t.id, title: t.title, description: t.description, status: t.status, priority: t.priority, dueDate: t.dueDate }));
+          .map(t => ({ 
+              id: t.id, 
+              title: t.title, 
+              description: t.description, 
+              status: t.status, 
+              priority: t.priority, 
+              dueDate: t.dueDate 
+            }));
         
-        const relevantMeetings = meetings.map(m => ({ id: m.id, title: m.title, description: m.description, date: m.date, time: m.time, duration: m.duration }));
+        const relevantMeetings = meetings.map(m => ({ 
+            id: m.id, 
+            title: m.title, 
+            description: m.description, 
+            date: m.date, 
+            time: m.time, 
+            duration: m.duration 
+        }));
 
         const response = await getDailyBriefing({
           userName: currentUser.name,
@@ -244,9 +258,14 @@ const PulseFeedSnippet = () => {
 const ContextPanel = () => {
   const onlineUsers = users.filter(u => u.status === 'online');
   const { user } = useUser();
-  const tasks = user ? getTasksForUser(user.id) : [];
+  
+  if (!user) {
+    return <div className="p-6 h-full flex flex-col"><Loader2 className="h-5 w-5 animate-spin"/></div>
+  }
+
+  const tasks = getTasksForUser(user.id);
   const today = new Date().toISOString().split('T')[0];
-  const meetings = user ? getUpcomingMeetings(user.id).filter(m => m.date === today) : [];
+  const meetings = getUpcomingMeetings(user.id).filter(m => m.date === today);
 
   return (
     <div className="p-6 h-full flex flex-col">

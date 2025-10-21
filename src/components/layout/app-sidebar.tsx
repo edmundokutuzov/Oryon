@@ -31,6 +31,8 @@ import {
   LogOut,
   Briefcase,
   Radio,
+  Target, // Campaign Icon
+  Gamepad2, // Game Operations Icon
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -63,7 +65,8 @@ const iconMap: { [key: string]: React.ElementType } = {
   pulse: Radio,
   workspaces: Briefcase,
   tasks: ListTodo,
-  projects: Network,
+  campaigns: Target,
+  operations: Gamepad2,
   meetings: Video,
   calendar: Calendar,
   team: Users,
@@ -135,7 +138,7 @@ export default function AppSidebar() {
 
   return (
     <aside className="w-64 h-full flex flex-col flex-shrink-0 gradient-surface shadow-2xl transition-all duration-300 fixed md:relative z-40 md:translate-x-0 -translate-x-full">
-       <div className="p-6 flex flex-col justify-center h-24 border-b border-border">
+       <div className="p-6 flex flex-col justify-center h-24 border-b border-border pl-6">
         <h1 className="text-xl font-bold text-foreground tracking-wider">TXUNA BET</h1>
         <p className="text-xs text-muted-foreground mt-1">Powered by ORYON.</p>
       </div>

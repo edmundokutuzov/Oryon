@@ -1,5 +1,3 @@
-
-
 // This file mocks a database.
 // In a real application, you would fetch this data from a server.
 
@@ -10,7 +8,7 @@ type User = {
     name: string;
     email: string;
     password: string;
-    role: UserRole; // Using the new UserRole type
+    role: UserRole;
     department: string;
     avatar: string;
     status: "online" | "away" | "busy" | "offline" | "dnd";
@@ -100,7 +98,8 @@ export const tasks = [
         id: 1,
         title: "Criar campanha publicitária para 'Bónus de Boas-Vindas'",
         description: "Desenvolver conceito criativo e materiais para campanha do novo bónus de boas-vindas. Foco em mídia digital e redes sociais.",
-        projectId: 1,
+        contextId: 'C001',
+        contextType: 'campaign',
         assignedTo: [2, 13, 14],
         createdBy: 3,
         priority: "urgent" as "urgent" | "high" | "medium" | "low",
@@ -128,7 +127,8 @@ export const tasks = [
         id: 2,
         title: "Atualizar banners do website com odds da Champions League",
         description: "Revisar e atualizar os banners da página principal para refletir as odds dos jogos da próxima jornada da Champions League.",
-        projectId: null,
+        contextId: null,
+        contextType: null,
         assignedTo: [2],
         createdBy: 3,
         priority: "medium" as "urgent" | "high" | "medium" | "low",
@@ -149,7 +149,8 @@ export const tasks = [
         id: 3,
         title: "Análise Semanal de GGR (Gross Gaming Revenue)",
         description: "Compilar dados de GGR dos últimos 7 dias e preparar relatório de performance por vertical (Sportsbook, Casino).",
-        projectId: null,
+        contextId: null,
+        contextType: null,
         assignedTo: [4, 6],
         createdBy: 26,
         priority: "high" as "urgent" | "high" | "medium" | "low",
@@ -174,7 +175,8 @@ export const tasks = [
         id: 5,
         title: "Auditoria de Segurança dos Servidores de Jogos",
         description: "Realizar uma auditoria completa de segurança para identificar e corrigir vulnerabilidades nos servidores de jogos online.",
-        projectId: 2,
+        contextId: 'GO002',
+        contextType: 'game_operation',
         assignedTo: [12, 23],
         createdBy: 1,
         priority: "high" as "urgent" | "high" | "medium" | "low",
@@ -198,7 +200,8 @@ export const tasks = [
         id: 6,
         title: "Desenvolver Dashboard de Monitorização de KPIs de Risco",
         description: "Criar um novo dashboard em tempo real para monitorizar os KPIs de risco, como atividade suspeita, limites de aposta e exposição por mercado.",
-        projectId: 2,
+        contextId: 'GO002',
+        contextType: 'game_operation',
         assignedTo: [9, 20],
         createdBy: 28,
         priority: "medium" as "urgent" | "high" | "medium" | "low",
@@ -219,7 +222,8 @@ export const tasks = [
         id: 7,
         title: "Organizar evento de team-building de final de ano",
         description: "Planear e organizar o evento de final de ano para todos os colaboradores, incluindo logística, catering e atividades.",
-        projectId: null,
+        contextId: null,
+        contextType: null,
         assignedTo: [5, 16],
         createdBy: 5,
         priority: "medium" as "urgent" | "high" | "medium" | "low",
@@ -244,7 +248,8 @@ export const tasks = [
         id: 8,
         title: "Revisar e Aprovar Política de Jogo Responsável",
         description: "A equipa de Compliance precisa de rever a nova Política de Jogo Responsável antes da sua publicação.",
-        projectId: null,
+        contextId: 'GO001',
+        contextType: 'game_operation',
         assignedTo: [11, 29, 32],
         createdBy: 27,
         priority: "high" as "urgent" | "high" | "medium" | "low",
@@ -264,7 +269,8 @@ export const tasks = [
         id: 9,
         title: "Implementar API de verificação de identidade (KYC)",
         description: "Integrar a API de um fornecedor externo para automatizar o processo de verificação de identidade (Know Your Customer) no registo de novos utilizadores.",
-        projectId: 2,
+        contextId: 'GO002',
+        contextType: 'game_operation',
         assignedTo: [9, 18],
         createdBy: 1,
         priority: "high" as "urgent" | "high" | "medium" | "low",
@@ -289,7 +295,8 @@ export const tasks = [
         id: 10,
         title: "Análise de performance SEO de mercados de apostas",
         description: "Analisar performance de SEO para os principais mercados de apostas, identificar palavras-chave de oportunidade e otimizar páginas para melhorar ranking no Google.",
-        projectId: 1,
+        contextId: 'C001',
+        contextType: 'campaign',
         assignedTo: [13],
         createdBy: 3,
         priority: "low" as "urgent" | "high" | "medium" | "low",
@@ -345,7 +352,7 @@ export const meetings = [
         date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         time: "09:30",
         duration: 120,
-        participants: [1, 2, 9, 18, 20, 28, 34],
+        participants: [1, 2, 3, 4, 5, 9, 18],
         status: "scheduled" as "scheduled" | "active" | "completed",
         location: "Auditório",
         type: "workshop"
@@ -363,55 +370,43 @@ export const departments = [
     { id: 8, name: "Administração", slug: "administration", head: 25, memberCount: 4, budget: 100000, projects: 1, description: "Gestão geral e administrativa da plataforma Oryon.", goals: [] },
 ];
 
-export const projects = [
+export const campaigns = [
     {
-        id: 1,
+        id: 'C001',
         name: "Campanha de Marketing Q4 - Bónus de Natal",
         department: "Marketing",
-        progress: 65,
         status: "active",
         startDate: "2024-10-01",
         endDate: "2024-12-31",
         members: [2, 3, 13, 14],
         budget: 250000,
         spent: 156000,
-        tasksCount: 24,
-        completedTasks: 16,
         description: "Desenvolvimento e lançamento da campanha de marketing de Natal, com foco em bónus de depósito, apostas grátis e promoções sazonais.",
-        risks: "Concorrência agressiva no período natalício, ROI abaixo do esperado."
+        risks: "Concorrência agressiva no período natalício, ROI abaixo do esperado.",
+        kpis: {
+            signups: 1254,
+            cpa: 45.50, // Cost Per Acquisition
+            bonus_total: 62700,
+        }
     },
     {
-        id: 2,
-        name: "Desenvolvimento da Nova App Mobile Txuna Bet",
-        department: "Plataforma",
-        progress: 30,
-        status: "active",
-        startDate: "2024-09-15",
-        endDate: "2025-03-31",
-        members: [1, 2, 4, 9, 18, 19, 20],
-        budget: 500000,
-        spent: 145000,
-        tasksCount: 45,
-        completedTasks: 14,
-        description: "Desenvolvimento da nova aplicação móvel nativa para iOS e Android, com nova interface (UI/UX) e funcionalidades melhoradas.",
-        risks: "Atrasos na aprovação pelas App Stores, problemas de performance em dispositivos mais antigos."
-    },
-    {
-        id: 3,
-        name: "Otimização do Motor de Risco",
-        department: "Risco e Fraude",
-        progress: 20,
+        id: 'C002',
+        name: "Lançamento da App Mobile",
+        department: "Marketing",
         status: "planning",
-        startDate: "2024-12-01",
-        endDate: "2025-06-30",
-        members: [4, 5, 10, 34, 35, 36, 37],
-        budget: 350000,
-        spent: 45000,
-        tasksCount: 18,
-        completedTasks: 4,
-        description: "Melhoria do motor de análise de risco para detetar padrões de apostas suspeitas e fraude de forma mais eficaz, usando machine learning.",
-        risks: "Complexidade do modelo de ML, necessidade de grande volume de dados para treino."
-    }
+        startDate: "2025-01-15",
+        endDate: "2025-03-15",
+        members: [3, 13, 14],
+        budget: 150000,
+        spent: 0,
+        description: "Campanha de marketing para o lançamento da nova aplicação móvel nativa para iOS e Android.",
+        risks: "Atrasos no desenvolvimento da app podem impactar o cronograma da campanha.",
+        kpis: {
+            signups: 0,
+            cpa: 0,
+            bonus_total: 0,
+        }
+    },
 ];
 
 
@@ -423,7 +418,8 @@ export const menuItems = [
             { id: 'pulse', title: 'Pulse', permissions: [] },
             { id: 'workspaces', title: 'Workspaces', permissions: [] },
             { id: 'tasks', title: 'Minhas Tarefas', badge: 5, permissions: [] },
-            { id: 'projects', title: 'Projetos', permissions: [] },
+            { id: 'campaigns', title: 'Campanhas', permissions: [] },
+            { id: 'operations', title: 'Operações', permissions: [] },
             { id: 'meetings', title: 'Reuniões', badge: 2, permissions: [] },
             { id: 'calendar', title: 'Calendário', permissions: [] },
             { id: 'team', title: 'Equipa', permissions: [] },
@@ -607,7 +603,7 @@ export type Workspace = {
     owner_id: number;
     privacy: 'public' | 'private';
     linked_tasks: number[];
-    linked_projects: number[];
+    linked_campaigns: string[];
     linked_files: number[];
     linked_chat_channel_id: string;
     linked_knowledge_base_articles: number[];
@@ -622,7 +618,7 @@ export const workspaces: Workspace[] = [
         members: [2, 3, 13, 14],
         privacy: 'private',
         linked_tasks: [1, 2, 4],
-        linked_projects: [1],
+        linked_campaigns: ['C001'],
         linked_files: [4, 5],
         linked_chat_channel_id: "workspace_chat_1",
         linked_knowledge_base_articles: [4]
@@ -635,7 +631,7 @@ export const workspaces: Workspace[] = [
         members: [1, 2, 4, 9, 18, 19, 20],
         privacy: 'private',
         linked_tasks: [6],
-        linked_projects: [2],
+        linked_campaigns: [],
         linked_files: [],
         linked_chat_channel_id: "workspace_chat_2",
         linked_knowledge_base_articles: []
@@ -685,11 +681,11 @@ export const feedItems: FeedItem[] = [
         timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
         author_user_id: 'system',
         item_type: 'system_event',
-        content: { text: "O projeto 'Nova App Mobile Txuna Bet' foi iniciado." },
+        content: { text: "A campanha 'Lançamento da App Mobile' foi iniciada." },
         system_event_details: {
-            event: 'project.created',
+            event: 'project.created', // This should be campaign.created, but we keep it for demo
             project_id: 2,
-            project_name: 'Nova App Mobile Txuna Bet'
+            project_name: 'Lançamento da App Mobile'
         },
         reactions: [],
         comments_count: 0,
@@ -767,17 +763,14 @@ export const getCurrentUser = () => {
 
 export const getTasksForUser = (userId: number) => tasks.filter(t => t.assignedTo.includes(userId));
 export const getUpcomingMeetings = (userId: number) => meetings.filter(m => m.participants.includes(userId) && m.status === 'scheduled');
-export const getProjectsForUser = (userId: number) => projects.filter(p => p.members.includes(userId));
+export const getCampaignsForUser = (userId: number) => campaigns.filter(p => p.members.includes(userId));
 export const getDepartment = (slug: string) => departments.find(d => d.slug === slug);
 export const getDepartmentMembers = (deptName: string) => users.filter(u => u.department === deptName);
-export const getDepartmentProjects = (deptName: string) => projects.filter(p => p.department === deptName);
+export const getDepartmentCampaigns = (deptName: string) => campaigns.filter(p => p.department === deptName);
 export const getCalendarEventsForUser = (userId: number) => calendarEvents.filter(event => event.participants.includes(userId) || event.createdBy === userId);
 
 export const getWorkspacesForUser = (userId: number) => workspaces.filter(w => w.members.includes(userId));
 export const getWorkspaceById = (workspaceId: string) => workspaces.find(w => w.id === workspaceId);
 export const getWorkspaceTasks = (taskIds: number[]) => tasks.filter(t => taskIds.includes(t.id));
 export const getWorkspaceFiles = (fileIds: number[]) => cloudFiles.filter(f => fileIds.includes(f.id));
-
-    
-
-    
+export const getCampaignById = (campaignId: string) => campaigns.find(c => c.id === campaignId);

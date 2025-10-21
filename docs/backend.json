@@ -2,115 +2,88 @@
 {
   "entities": {
     "UserProfile": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "UserProfile",
       "type": "object",
-      "description": "Represents a user profile within the Oryon Insurance platform (e.g., agent, claims manager, executive).",
+      "description": "Represents a user profile within the Txuna Bet platform (e.g., admin, contentManager, riskAnalyst).",
       "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the UserProfile entity, matching Firebase Auth UID."
-        },
-        "name": {
-          "type": "string",
-          "description": "The user's full name."
-        },
-        "email": {
-          "type": "string",
-          "description": "The user's corporate email address.",
-          "format": "email"
-        },
-        "role": {
-          "type": "string",
-          "description": "The user's role within the insurance company (e.g., 'agent', 'claims_manager', 'executive')."
-        },
-        "department": {
-          "type": "string",
-          "description": "The department the user belongs to (e.g., 'Claims', 'Sales', 'Underwriting')."
-        },
-        "avatar": {
-          "type": "string",
-          "description": "URL of the user's avatar image.",
-          "format": "uri"
-        },
-        "permissions": {
-          "type": "array",
-          "description": "An array of permission strings for the user (e.g., 'approve_claim', 'view_reports').",
-          "items": {
-            "type": "string"
-          }
-        }
+        "uid": { "type": "string", "description": "Unique identifier for the UserProfile entity, matching Firebase Auth UID." },
+        "email": { "type": "string", "description": "The user's corporate email address.", "format": "email" },
+        "displayName": { "type": "string", "description": "The user's full name." },
+        "role": { "type": "string", "enum": ["admin", "contentManager", "riskAnalyst", "supportAgent"], "description": "The user's role within Txuna Bet." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of when the user account was created." }
       },
-      "required": ["id", "name", "email", "role", "department", "avatar", "permissions"]
+      "required": ["uid", "email", "displayName", "role", "createdAt"]
     },
-    "Policy": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Policy",
+    "Campaign": {
+      "title": "Campaign",
       "type": "object",
-      "description": "Represents an insurance policy.",
+      "description": "Represents a marketing campaign.",
       "properties": {
-        "id": { "type": "string", "description": "Unique identifier for the policy." },
-        "policyNumber": { "type": "string", "description": "The unique number identifying the policy." },
-        "policyholderName": { "type": "string", "description": "Name of the person or entity insured." },
-        "policyholderId": { "type": "string", "description": "ID of the insured client." },
-        "type": { "type": "string", "enum": ["auto", "home", "life", "health"], "description": "Type of insurance policy." },
-        "status": { "type": "string", "enum": ["active", "expired", "cancelled"], "description": "Current status of the policy." },
-        "startDate": { "type": "string", "format": "date", "description": "The effective date of the policy." },
-        "endDate": { "type": "string", "format": "date", "description": "The expiration date of the policy." },
-        "premium": { "type": "number", "description": "The premium amount for the policy." },
-        "coverageDetails": { "type": "string", "description": "A summary of what the policy covers." }
+        "id": { "type": "string", "description": "Unique identifier for the campaign." },
+        "name": { "type": "string", "description": "Name of the campaign." },
+        "status": { "type": "string", "enum": ["planning", "active", "completed", "archived"], "description": "Current status of the campaign." },
+        "startDate": { "type": "string", "format": "date", "description": "The effective date of the campaign." },
+        "endDate": { "type": "string", "format": "date", "description": "The expiration date of the campaign." },
+        "budget": { "type": "number", "description": "The budget allocated for the campaign." },
+        "spent": { "type": "number", "description": "The amount spent on the campaign." }
       },
-      "required": ["id", "policyNumber", "policyholderName", "type", "status", "startDate", "endDate", "premium"]
+      "required": ["id", "name", "status", "startDate", "endDate", "budget"]
     },
-    "Claim": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Claim",
+    "GameOperation": {
+      "title": "GameOperation",
       "type": "object",
-      "description": "Represents an insurance claim process from start to finish.",
+      "description": "Represents a game or market operation.",
       "properties": {
-        "id": { "type": "string", "description": "Unique identifier for the claim." },
-        "claimNumber": { "type": "string", "description": "The unique number identifying the claim." },
-        "policyId": { "type": "string", "description": "Reference to Policy. The ID of the policy this claim is against." },
-        "claimantId": { "type": "string", "description": "ID of the person making the claim." },
-        "assignedManagerId": { "type": "string", "description": "Reference to UserProfile. The ID of the claims manager assigned to this claim." },
-        "status": { "type": "string", "enum": ["received", "in_analysis", "inspection_scheduled", "awaiting_documents", "approved_for_payment", "closed", "denied"], "description": "The current status of the claim in the workflow." },
-        "dateOfIncident": { "type": "string", "format": "date", "description": "The date the incident occurred." },
-        "description": { "type": "string", "description": "A detailed description of the incident." },
-        "estimatedAmount": { "type": "number", "description": "The estimated financial amount of the claim." },
-        "paidAmount": { "type": "number", "description": "The final amount paid out for the claim." },
-        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of when the claim was filed." },
-        "updatedAt": { "type": "string", "format": "date-time", "description": "Timestamp of when the claim was last updated." }
+        "id": { "type": "string", "description": "Unique identifier for the game operation." },
+        "name": { "type": "string", "description": "Name of the game or market." },
+        "provider": { "type": "string", "description": "The game provider (e.g., Evolution, Pragmatic Play)." },
+        "gameType": { "type": "string", "enum": ["slot", "live_casino", "sports_market"], "description": "Type of game or operation." },
+        "riskLevel": { "type": "string", "enum": ["low", "medium", "high"], "description": "Assessed risk level." },
+        "integrationStatus": { "type": "string", "enum": ["prospecting", "integration", "testing", "live", "monitoring"], "description": "Current status of the integration." }
       },
-      "required": ["id", "claimNumber", "policyId", "assignedManagerId", "status", "dateOfIncident", "description", "createdAt", "updatedAt"]
+      "required": ["id", "name", "provider", "gameType", "integrationStatus"]
     },
-    "ClaimDocument": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "ClaimDocument",
+    "Task": {
+      "title": "Task",
       "type": "object",
-      "description": "Represents a document associated with a specific claim.",
-      "properties": {
-        "id": { "type": "string", "description": "Unique identifier for the document." },
-        "claimId": { "type": "string", "description": "Reference to Claim. The ID of the claim this document belongs to." },
-        "documentName": { "type": "string", "description": "The name of the document (e.g., 'Police Report', 'Invoice')." },
-        "fileUrl": { "type": "string", "format": "uri", "description": "The URL to the stored document in the cloud." },
-        "uploadedAt": { "type": "string", "format": "date-time", "description": "Timestamp of when the document was uploaded." }
-      },
-      "required": ["id", "claimId", "documentName", "fileUrl", "uploadedAt"]
-    },
-    "ClaimTask": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "ClaimTask",
-      "type": "object",
-      "description": "Represents a specific task to be completed as part of a claim process.",
+      "description": "Represents a specific task to be completed.",
       "properties": {
         "id": { "type": "string", "description": "Unique identifier for the task." },
-        "claimId": { "type": "string", "description": "Reference to Claim. The ID of the claim this task belongs to." },
         "title": { "type": "string", "description": "The title of the task." },
-        "type": { "type": "string", "enum": ["verification", "approval", "contact", "inspection"], "description": "The predefined type of the task." },
-        "isCompleted": { "type": "boolean", "description": "Whether the task has been completed." },
-        "dueDate": { "type": ["string", "null"], "format": "date", "description": "The due date for the task." }
+        "status": { "type": "string", "enum": ["backlog", "todo", "in-progress", "done", "blocked"], "description": "Current status of the task." },
+        "priority": { "type": "string", "enum": ["low", "medium", "high", "urgent"], "description": "Priority of the task." },
+        "dueDate": { "type": ["string", "null"], "format": "date", "description": "The due date for the task." },
+        "contextId": { "type": ["string", "null"], "description": "ID of the parent Campaign or GameOperation." },
+        "contextType": { "type": ["string", "null"], "enum": ["campaign", "game_operation"], "description": "Type of the parent context." }
       },
-      "required": ["id", "claimId", "title", "type", "isCompleted"]
+      "required": ["id", "title", "status", "priority"]
+    },
+    "Bet": {
+      "title": "Bet",
+      "type": "object",
+      "description": "Represents a single bet placed by a player.",
+      "properties": {
+        "id": { "type": "string" },
+        "playerId": { "type": "string" },
+        "market": { "type": "string" },
+        "stake": { "type": "number" },
+        "odds": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "won", "lost", "cashed_out"] },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "playerId", "market", "stake", "odds", "status", "timestamp"]
+    },
+    "Affiliate": {
+      "title": "Affiliate",
+      "type": "object",
+      "description": "Represents a marketing affiliate partner.",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "trackingCode": { "type": "string" },
+        "commissionRate": { "type": "number" }
+      },
+      "required": ["id", "name", "trackingCode", "commissionRate"]
     }
   },
   "auth": {
@@ -123,55 +96,31 @@
       {
         "path": "/users/{userId}",
         "definition": {
-          "entityName": "UserProfile",
-          "schema": { "$ref": "#/backend/entities/UserProfile" },
-          "description": "Stores user profiles for agents, managers, and executives.",
-          "params": [{ "name": "userId", "description": "The user's unique ID from Firebase Auth." }]
+          "schema": { "$ref": "#/entities/UserProfile" },
+          "description": "Stores user profiles for platform employees."
         }
       },
       {
-        "path": "/policies/{policyId}",
+        "path": "/campaigns/{campaignId}",
         "definition": {
-          "entityName": "Policy",
-          "schema": { "$ref": "#/backend/entities/Policy" },
-          "description": "Central collection for all insurance policies.",
-          "params": [{ "name": "policyId", "description": "The unique identifier for the policy." }]
+          "schema": { "$ref": "#/entities/Campaign" },
+          "description": "Central collection for all marketing campaigns."
         }
       },
       {
-        "path": "/claims/{claimId}",
+        "path": "/game_operations/{operationId}",
         "definition": {
-          "entityName": "Claim",
-          "schema": { "$ref": "#/backend/entities/Claim" },
-          "description": "Central collection for all insurance claims, serving as the core of the claims management module.",
-          "params": [{ "name": "claimId", "description": "The unique identifier for the claim." }]
+          "schema": { "$ref": "#/entities/GameOperation" },
+          "description": "Collection for game and market operations."
         }
       },
       {
-        "path": "/claims/{claimId}/documents/{documentId}",
+        "path": "/tasks/{taskId}",
         "definition": {
-          "entityName": "ClaimDocument",
-          "schema": { "$ref": "#/backend/entities/ClaimDocument" },
-          "description": "Sub-collection storing all documents related to a specific claim.",
-          "params": [
-            { "name": "claimId", "description": "The ID of the parent claim." },
-            { "name": "documentId", "description": "The unique ID for the document." }
-          ]
-        }
-      },
-      {
-        "path": "/claims/{claimId}/tasks/{taskId}",
-        "definition": {
-          "entityName": "ClaimTask",
-          "schema": { "$ref": "#/backend/entities/ClaimTask" },
-          "description": "Sub-collection storing all tasks associated with a specific claim.",
-          "params": [
-            { "name": "claimId", "description": "The ID of the parent claim." },
-            { "name": "taskId", "description": "The unique ID for the task." }
-          ]
+          "schema": { "$ref": "#/entities/Task" },
+          "description": "Collection for all tasks, linked to campaigns or operations."
         }
       }
-    ],
-    "reasoning": "The new Firestore structure is designed around the core entities of the insurance business: Policies and Claims. Claims are the central hub, with sub-collections for related Documents and Tasks, allowing for efficient querying and data organization within a single claim context. This structure is scalable and aligns with Firestore's best practices for managing related data."
+    ]
   }
 }

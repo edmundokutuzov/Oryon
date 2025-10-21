@@ -56,7 +56,7 @@ export default function WorkspacesPage() {
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <Folder className="w-4 h-4" />
-                                            <span>{ws.linked_projects.length} Projeto(s)</span>
+                                            <span>{ws.linked_campaigns.length} Campanha(s)</span>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3 mt-4 pt-4 border-t border-border">
@@ -78,5 +78,3 @@ export default function WorkspacesPage() {
         </div>
     );
 }
-
-    

@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, getIdToken } from 'firebase/auth';
 import { useAuth } from '@/firebase';
 import { useRouter } from 'next/navigation';
+import { users } from '@/lib/data';
 
 export default function LoginPage() {
   const { toast } = useToast();
@@ -35,8 +36,6 @@ export default function LoginPage() {
       const idToken = await userCredential.user.getIdToken(true);
 
       // Placeholder for backend session creation
-      // In a real app, this would call a Cloud Function or API route
-      // to exchange the ID token for a session cookie.
       // await fetch('/api/sessionLogin', {
       //   method: 'POST',
       //   headers: { 'Content-Type': 'application/json' },
@@ -50,8 +49,12 @@ export default function LoginPage() {
 
       // Redirection is handled by the AuthGuard
     } catch (err: any) {
+      // If user doesn't exist or credentials are wrong, check if it's a valid mock user
       if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
-        if (email === 'admin@txunabet.com') {
+        const mockUser = users.find(u => u.email === email && u.password === password);
+        
+        if (mockUser) {
+          // If it's a valid mock user, try to create the account and sign in
           try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const idToken = await userCredential.user.getIdToken(true);
@@ -64,13 +67,17 @@ export default function LoginPage() {
             // });
 
             toast({
-              title: 'Conta de administrador criada!',
-              description: 'A conta de administrador foi criada com sucesso e a sessão iniciada.',
+              title: `Conta para ${mockUser.name} criada!`,
+              description: 'A sua conta foi criada com sucesso e a sessão iniciada.',
             });
+             // Redirection is handled by the AuthGuard
+
           } catch (signupErr: any) {
-            setError('Falha ao criar e autenticar a conta de administrador.');
+            // Handle cases where sign-up might fail (e.g., weak password in Firebase although it's hardcoded here)
+            setError('Falha ao criar e autenticar a sua conta. Contacte o administrador.');
           }
         } else {
+          // If not a valid mock user or wrong password for an existing Firebase user
           setError('Credenciais inválidas. Verifique o seu email e password.');
         }
       } else {

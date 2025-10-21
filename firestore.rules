@@ -1,177 +1,200 @@
 /**
- * @fileoverview Firestore Security Rules for the Oryon Enterprise platform.
+ * @fileoverview Firestore Security Rules for Oryon Insurance Platform
  *
  * Core Philosophy:
- * This ruleset enforces a strict user-ownership model for user-specific data,
- * combined with role-based access for sensitive data like security logs.
- * Public read access is not granted to any collections in this initial configuration.
+ * This ruleset implements Role-Based Access Control (RBAC) to secure data access.
+ * Users are assigned roles (e.g., 'admin', 'contentManager', 'riskAnalyst') that dictate their permissions.
+ * The rules enforce these roles at the data level, ensuring that only authorized users can read, write, or delete data.
  *
  * Data Structure:
- * - User profiles are stored under `/users/{userId}`, ensuring only the authenticated user
- *   can access their own profile.
- * - Tasks, Comments, and Calendar Events are nested under `/users/{userId}`, maintaining
- *   a clear ownership hierarchy.
- * - Departments are stored under `/departments/{departmentId}` and are secured based on
- *   potential role-based access (currently restricted).
- * - Security logs are stored under `/securityLogs/{securityLogId}` and are only accessible
- *   to authorized roles (currently restricted).
+ * - /users/{userId}: Stores user profiles, with the 'role' field being critical for authorization.
+ * - /policies/{policyId}: Stores insurance policies. Access is role-based.
+ * - /claims/{claimId}: Stores insurance claims. Access is role-based, with subcollections for related data.
+ * - /claims/{claimId}/documents/{documentId}: Stores documents associated with a specific claim.
+ * - /claims/{claimId}/tasks/{taskId}: Stores tasks associated with a specific claim.
  *
  * Key Security Decisions:
- * - User listing is disallowed to prevent unauthorized enumeration of user accounts.
- * - Public read access is disabled for all collections to ensure data privacy.
- * - Data validation is minimized in this prototyping phase to allow for flexible schema iteration.
- * - The default security posture for ambiguous relationships is strict owner-only access.
+ * - Strict RBAC: All data access is controlled by user roles.
+ * - No User Listing: Listing all users is disallowed for non-admin roles.
+ * - Subcollection Security: Access to subcollections is determined by the parent document's permissions and the user's role.
+ * - Role enforcement: User 'role' is read from the /users/{userId} document and roles are immutable
  *
  * Denormalization for Authorization:
- * To simplify and optimize security rules, ownership is enforced through path-based
- * matching (e.g., `/users/{userId}`) and denormalized fields in subcollections, such as
- * embedding the `userId` within Task documents. This approach avoids costly `get()`
- * operations in security rules.
- *
- * Structural Segregation:
- * User-specific private data is stored in user subcollections, providing a clear
- * separation between public and private data.
+ * The 'role' field is stored directly in the user's profile document (/users/{userId}) to enable efficient role-based access control.
+ * This avoids costly and complex queries to separate role collections.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
     /**
-     * @description Controls access to user profile data.
+     * @description Checks if the user is signed in.
+     * @return {bool} True if the user is signed in, false otherwise.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * @description Gets the role of the current user from their UserProfile document.
+     * @return {string} The user's role, or an empty string if not found.
+     */
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    /**
+     * @description Checks if the user has the 'admin' role.
+     * @return {bool} True if the user has the 'admin' role, false otherwise.
+     */
+    function isAdmin() {
+      return getUserRole() == 'admin';
+    }
+
+    /**
+     * @description Checks if the user has the 'contentManager' role.
+     * @return {bool} True if the user has the 'contentManager' role, false otherwise.
+     */
+    function isContentManager() {
+      return getUserRole() == 'contentManager';
+    }
+
+        /**
+     * @description Checks if the user has the 'riskAnalyst' role.
+     * @return {bool} True if the user has the 'riskAnalyst' role, false otherwise.
+     */
+    function isRiskAnalyst() {
+      return getUserRole() == 'riskAnalyst';
+    }
+
+        /**
+     * @description Checks if the user has the 'supportAgent' role.
+     * @return {bool} True if the user has the 'supportAgent' role, false otherwise.
+     */
+    function isSupportAgent() {
+      return getUserRole() == 'supportAgent';
+    }
+
+    /**
+     * @description Checks if the user is the owner of the document (userId matches request.auth.uid).
+     * @param {string} userId The user ID to compare against the auth UID.
+     * @return {bool} True if the user is the owner, false otherwise.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * @description Checks if the user is the owner of the document and the document exists.
+     *               Used for update and delete operations.
+     * @param {string} userId The user ID to compare against the auth UID.
+     * @return {bool} True if the user is the owner and the document exists, false otherwise.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description Rules for user profiles.
      * @path /users/{userId}
-     * @allow (create) Authenticated user can create their own profile if the userId matches their auth UID.
-     * @allow (get, update, delete) Authenticated user can get, update, and delete their own profile if the userId matches their auth UID.
-     * @deny (create, get, list, update, delete) If the user is not authenticated.
-     * @deny (create, get, update, delete) If the userId does not match the authenticated user's UID.
-     * @principle Enforces document ownership for user profiles, restricting access to the owner.
+     * @allow (read) User with ID 'user123' can read their own profile.
+     *    request.auth.uid = 'user123'
+     * @allow (read) User with role 'admin' can read any user profile.
+     *    request.auth.uid = 'adminUser', /users/user123, UserProfile.role = 'admin'
+     * @deny (read) User with ID 'user456' cannot read user profile 'user123'.
+     *    request.auth.uid = 'user456', /users/user123
+     * @allow (create) User with ID 'user123' can create their own profile if the user id matches the auth ID.
+     *    request.auth.uid = 'user123', /users/user123
+     * @deny (create) User with ID 'user456' cannot create user profile 'user123'.
+     *    request.auth.uid = 'user456', /users/user123
+     * @allow (update) User with role 'admin' can update any user profile.
+     *    request.auth.uid = 'adminUser', /users/user123, UserProfile.role = 'admin'
+     * @deny (update) User with ID 'user123' cannot update their profile with a mismatched id.
+     *    request.auth.uid = 'user123', /users/user456
+     * @deny (update) User with ID 'user123' cannot change the role field
+     *    request.auth.uid = 'user123', /users/user123, request.resource.data.role != resource.data.role
+     * @principle Enforces document ownership for reads and admin-only writes for user profiles.
      */
     match /users/{userId} {
-      function isSignedIn() {
-        return request.auth != null;
-      }
-
-      function isOwner(userId) {
-        return request.auth.uid == userId;
-      }
-
-      function isExistingOwner(userId) {
-        return isOwner(userId) && resource != null;
-      }
-
-      allow get: if isOwner(userId);
-      allow list: if false; // User listing is not permitted.
-      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.id == request.auth.uid;
-      allow update: if isExistingOwner(userId);
-      allow delete: if isExistingOwner(userId);
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isAdmin() && request.resource.data.id == resource.data.id && request.resource.data.id == userId && request.resource.data.role == resource.data.role;
+      allow delete: if isAdmin();
     }
 
     /**
-     * @description Controls access to tasks associated with a specific user.
-     * @path /users/{userId}/tasks/{taskId}
-     * @allow (create) Authenticated user can create a task under their userId.
-     * @allow (get, list, update, delete) Authenticated user can get, list, update, and delete their own tasks based on userId.
-     * @deny (create, get, list, update, delete) If the user is not authenticated.
-     * @deny (create, get, update, delete) If the userId does not match the authenticated user's UID.
-     * @principle Enforces document ownership for tasks, restricting access to the owner.
+     * @description Rules for insurance policies.
+     * @path /policies/{policyId}
+     * @allow (read) Users with role 'admin', 'riskAnalyst', or 'supportAgent' can read any policy.
+     *    request.auth.uid = 'adminUser', UserProfile.role = 'admin'
+     * @deny (read) User with role 'contentManager' cannot read policies.
+     *    request.auth.uid = 'contentManagerUser', UserProfile.role = 'contentManager'
+     * @allow (create) Users with role 'admin' can create policies.
+     *    request.auth.uid = 'adminUser', UserProfile.role = 'admin'
+     * @deny (create) Users with role 'contentManager' cannot create policies.
+     *    request.auth.uid = 'contentManagerUser', UserProfile.role = 'contentManager'
+     * @allow (update) Users with role 'admin' can update policies.
+     *    request.auth.uid = 'adminUser', UserProfile.role = 'admin'
+     * @deny (update) Users with role 'contentManager' cannot update policies.
+     *    request.auth.uid = 'contentManagerUser', UserProfile.role = 'contentManager'
+     * @allow (delete) Users with role 'admin' can delete policies.
+     *    request.auth.uid = 'adminUser', UserProfile.role = 'admin'
+     * @deny (delete) Users with role 'contentManager' cannot delete policies.
+     *    request.auth.uid = 'contentManagerUser', UserProfile.role = 'contentManager'
      */
-    match /users/{userId}/tasks/{taskId} {
-      function isSignedIn() {
-        return request.auth != null;
-      }
-
-      function isOwner(userId) {
-        return request.auth.uid == userId;
-      }
-
-      function isExistingOwner(userId) {
-        return isOwner(userId) && resource != null;
-      }
-
-      allow get: if isOwner(userId);
-      allow list: if isOwner(userId);
-      allow create: if isSignedIn() && isOwner(userId);
-      allow update: if isExistingOwner(userId);
-      allow delete: if isExistingOwner(userId);
+    match /policies/{policyId} {
+      allow get, list: if isAdmin() || isRiskAnalyst() || isSupportAgent();
+      allow create, update, delete: if isAdmin();
     }
 
     /**
-     * @description Controls access to comments associated with a specific task.
-     * @path /users/{userId}/tasks/{taskId}/comments/{commentId}
-     * @allow (create) Authenticated user can create a comment under their userId and taskId.
-     * @allow (get, list, update, delete) Authenticated user can get, list, update, and delete their own comments based on userId and taskId.
-     * @deny (create, get, list, update, delete) If the user is not authenticated.
-     * @deny (create, get, list, update, delete) If the userId does not match the authenticated user's UID.
-     * @principle Enforces document ownership for comments, restricting access to the owner.
+     * @description Rules for insurance claims.
+     * @path /claims/{claimId}
+     * @allow (read) Users with role 'admin', 'riskAnalyst', or 'supportAgent' can read any claim.
+     *    request.auth.uid = 'adminUser', UserProfile.role = 'admin'
+     * @deny (read) User with role 'contentManager' cannot read claims.
+     *    request.auth.uid = 'contentManagerUser', UserProfile.role = 'contentManager'
+     * @allow (create) Users with role 'admin' can create claims.
+     *    request.auth.uid = 'adminUser', UserProfile.role = 'admin'
+     * @deny (create) Users with role 'contentManager' cannot create claims.
+     *    request.auth.uid = 'contentManagerUser', UserProfile.role = 'contentManager'
+     * @allow (update) Users with role 'admin' can update claims.
+     *    request.auth.uid = 'adminUser', UserProfile.role = 'admin'
+     * @deny (update) Users with role 'contentManager' cannot update claims.
+     *    request.auth.uid = 'contentManagerUser', UserProfile.role = 'contentManager'
+     * @allow (delete) Users with role 'admin' can delete claims.
+     *    request.auth.uid = 'adminUser', UserProfile.role = 'admin'
+     * @deny (delete) Users with role 'contentManager' cannot delete claims.
+     *    request.auth.uid = 'contentManagerUser', UserProfile.role = 'contentManager'
      */
-    match /users/{userId}/tasks/{taskId}/comments/{commentId} {
-      function isSignedIn() {
-        return request.auth != null;
-      }
-
-      function isOwner(userId) {
-        return request.auth.uid == userId;
-      }
-
-      function isExistingOwner(userId) {
-        return isOwner(userId) && resource != null;
-      }
-
-      allow get: if isOwner(userId);
-      allow list: if isOwner(userId);
-      allow create: if isSignedIn() && isOwner(userId);
-      allow update: if isExistingOwner(userId);
-      allow delete: if isExistingOwner(userId);
-    }
-
-     /**
-      * @description Controls access to calendar events associated with a specific user.
-      * @path /users/{userId}/calendarEvents/{calendarEventId}
-      * @allow (create) Authenticated user can create a calendar event under their userId.
-      * @allow (get, list, update, delete) Authenticated user can get, list, update, and delete their own calendar events based on userId.
-      * @deny (create, get, list, update, delete) If the user is not authenticated.
-      * @deny (create, get, list, update, delete) If the userId does not match the authenticated user's UID.
-      * @principle Enforces document ownership for calendar events, restricting access to the owner.
-      */
-    match /users/{userId}/calendarEvents/{calendarEventId} {
-      function isSignedIn() {
-        return request.auth != null;
-      }
-
-      function isOwner(userId) {
-        return request.auth.uid == userId;
-      }
-
-      function isExistingOwner(userId) {
-        return isOwner(userId) && resource != null;
-      }
-
-      allow get: if isOwner(userId);
-      allow list: if isOwner(userId);
-      allow create: if isSignedIn() && isOwner(userId);
-      allow update: if isExistingOwner(userId);
-      allow delete: if isExistingOwner(userId);
+    match /claims/{claimId} {
+      allow get, list: if isAdmin() || isRiskAnalyst() || isSupportAgent();
+      allow create, update, delete: if isAdmin();
     }
 
     /**
-     * @description Controls access to department information.
-     * @path /departments/{departmentId}
-     * @allow (get, list) If true, anyone can read department information; set to false for restricted access.
-     * @deny (create, update, delete) All create, update, and delete operations are denied.
-     * @principle Restricts all write access to department information.
+     * @description Rules for claim documents.
+     * @path /claims/{claimId}/documents/{documentId}
+     *   Access to claim documents is restricted to users with 'admin', 'riskAnalyst', or 'supportAgent' roles.
+     *   These roles have the authority to read, create, update, and delete claim documents.
+     *   The goal is to ensure that only authorized personnel can manage documents related to claims.
      */
-    match /departments/{departmentId} {
-      allow get, list: if false; // Public read access is not permitted.
-      allow create, update, delete: if false;
+    match /claims/{claimId}/documents/{documentId} {
+      allow get, list: if isAdmin() || isRiskAnalyst() || isSupportAgent();
+      allow create, update, delete: if isAdmin();
     }
 
     /**
-     * @description Controls access to security logs.
-     * @path /securityLogs/{securityLogId}
-     * @deny (get, list, create, update, delete) All access to security logs is denied.
-     * @principle Restricts all access to security logs for security reasons.
+     * @description Rules for claim tasks.
+     * @path /claims/{claimId}/tasks/{taskId}
+     *   Access to claim tasks is restricted to users with 'admin', 'riskAnalyst', or 'supportAgent' roles.
+     *   These roles have the authority to read, create, update, and delete claim tasks.
+     *   The goal is to ensure that only authorized personnel can manage tasks related to claims.
      */
-    match /securityLogs/{securityLogId} {
-      allow get, list, create, update, delete: if false;
+    match /claims/{claimId}/tasks/{taskId} {
+      allow get, list: if isAdmin() || isRiskAnalyst() || isSupportAgent();
+      allow create, update, delete: if isAdmin();
     }
   }
 }

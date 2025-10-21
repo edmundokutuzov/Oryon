@@ -14,7 +14,7 @@ import {
   Target,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getTasksForUser, getUpcomingMeetings, getCurrentUser, users, feedItems } from '@/lib/data';
+import { getTasksForUser, getUpcomingMeetings, users, feedItems } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
@@ -24,13 +24,9 @@ import { getDailyBriefing } from '@/ai/flows/get-daily-briefing';
 import { useEffect, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel } from '@/components/ui/alert-dialog';
+import { useUser } from '@/firebase';
+import { ROLES } from '@/config/roles';
 
-
-const currentUser = getCurrentUser();
-const tasks = getTasksForUser(currentUser.id);
-const today = new Date().toISOString().split('T')[0];
-const meetings = getUpcomingMeetings(currentUser.id).filter(m => m.date === today);
-const hasAdminPermissions = currentUser.permissions.includes('all') || currentUser.permissions.includes('approve');
 
 const AdminPanel = () => {
   const [isAlertsModalOpen, setIsAlertsModalOpen] = useState(false);
@@ -106,9 +102,13 @@ const AdminPanel = () => {
   );
 };
 
-const DailyBriefing = () => {
+const DailyBriefing = ({currentUser}: {currentUser: any}) => {
   const [briefing, setBriefing] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const tasks = getTasksForUser(currentUser.id);
+  const today = new Date().toISOString().split('T')[0];
+  const meetings = getUpcomingMeetings(currentUser.id).filter(m => m.date === today);
 
   useEffect(() => {
     async function fetchBriefing() {
@@ -130,7 +130,7 @@ const DailyBriefing = () => {
       }
     }
     fetchBriefing();
-  }, []);
+  }, [currentUser, tasks, meetings]);
 
   return (
      <Card className="gradient-surface border-0 rounded-2xl mb-8">
@@ -154,7 +154,7 @@ const DailyBriefing = () => {
   )
 }
 
-const TaskPreviewCard = ({ task }: { task: (typeof tasks)[0] }) => {
+const TaskPreviewCard = ({ task }: { task: (ReturnType<typeof getTasksForUser>)[0] }) => {
   const priorityStyles: { [key: string]: string } = {
     high: 'bg-destructive/20 text-destructive-foreground',
     medium: 'bg-accent-500/20 text-accent-500',
@@ -178,7 +178,7 @@ const TaskPreviewCard = ({ task }: { task: (typeof tasks)[0] }) => {
   );
 };
 
-const MeetingPreviewCard = ({ meeting }: { meeting: (typeof meetings)[0] }) => (
+const MeetingPreviewCard = ({ meeting }: { meeting: (ReturnType<typeof getUpcomingMeetings>)[0] }) => (
   <Link href="/dashboard/meetings">
     <div className="p-4 rounded-xl bg-card/5 hover:bg-card/10 transition-colors cursor-pointer">
       <div className="flex justify-between items-start mb-2">
@@ -232,6 +232,11 @@ const PulseFeedSnippet = () => {
 
 const ContextPanel = () => {
   const onlineUsers = users.filter(u => u.status === 'online');
+  const { user } = useUser();
+  const tasks = user ? getTasksForUser(user.id) : [];
+  const today = new Date().toISOString().split('T')[0];
+  const meetings = user ? getUpcomingMeetings(user.id).filter(m => m.date === today) : [];
+
   return (
     <div className="p-6 h-full flex flex-col">
         <h2 className="text-lg font-bold text-foreground mb-4">Resumo do Dia</h2>
@@ -278,25 +283,40 @@ const ContextPanel = () => {
 }
 
 export default function DashboardPage() {
+  const { user } = useUser();
+
   const kpis = [
       { title: 'Volume de Apostas (24h)', value: '€2.3M', icon: BarChart, color: 'text-primary', href: '/dashboard/analytics' },
       { title: 'Utilizadores Ativos', value: '1,245', icon: Users, color: 'text-green-400', href: '/dashboard/analytics' },
       { title: 'Novas Tarefas', value: 5, icon: ListTodo, color: 'text-yellow-400', href: '/dashboard/tasks' },
       { title: 'Metas do Q4', value: '78%', icon: Target, color: 'text-primary', href: '#', tooltip: 'Calculado com base no progresso dos projetos-chave.' },
   ]
+
+  if (!user) {
+      return (
+        <div className="flex h-full items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-primary"/>
+        </div>
+      )
+  }
+  
+  const tasks = getTasksForUser(user.id);
+  const today = new Date().toISOString().split('T')[0];
+  const meetings = getUpcomingMeetings(user.id).filter(m => m.date === today);
+
   return (
     <div className="flex h-full">
       <div className="flex-grow p-6 fade-in">
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-            <p className="text-muted-foreground mt-1">Bem-vindo de volta, {currentUser.name}</p>
+            <p className="text-muted-foreground mt-1">Bem-vindo de volta, {user.displayName}</p>
           </div>
         </div>
 
-        <DailyBriefing />
+        <DailyBriefing currentUser={user} />
         
-        {hasAdminPermissions && <AdminPanel />}
+        {user.role === ROLES.ADMIN && <AdminPanel />}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {kpis.map((kpi) => (

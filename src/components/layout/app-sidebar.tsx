@@ -1,4 +1,5 @@
 
+
 'use client';
 import {
   GaugeCircle,
@@ -33,7 +34,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { departments, menuItems } from '@/lib/data';
+import { departments, menuItems, users as mockUsers } from '@/lib/data';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { cn } from '@/lib/utils';
 import {
@@ -45,7 +46,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { signOut } from 'firebase/auth';
-import { useAuth } from '@/firebase';
+import { useAuth, useUser } from '@/firebase';
+import { ROLES } from '@/config/roles';
+
 
 const statusClasses: { [key: string]: string } = {
   online: 'bg-green-500',
@@ -113,30 +116,26 @@ const NavLink = ({ href, children, icon, badge }: { href: string; children: Reac
 
 export default function AppSidebar() {
   const auth = useAuth();
-  const currentUser = auth.currentUser;
-  // This is a temporary solution for the user data until it's stored in Firestore
-  const mockUser = {
-      name: currentUser?.email || 'Utilizador',
-      role: 'Standard',
-      status: 'online',
-      permissions: [],
-  };
+  const { user } = useUser();
+  
+  const currentUserData = mockUsers.find(u => u.email === user?.email);
 
   const userHasPermission = (requiredPermissions?: string[]) => {
     if (!requiredPermissions || requiredPermissions.length === 0) {
       return true; // No specific permissions required
     }
-    if (mockUser.permissions.includes('all')) {
+    if (!currentUserData) return false;
+    if (currentUserData.role === ROLES.ADMIN) {
       return true; // Admin has all permissions
     }
-    return requiredPermissions.some(p => mockUser.permissions.includes(p));
+    return requiredPermissions.some(p => p === currentUserData.role);
   }
   
-  const avatarUrl = currentUser ? PlaceHolderImages.find(p => p.id === `user-avatar-${currentUser.uid}`)?.imageUrl : '';
+  const avatarUrl = user ? PlaceHolderImages.find(p => p.id === `user-avatar-${currentUserData?.id}`)?.imageUrl : '';
 
   return (
     <aside className="w-64 h-full flex flex-col flex-shrink-0 gradient-surface shadow-2xl transition-all duration-300 fixed md:relative z-40 md:translate-x-0 -translate-x-full">
-      <div className="flex flex-col justify-center h-24 border-b border-border pl-6">
+       <div className="p-6 flex flex-col justify-center h-24 border-b border-border">
         <h1 className="text-xl font-bold text-foreground tracking-wider">TXUNA BET</h1>
         <p className="text-xs text-muted-foreground mt-1">Powered by ORYON.</p>
       </div>
@@ -170,14 +169,14 @@ export default function AppSidebar() {
         <div className="flex items-center space-x-3">
           <div className="relative">
             <Avatar className="h-10 w-10 border-2 border-primary">
-              <AvatarImage src={avatarUrl} alt={mockUser.name} data-ai-hint="person portrait" />
-              <AvatarFallback>{mockUser.name.charAt(0)}</AvatarFallback>
+              <AvatarImage src={avatarUrl} alt={currentUserData?.name} data-ai-hint="person portrait" />
+              <AvatarFallback>{currentUserData?.name.charAt(0)}</AvatarFallback>
             </Avatar>
-            <span className={cn("absolute bottom-0 right-0 block h-3 w-3 rounded-full ring-2 ring-card", statusClasses[mockUser.status])} />
+            <span className={cn("absolute bottom-0 right-0 block h-3 w-3 rounded-full ring-2 ring-card", statusClasses[currentUserData?.status || 'offline'])} />
           </div>
           <div className="flex-grow overflow-hidden">
-            <p className="text-sm font-medium text-foreground truncate">{mockUser.name}</p>
-            <p className="text-xs text-muted-foreground truncate">{mockUser.role}</p>
+            <p className="text-sm font-medium text-foreground truncate">{currentUserData?.name}</p>
+            <p className="text-xs text-muted-foreground truncate">{currentUserData?.role}</p>
           </div>
            <DropdownMenu>
               <DropdownMenuTrigger asChild>

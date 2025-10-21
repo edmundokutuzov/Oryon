@@ -111,9 +111,9 @@ export default function SignupPage() {
     <main className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950">
       <div className="gradient-surface p-8 md:p-10 rounded-2xl w-full max-w-md mx-4 border-2 border-primary/50 bounce-in">
         <div className="text-center mb-8">
-          <TxunaLogo className="mx-auto mb-4 h-12 w-auto" />
-          <h1 className="text-3xl font-bold text-foreground mb-1">Criar Conta Oryon</h1>
-          <p className="text-muted-foreground">Junte-se à plataforma corporativa segura.</p>
+          <TxunaLogo className="mx-auto mb-4 h-16 w-auto" />
+          <h1 className="text-3xl font-bold text-foreground mb-1">Criar Conta Txuna Bet</h1>
+          <p className="text-muted-foreground">Junte-se à melhor plataforma de apostas.</p>
         </div>
 
         {error && (
@@ -149,7 +149,7 @@ export default function SignupPage() {
               id="email"
               name="email"
               className="pl-4 p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground"
-              placeholder="seu.email@txunabet.com"
+              placeholder="seu.email@exemplo.com"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}

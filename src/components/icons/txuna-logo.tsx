@@ -3,13 +3,13 @@ import Image from 'next/image';
 
 export default function TxunaLogo({ className }: { className?: string }) {
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative w-48 h-16", className)}>
       <Image
         src="https://i.imgur.com/liiCufN.png"
         alt="Txuna Bet Logo"
-        width={160}
-        height={50}
+        fill
         priority
+        className="object-contain"
       />
     </div>
   );

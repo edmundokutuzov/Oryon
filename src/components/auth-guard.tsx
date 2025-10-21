@@ -31,7 +31,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   if (isUserLoading) {
     return (
       <main className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-slate-950">
-        <TxunaLogo className="mx-auto mb-4 h-12 w-auto" />
+        <TxunaLogo className="mx-auto mb-4 h-16 w-auto" />
         <div className="flex items-center gap-2 text-muted-foreground">
           <Loader2 className="h-5 w-5 animate-spin" />
           A verificar a sua sessão...

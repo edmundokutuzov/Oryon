@@ -45,7 +45,7 @@ export default function LoginPage() {
       
       toast({
         title: 'Login bem-sucedido!',
-        description: 'Bem-vindo de volta ao Oryon.',
+        description: 'Bem-vindo de volta à Txuna Bet.',
       });
 
       // Redirection is handled by the AuthGuard
@@ -97,9 +97,9 @@ export default function LoginPage() {
     <main className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950">
       <div className="gradient-surface p-8 md:p-10 rounded-2xl w-full max-w-md mx-4 border-2 border-primary/50 bounce-in">
         <div className="text-center mb-8">
-          <TxunaLogo className="mx-auto mb-4 h-12 w-auto" />
-          <h1 className="text-4xl font-bold text-foreground mb-1">Oryon</h1>
-          <p className="text-muted-foreground">Txuna Bet - Plataforma Corporativa Segura</p>
+          <TxunaLogo className="mx-auto mb-4 h-16 w-auto" />
+          <h1 className="text-4xl font-bold text-foreground mb-1">Bem-vindo</h1>
+          <p className="text-muted-foreground">Plataforma de Gestão Txuna Bet</p>
         </div>
 
         {error && (
@@ -170,7 +170,7 @@ export default function LoginPage() {
 
           <Button type="submit" className="w-full btn-primary-gradient py-3 h-auto text-base font-semibold" disabled={loading}>
             {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <LogIn className="mr-2 h-5 w-5" />}
-            {loading ? 'A verificar...' : 'Entrar no Oryon'}
+            {loading ? 'A verificar...' : 'Entrar'}
           </Button>
         </form>
 

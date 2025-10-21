@@ -1,3 +1,4 @@
+
 // This file mocks a database.
 // In a real application, you would fetch this data from a server.
 
@@ -100,7 +101,7 @@ export const tasks = [
         description: "Desenvolver conceito criativo e materiais para campanha do novo bónus de boas-vindas. Foco em mídia digital e redes sociais.",
         contextId: 'C001',
         contextType: 'campaign',
-        assignedTo: [2, 13, 14],
+        assignedTo: [2, 3],
         createdBy: 3,
         priority: "urgent" as "urgent" | "high" | "medium" | "low",
         status: "in-progress" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
@@ -151,8 +152,8 @@ export const tasks = [
         description: "Compilar dados de GGR dos últimos 7 dias e preparar relatório de performance por vertical (Sportsbook, Casino).",
         contextId: null,
         contextType: null,
-        assignedTo: [4, 6],
-        createdBy: 26,
+        assignedTo: [4, 1],
+        createdBy: 1,
         priority: "high" as "urgent" | "high" | "medium" | "low",
         status: "in-progress" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
         labels: ["relatório", "financeiro", "ggr"],
@@ -165,7 +166,7 @@ export const tasks = [
             { id: 'c3-3', text: 'Elaborar sumário executivo com principais conclusões', checked: false },
         ],
         dependencies: [],
-        watchers: [25, 26],
+        watchers: [1, 4],
         commentsCount: 2,
         createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
@@ -177,7 +178,7 @@ export const tasks = [
         description: "Realizar uma auditoria completa de segurança para identificar e corrigir vulnerabilidades nos servidores de jogos online.",
         contextId: 'GO002',
         contextType: 'game_operation',
-        assignedTo: [12, 23],
+        assignedTo: [1, 4],
         createdBy: 1,
         priority: "high" as "urgent" | "high" | "medium" | "low",
         status: "in-progress" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
@@ -191,7 +192,7 @@ export const tasks = [
             {id: 'c5-3', text: 'Realizar scan de vulnerabilidades', checked: false},
         ],
         dependencies: [],
-        watchers: [1, 19],
+        watchers: [1, 4],
         commentsCount: 0,
         createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
@@ -202,8 +203,8 @@ export const tasks = [
         description: "Criar um novo dashboard em tempo real para monitorizar os KPIs de risco, como atividade suspeita, limites de aposta e exposição por mercado.",
         contextId: 'GO002',
         contextType: 'game_operation',
-        assignedTo: [9, 20],
-        createdBy: 28,
+        assignedTo: [1],
+        createdBy: 1,
         priority: "medium" as "urgent" | "high" | "medium" | "low",
         status: "backlog" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
         labels: ["dashboard", "kpi", "risco", "frontend"],
@@ -212,7 +213,7 @@ export const tasks = [
         attachments: [],
         checklist: [],
         dependencies: [],
-        watchers: [1, 28, 7],
+        watchers: [1, 4],
         commentsCount: 0,
         createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
@@ -224,7 +225,7 @@ export const tasks = [
         description: "Planear e organizar o evento de final de ano para todos os colaboradores, incluindo logística, catering e atividades.",
         contextId: null,
         contextType: null,
-        assignedTo: [5, 16],
+        assignedTo: [5],
         createdBy: 5,
         priority: "medium" as "urgent" | "high" | "medium" | "low",
         status: "done" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
@@ -238,7 +239,7 @@ export const tasks = [
             {id: 'c7-3', text: 'Enviar convites', checked: true},
         ],
         dependencies: [],
-        watchers: [24, 25, 26],
+        watchers: [1, 5],
         commentsCount: 12,
         createdAt: new Date(Date.now() - 40 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
@@ -250,8 +251,8 @@ export const tasks = [
         description: "A equipa de Compliance precisa de rever a nova Política de Jogo Responsável antes da sua publicação.",
         contextId: 'GO001',
         contextType: 'game_operation',
-        assignedTo: [11, 29, 32],
-        createdBy: 27,
+        assignedTo: [1, 4],
+        createdBy: 1,
         priority: "high" as "urgent" | "high" | "medium" | "low",
         status: "blocked" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
         labels: ["compliance", "aml", "revisão"],
@@ -260,7 +261,7 @@ export const tasks = [
         attachments: [{ name: "jogo-responsavel-draft-v3.docx", size: "250 KB", type: "docx" }],
         checklist: [],
         dependencies: [],
-        watchers: [27, 25],
+        watchers: [1, 4],
         commentsCount: 3,
         createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
@@ -271,7 +272,7 @@ export const tasks = [
         description: "Integrar a API de um fornecedor externo para automatizar o processo de verificação de identidade (Know Your Customer) no registo de novos utilizadores.",
         contextId: 'GO002',
         contextType: 'game_operation',
-        assignedTo: [9, 18],
+        assignedTo: [1],
         createdBy: 1,
         priority: "high" as "urgent" | "high" | "medium" | "low",
         status: "todo" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
@@ -286,7 +287,7 @@ export const tasks = [
             {id: 'c9-4', text: 'Documentar na plataforma de desenvolvedores', checked: false},
         ],
         dependencies: [],
-        watchers: [1, 28, 22],
+        watchers: [1, 4],
         commentsCount: 0,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -297,7 +298,7 @@ export const tasks = [
         description: "Analisar performance de SEO para os principais mercados de apostas, identificar palavras-chave de oportunidade e otimizar páginas para melhorar ranking no Google.",
         contextId: 'C001',
         contextType: 'campaign',
-        assignedTo: [13],
+        assignedTo: [3],
         createdBy: 3,
         priority: "low" as "urgent" | "high" | "medium" | "low",
         status: "done" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
@@ -326,7 +327,7 @@ export const meetings = [
         date: new Date().toISOString().split('T')[0],
         time: "14:00",
         duration: 60,
-        participants: [2, 3, 13, 14, 1],
+        participants: [2, 3, 1],
         status: "active" as "scheduled" | "active" | "completed",
         location: "Videochamada",
         type: "meeting"
@@ -339,7 +340,7 @@ export const meetings = [
         date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         time: "10:00",
         duration: 90,
-        participants: [1, 7, 11, 22, 29, 26, 28],
+        participants: [1, 4],
         status: "scheduled" as "scheduled" | "active" | "completed",
         location: "Sala de Reuniões 3",
         type: "meeting"
@@ -352,7 +353,7 @@ export const meetings = [
         date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         time: "09:30",
         duration: 120,
-        participants: [1, 2, 3, 4, 5, 9, 18],
+        participants: [1, 2, 3, 4, 5],
         status: "scheduled" as "scheduled" | "active" | "completed",
         location: "Auditório",
         type: "workshop"
@@ -361,13 +362,13 @@ export const meetings = [
 
 export const departments = [
     { id: 1, name: "Marketing", slug: "marketing", head: 3, memberCount: 4, budget: 450000, projects: 8, description: "Responsável pela imagem da marca, estratégias de comunicação, campanhas publicitárias e marketing digital.", goals: ["Aumentar notoriedade da marca em 25%", "Lançar 3 novas campanhas digitais", "Aumentar leads qualificados em 40%"] },
-    { id: 2, name: "Financeiro", slug: "finance", head: 26, memberCount: 4, budget: 1200000, projects: 5, description: "Gestão financeira, contabilidade, tesouraria, planeamento e relatórios económicos para a tomada de decisão.", goals: ["Reduzir custos operacionais em 15%", "Otimizar fluxo de caixa", "Melhorar precisão das previsões finance"] },
+    { id: 2, name: "Financeiro", slug: "finance", head: 1, memberCount: 4, budget: 1200000, projects: 5, description: "Gestão financeira, contabilidade, tesouraria, planeamento e relatórios económicos para a tomada de decisão.", goals: ["Reduzir custos operacionais em 15%", "Otimizar fluxo de caixa", "Melhorar precisão das previsões finance"] },
     { id: 3, name: "Recursos Humanos", slug: "hr", head: 5, memberCount: 3, budget: 300000, projects: 3, description: "Gestão de talentos, desenvolvimento profissional, recrutamento, e promoção do bem-estar dos colaboradores.", goals: ["Reduzir turnover para 8%", "Implementar novo programa de formação contínua", "Melhorar índice de satisfação dos colaboradores"] },
     { id: 4, name: "Plataforma", slug: "it", head: 1, memberCount: 4, budget: 2000000, projects: 12, description: "Desenvolvimento e manutenção de sistemas, infraestrutura tecnológica, e suporte técnico da plataforma de apostas.", goals: ["Garantir uptime de 99.99%", "Implementar nova API de Odds", "Reduzir tempo de resposta de incidentes em 30%"] },
-    { id: 5, name: "Operações", slug: "operations", head: 34, memberCount: 5, budget: 800000, projects: 6, description: "Otimização de processos operacionais, gestão da qualidade, e eficiência dos serviços.", goals: ["Aumentar eficiência operacional em 20%", "Reduzir tempo de processamento de transações", "Automatizar 5 processos manuais"] },
-    { id: 6, name: "Risco e Fraude", slug: "compliance", head: 29, memberCount: 5, budget: 400000, projects: 4, description: "Garantia de conformidade com regulamentações, políticas internas e prevenção de riscos de fraude e lavagem de dinheiro.", goals: ["Implementar novo sistema de monitorização de transações (AML)", "Realizar auditorias de conformidade trimestrais", "Atualizar todas as políticas internas"] },
-    { id: 7, name: "Segurança", slug: "security", head: 12, memberCount: 2, budget: 600000, projects: 3, description: "Proteção de dados, cibersegurança, e prevenção de ataques à plataforma.", goals: ["Implementar autenticação multi-fator (MFA) para todos os sistemas críticos", "Realizar testes de penetração trimestrais", "Reduzir falsos positivos em alertas de fraude em 15%"] },
-    { id: 8, name: "Administração", slug: "administration", head: 25, memberCount: 4, budget: 100000, projects: 1, description: "Gestão geral e administrativa da plataforma Oryon.", goals: [] },
+    { id: 5, name: "Operações", slug: "operations", head: 1, memberCount: 5, budget: 800000, projects: 6, description: "Otimização de processos operacionais, gestão da qualidade, e eficiência dos serviços.", goals: ["Aumentar eficiência operacional em 20%", "Reduzir tempo de processamento de transações", "Automatizar 5 processos manuais"] },
+    { id: 6, name: "Risco e Fraude", slug: "compliance", head: 1, memberCount: 5, budget: 400000, projects: 4, description: "Garantia de conformidade com regulamentações, políticas internas e prevenção de riscos de fraude e lavagem de dinheiro.", goals: ["Implementar novo sistema de monitorização de transações (AML)", "Realizar auditorias de conformidade trimestrais", "Atualizar todas as políticas internas"] },
+    { id: 7, name: "Segurança", slug: "security", head: 1, memberCount: 2, budget: 600000, projects: 3, description: "Proteção de dados, cibersegurança, e prevenção de ataques à plataforma.", goals: ["Implementar autenticação multi-fator (MFA) para todos os sistemas críticos", "Realizar testes de penetração trimestrais", "Reduzir falsos positivos em alertas de fraude em 15%"] },
+    { id: 8, name: "Administração", slug: "administration", head: 1, memberCount: 4, budget: 100000, projects: 1, description: "Gestão geral e administrativa da plataforma Oryon.", goals: [] },
 ];
 
 export const campaigns = [
@@ -378,7 +379,7 @@ export const campaigns = [
         status: "active",
         startDate: "2024-10-01",
         endDate: "2024-12-31",
-        members: [2, 3, 13, 14],
+        members: [2, 3, 1],
         budget: 250000,
         spent: 156000,
         description: "Desenvolvimento e lançamento da campanha de marketing de Natal, com foco em bónus de depósito, apostas grátis e promoções sazonais.",
@@ -396,7 +397,7 @@ export const campaigns = [
         status: "planning",
         startDate: "2025-01-15",
         endDate: "2025-03-15",
-        members: [3, 13, 14],
+        members: [3, 1],
         budget: 150000,
         spent: 0,
         description: "Campanha de marketing para o lançamento da nova aplicação móvel nativa para iOS e Android.",
@@ -582,17 +583,17 @@ export const nationalHolidays = [
 ];
 
 export const calendarEvents = [
-    { id: 1, title: "Reunião de Equipa - Marketing", description: "Reunião semanal da equipa de Marketing", start: "2024-11-20T10:00:00", end: "2024-11-20T11:00:00", createdBy: 3, participants: [2, 3, 13, 14], type: "meeting", department: "Marketing", location: "Sala de Reuniões A", color: "purple" },
-    { id: 2, title: "Apresentação aos Investidores", description: "Apresentação dos resultados do trimestre aos investidores", start: "2024-11-22T14:00:00", end: "2024-11-22T16:00:00", createdBy: 1, participants: [1, 3, 4, 26, 28], type: "presentation", department: "Administração", location: "Auditório Principal", color: "blue" },
-    { id: 3, title: "Workshop de Inovação", description: "Workshop sobre tendências de inovação no sector de apostas", start: "2024-11-25T09:00:00", end: "2024-11-25T13:00:00", createdBy: 1, participants: [1, 2, 3, 4, 5, 9, 18], type: "workshop", department: "Plataforma", location: "Centro de Formação", color: "green" },
+    { id: 1, title: "Reunião de Equipa - Marketing", description: "Reunião semanal da equipa de Marketing", start: "2024-11-20T10:00:00", end: "2024-11-20T11:00:00", createdBy: 3, participants: [2, 3, 1], type: "meeting", department: "Marketing", location: "Sala de Reuniões A", color: "purple" },
+    { id: 2, title: "Apresentação aos Investidores", description: "Apresentação dos resultados do trimestre aos investidores", start: "2024-11-22T14:00:00", end: "2024-11-22T16:00:00", createdBy: 1, participants: [1, 3, 4], type: "presentation", department: "Administração", location: "Auditório Principal", color: "blue" },
+    { id: 3, title: "Workshop de Inovação", description: "Workshop sobre tendências de inovação no sector de apostas", start: "2024-11-25T09:00:00", end: "2024-11-25T13:00:00", createdBy: 1, participants: [1, 2, 3, 4, 5], type: "workshop", department: "Plataforma", location: "Centro de Formação", color: "green" },
 ];
 
 export const cloudFiles = [
     { id: 1, name: 'Orçamento_2025.xlsx', size: '1.2 MB', type: 'excel', lastModified: '2024-11-15T10:30:00Z', sharedWith: [4] },
-    { id: 2, name: 'Apresentacao_Q3.pptx', size: '8.5 MB', type: 'powerpoint', lastModified: '2024-11-12T15:00:00Z', sharedWith: [1, 3, 26, 28] },
+    { id: 2, name: 'Apresentacao_Q3.pptx', size: '8.5 MB', type: 'powerpoint', lastModified: '2024-11-12T15:00:00Z', sharedWith: [1, 3] },
     { id: 3, name: 'Minutas_reuniao_estrategia.docx', size: '350 KB', type: 'word', lastModified: '2024-11-10T11:00:00Z', sharedWith: [] },
     { id: 4, name: 'Design_System_v2.fig', size: '22.1 MB', type: 'figma', lastModified: '2024-11-08T18:00:00Z', sharedWith: [2, 3] },
-    { id: 5, name: 'Logos_Campanha_Natal.zip', size: '15.8 MB', type: 'zip', lastModified: '2024-11-05T12:00:00Z', sharedWith: [13, 14] },
+    { id: 5, name: 'Logos_Campanha_Natal.zip', size: '15.8 MB', type: 'zip', lastModified: '2024-11-05T12:00:00Z', sharedWith: [3] },
 ];
 
 export type Workspace = {
@@ -615,7 +616,7 @@ export const workspaces: Workspace[] = [
         name: "Campanha de Natal Q4",
         description: "Workspace central para a campanha de marketing do 4º trimestre, focada nas promoções de Natal.",
         owner_id: 3,
-        members: [2, 3, 13, 14],
+        members: [2, 3, 1],
         privacy: 'private',
         linked_tasks: [1, 2, 4],
         linked_campaigns: ['C001'],
@@ -628,7 +629,7 @@ export const workspaces: Workspace[] = [
         name: "Nova App Mobile",
         description: "Projeto de tecnologia para o desenvolvimento da nova app mobile nativa.",
         owner_id: 1,
-        members: [1, 2, 4, 9, 18, 19, 20],
+        members: [1, 2, 4],
         privacy: 'private',
         linked_tasks: [6],
         linked_campaigns: [],
@@ -699,19 +700,19 @@ export const feedItems: FeedItem[] = [
         content: { text: "Equipa de #design, partilho aqui algumas inspirações para a nova identidade visual. O que acham da abordagem com gradientes mais subtis? @Maria Silva, gostaria do seu feedback.", media_urls: [{ type: 'image', url: 'https://picsum.photos/seed/design-inspiration/800/400' }] },
         mentions: [3],
         hashtags: ['design', 'feedback', 'branding'],
-        reactions: [{user_id: 3, reaction_type: 'idea'}, {user_id: 14, reaction_type: 'like'}, {user_id: 1, reaction_type: 'like'}],
+        reactions: [{user_id: 3, reaction_type: 'idea'}, {user_id: 1, reaction_type: 'like'}],
         comments_count: 3,
         is_pinned: false,
     },
      {
         item_id: 'pulse-5',
         timestamp: new Date(Date.now() - 10 * 60 * 60 * 1000).toISOString(),
-        author_user_id: 9, // Pedro Nunes
+        author_user_id: 1, // Admin
         item_type: 'post',
         content: { text: "Alguém tem experiência com a implementação de WebSockets para notificações em tempo real em larga escala? A pensar na arquitetura para a nova #appmobile. #devs #tecnologia" },
         mentions: [],
         hashtags: ['devs', 'tecnologia', 'appmobile'],
-        reactions: [{user_id: 18, reaction_type: 'idea'}, {user_id: 20, reaction_type: 'idea'}],
+        reactions: [{user_id: 1, reaction_type: 'idea'}, {user_id: 1, reaction_type: 'idea'}],
         comments_count: 4,
         is_pinned: false,
     },
@@ -766,7 +767,7 @@ export const getUpcomingMeetings = (userId: number) => meetings.filter(m => m.pa
 export const getCampaignsForUser = (userId: number) => campaigns.filter(p => p.members.includes(userId));
 export const getDepartment = (slug: string) => departments.find(d => d.slug === slug);
 export const getDepartmentMembers = (deptName: string) => users.filter(u => u.department === deptName);
-export const getDepartmentCampaigns = (deptName: string) => campaigns.filter(p => p.department === deptName);
+export const getDepartmentProjects = (deptName: string) => [];//campaigns.filter(p => p.department === deptName);
 export const getCalendarEventsForUser = (userId: number) => calendarEvents.filter(event => event.participants.includes(userId) || event.createdBy === userId);
 
 export const getWorkspacesForUser = (userId: number) => workspaces.filter(w => w.members.includes(userId));

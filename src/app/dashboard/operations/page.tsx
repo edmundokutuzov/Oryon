@@ -1,7 +1,6 @@
-
 'use client'
 import { getDepartment, getDepartmentMembers, getDepartmentProjects } from "@/lib/data";
-import DepartmentPageLayout from "../_components/department-layout";
+import DepartmentPageLayout from "@/app/dashboard/departments/_components/department-layout";
 
 const departmentSlug = "operations";
 const department = getDepartment(departmentSlug);

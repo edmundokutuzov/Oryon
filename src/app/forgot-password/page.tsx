@@ -68,7 +68,7 @@ export default function ForgotPasswordPage() {
         <form action={formAction} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="email" className="text-muted-foreground">
-              Email Corporativo
+              Email
             </Label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -77,7 +77,7 @@ export default function ForgotPasswordPage() {
                 id="email"
                 name="email"
                 className="pl-12 p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground"
-                placeholder="seu.email@standardbank.com"
+                placeholder="seu.email@txunabet.com"
                 required
               />
             </div>

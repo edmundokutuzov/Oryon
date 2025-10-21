@@ -18,7 +18,7 @@ export default function LoginPage() {
   const auth = useAuth();
   const router = useRouter();
 
-  const [email, setEmail] = useState('admin@standardbank.com');
+  const [email, setEmail] = useState('admin@txunabet.com');
   const [password, setPassword] = useState('Oryon@2024!');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -51,7 +51,7 @@ export default function LoginPage() {
       // Redirection is handled by the AuthGuard
     } catch (err: any) {
       if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
-        if (email === 'admin@standardbank.com') {
+        if (email === 'admin@txunabet.com') {
           try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const idToken = await userCredential.user.getIdToken(true);
@@ -99,7 +99,7 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <TxunaLogo className="mx-auto mb-4 h-12 w-auto" />
           <h1 className="text-4xl font-bold text-foreground mb-1">Oryon</h1>
-          <p className="text-muted-foreground">STANDARD BANK - Plataforma Corporativa Segura</p>
+          <p className="text-muted-foreground">Txuna Bet - Plataforma Corporativa Segura</p>
         </div>
 
         {error && (
@@ -112,7 +112,7 @@ export default function LoginPage() {
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="email" className="text-muted-foreground">
-              Email Corporativo
+              Email
             </Label>
             <div className="relative">
               <Input
@@ -120,7 +120,7 @@ export default function LoginPage() {
                 id="email"
                 name="email"
                 className="pl-4 p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground"
-                placeholder="seu.email@standardbank.com"
+                placeholder="seu.email@txunabet.com"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}

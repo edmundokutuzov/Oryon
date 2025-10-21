@@ -7,7 +7,7 @@ export const users = [
     {
         id: 1,
         name: "Admin Sistema",
-        email: "admin@standardbank.com",
+        email: "admin@txunabet.com",
         password: "Oryon@2024!",
         role: "Administrador",
         department: "Administração",
@@ -22,7 +22,7 @@ export const users = [
     {
         id: 2,
         name: "Edmundo Kutuzov",
-        email: "edmundo.kutuzov@standardbank.com",
+        email: "edmundo.kutuzov@txunabet.com",
         password: "Oryon@2024!",
         role: "Lead Designer",
         department: "Marketing",
@@ -37,7 +37,7 @@ export const users = [
     {
         id: 3,
         name: "Maria Silva",
-        email: "maria.silva@standardbank.com",
+        email: "maria.silva@txunabet.com",
         password: "Oryon@2024!",
         role: "Chefe de Dept.",
         department: "Marketing",
@@ -52,7 +52,7 @@ export const users = [
     {
         id: 4,
         name: "Carlos Santos",
-        email: "carlos.santos@standardbank.com",
+        email: "carlos.santos@txunabet.com",
         password: "Oryon@2024!",
         role: "Analista Financeiro",
         department: "Financeiro",
@@ -67,7 +67,7 @@ export const users = [
     {
         id: 5,
         name: "Ana Costa",
-        email: "ana.costa@standardbank.com",
+        email: "ana.costa@txunabet.com",
         password: "Oryon@2024!",
         role: "Gestora de RH",
         department: "Recursos Humanos",
@@ -82,7 +82,7 @@ export const users = [
     {
         id: 6,
         name: "Sofia Ribeiro",
-        email: "sofia.ribeiro@standardbank.com",
+        email: "sofia.ribeiro@txunabet.com",
         password: "Oryon@2024!",
         role: "Controller",
         department: "Financeiro",
@@ -97,7 +97,7 @@ export const users = [
     {
         id: 7,
         name: "João Almeida",
-        email: "joao.almeida@standardbank.com",
+        email: "joao.almeida@txunabet.com",
         password: "Oryon@2024!",
         role: "Analista de Risco",
         department: "Financeiro",
@@ -112,7 +112,7 @@ export const users = [
     {
         id: 8,
         name: "Beatriz Martins",
-        email: "beatriz.martins@standardbank.com",
+        email: "beatriz.martins@txunabet.com",
         password: "Oryon@2024!",
         role: "Tesoureira",
         department: "Financeiro",
@@ -127,7 +127,7 @@ export const users = [
     {
         id: 9,
         name: "Pedro Nunes",
-        email: "pedro.nunes@standardbank.com",
+        email: "pedro.nunes@txunabet.com",
         password: "Oryon@2024!",
         role: "Engenheiro de Software Sénior",
         department: "Tecnologia",
@@ -142,7 +142,7 @@ export const users = [
     {
         id: 10,
         name: "Laura Fernandes",
-        email: "laura.fernandes@standardbank.com",
+        email: "laura.fernandes@txunabet.com",
         password: "Oryon@2024!",
         role: "Analista de Processos",
         department: "Operações",
@@ -157,7 +157,7 @@ export const users = [
     {
         id: 11,
         name: "Daniela Pereira",
-        email: "daniela.pereira@standardbank.com",
+        email: "daniela.pereira@txunabet.com",
         password: "Oryon@2024!",
         role: "Oficial de Compliance Sénior",
         department: "Compliance",
@@ -172,7 +172,7 @@ export const users = [
     {
         id: 12,
         name: "Ricardo Mendes",
-        email: "ricardo.mendes@standardbank.com",
+        email: "ricardo.mendes@txunabet.com",
         password: "Oryon@2024!",
         role: "Especialista em Cibersegurança",
         department: "Segurança",
@@ -187,7 +187,7 @@ export const users = [
     {
         id: 13,
         name: "Júlia Barros",
-        email: "julia.barros@standardbank.com",
+        email: "julia.barros@txunabet.com",
         password: "Oryon@2024!",
         role: "Analista de Marketing Digital",
         department: "Marketing",
@@ -202,7 +202,7 @@ export const users = [
     {
         id: 14,
         name: "Tiago Martins",
-        email: "tiago.martins@standardbank.com",
+        email: "tiago.martins@txunabet.com",
         password: "Oryon@2024!",
         role: "Gestor de Conteúdo",
         department: "Marketing",
@@ -217,7 +217,7 @@ export const users = [
     {
         id: 15,
         name: "Rui Costa",
-        email: "rui.costa@standardbank.com",
+        email: "rui.costa@txunabet.com",
         password: "Oryon@2024!",
         role: "Analista de Contabilidade",
         department: "Financeiro",
@@ -232,7 +232,7 @@ export const users = [
     {
         id: 16,
         name: "Carla Meireles",
-        email: "carla.meireles@standardbank.com",
+        email: "carla.meireles@txunabet.com",
         password: "Oryon@2024!",
         role: "Técnica de RH",
         department: "Recursos Humanos",
@@ -247,7 +247,7 @@ export const users = [
     {
         id: 17,
         name: "Sérgio Ramos",
-        email: "sergio.ramos@standardbank.com",
+        email: "sergio.ramos@txunabet.com",
         password: "Oryon@2024!",
         role: "Especialista de Recrutamento",
         department: "Recursos Humanos",
@@ -262,7 +262,7 @@ export const users = [
     {
         id: 18,
         name: "Vasco Monteiro",
-        email: "vasco.monteiro@standardbank.com",
+        email: "vasco.monteiro@txunabet.com",
         password: "Oryon@2024!",
         role: "Engenheiro de DevOps",
         department: "Tecnologia",
@@ -277,7 +277,7 @@ export const users = [
     {
         id: 19,
         name: "Telma Borges",
-        email: "telma.borges@standardbank.com",
+        email: "telma.borges@txunabet.com",
         password: "Oryon@2024!",
         role: "Administradora de Sistemas",
         department: "Tecnologia",
@@ -292,7 +292,7 @@ export const users = [
     {
         id: 20,
         name: "Bruno Paixão",
-        email: "bruno.paixao@standardbank.com",
+        email: "bruno.paixao@txunabet.com",
         password: "Oryon@2024!",
         role: "Engenheiro de Software Júnior",
         department: "Tecnologia",
@@ -307,7 +307,7 @@ export const users = [
     {
         id: 21,
         name: "Fábio Neves",
-        email: "fabio.neves@standardbank.com",
+        email: "fabio.neves@txunabet.com",
         password: "Oryon@2024!",
         role: "Gestor de Logística",
         department: "Operações",
@@ -322,7 +322,7 @@ export const users = [
     {
         id: 22,
         name: "Catarina Valente",
-        email: "catarina.valente@standardbank.com",
+        email: "catarina.valente@txunabet.com",
         password: "Oryon@2024!",
         role: "Analista de KYC",
         department: "Compliance",
@@ -337,7 +337,7 @@ export const users = [
     {
         id: 23,
         name: "Alexandre Pires",
-        email: "alexandre.pires@standardbank.com",
+        email: "alexandre.pires@txunabet.com",
         password: "Oryon@2024!",
         role: "Analista de Segurança SOC",
         department: "Segurança",
@@ -352,7 +352,7 @@ export const users = [
     {
         id: 24,
         name: "Beatriz Lima",
-        email: "beatriz.lima@standardbank.com",
+        email: "beatriz.lima@txunabet.com",
         password: "Oryon@2024!",
         role: "Assistente Executiva",
         department: "Administração",
@@ -367,7 +367,7 @@ export const users = [
     {
         id: 25,
         name: "Fernando Costa",
-        email: "fernando.costa@standardbank.com",
+        email: "fernando.costa@txunabet.com",
         password: "Oryon@2024!",
         role: "Diretor de Operações (COO)",
         department: "Administração",
@@ -382,7 +382,7 @@ export const users = [
     {
         id: 26,
         name: "Helena Moreira",
-        email: "helena.moreira@standardbank.com",
+        email: "helena.moreira@txunabet.com",
         password: "Oryon@2024!",
         role: "Diretora Financeira (CFO)",
         department: "Administração",
@@ -397,7 +397,7 @@ export const users = [
     {
         id: 27,
         name: "Jorge Valério",
-        email: "jorge.valerio@standardbank.com",
+        email: "jorge.valerio@txunabet.com",
         password: "Oryon@2024!",
         role: "Conselheiro Geral",
         department: "Administração",
@@ -412,7 +412,7 @@ export const users = [
     {
         id: 28,
         name: "Luísa Matos",
-        email: "luisa.matos@standardbank.com",
+        email: "luisa.matos@txunabet.com",
         password: "Oryon@2024!",
         role: "Chefe de Estratégia",
         department: "Administração",
@@ -427,7 +427,7 @@ export const users = [
     {
         id: 29,
         name: "Nuno Gomes",
-        email: "nuno.gomes@standardbank.com",
+        email: "nuno.gomes@txunabet.com",
         password: "Oryon@2024!",
         role: "Chefe de Compliance",
         department: "Compliance",
@@ -442,7 +442,7 @@ export const users = [
     {
         id: 30,
         name: "Rita Marques",
-        email: "rita.marques@standardbank.com",
+        email: "rita.marques@txunabet.com",
         password: "Oryon@2024!",
         role: "Oficial de Compliance Sénior",
         department: "Compliance",
@@ -457,7 +457,7 @@ export const users = [
     {
         id: 31,
         name: "David Antunes",
-        email: "david.antunes@standardbank.com",
+        email: "david.antunes@txunabet.com",
         password: "Oryon@2024!",
         role: "Auditor de Compliance",
         department: "Compliance",
@@ -472,7 +472,7 @@ export const users = [
     {
         id: 32,
         name: "Inês Faria",
-        email: "ines.faria@standardbank.com",
+        email: "ines.faria@txunabet.com",
         password: "Oryon@2024!",
         role: "Especialista em Prevenção à Lavagem de Dinheiro",
         department: "Compliance",
@@ -487,7 +487,7 @@ export const users = [
     {
         id: 33,
         name: "Miguel Loureiro",
-        email: "miguel.loureiro@standardbank.com",
+        email: "miguel.loureiro@txunabet.com",
         password: "Oryon@2024!",
         role: "Analista Regulatório",
         department: "Compliance",
@@ -502,7 +502,7 @@ export const users = [
     {
         id: 34,
         name: "Roberto Vaz",
-        email: "roberto.vaz@standardbank.com",
+        email: "roberto.vaz@txunabet.com",
         password: "Oryon@2024!",
         role: "Chefe de Operações",
         department: "Operações",
@@ -517,7 +517,7 @@ export const users = [
     {
         id: 35,
         name: "Sandra Rocha",
-        email: "sandra.rocha@standardbank.com",
+        email: "sandra.rocha@txunabet.com",
         password: "Oryon@2024!",
         role: "Gestora de Projetos de Operações",
         department: "Operações",
@@ -532,7 +532,7 @@ export const users = [
     {
         id: 36,
         name: "André Gusmão",
-        email: "andre.gusmao@standardbank.com",
+        email: "andre.gusmao@txunabet.com",
         password: "Oryon@2024!",
         role: "Analista de Qualidade",
         department: "Operações",
@@ -547,7 +547,7 @@ export const users = [
     {
         id: 37,
         name: "Patrícia Abreu",
-        email: "patricia.abreu@standardbank.com",
+        email: "patricia.abreu@txunabet.com",
         password: "Oryon@2024!",
         role: "Especialista em Melhoria Contínua",
         department: "Operações",
@@ -562,7 +562,7 @@ export const users = [
     {
         id: 38,
         name: "Márcio Viana",
-        email: "marcio.viana@standardbank.com",
+        email: "marcio.viana@txunabet.com",
         password: "Oryon@2024!",
         role: "Coordenador de Turno",
         department: "Operações",
@@ -614,7 +614,7 @@ export const tasks = [
         assignedTo: [2],
         createdBy: 3,
         priority: "medium" as "urgent" | "high" | "medium" | "low",
-        status: "todo" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
+        status: "todo" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
         labels: ["branding", "design"],
         dueDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 45 days from now
         progress: 10,
@@ -635,7 +635,7 @@ export const tasks = [
         assignedTo: [4, 6],
         createdBy: 26,
         priority: "high" as "urgent" | "high" | "medium" | "low",
-        status: "in_progress" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
+        status: "in_progress" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
         labels: ["relatório", "financeiro"],
         dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 5 days from now
         progress: 40,
@@ -660,7 +660,7 @@ export const tasks = [
         assignedTo: [12, 23],
         createdBy: 1,
         priority: "high" as "urgent" | "high" | "medium" | "low",
-        status: "in_progress" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
+        status: "in_progress" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
         labels: ["segurança", "cloud", "auditoria"],
         dueDate: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 30,
@@ -684,7 +684,7 @@ export const tasks = [
         assignedTo: [9, 20],
         createdBy: 28,
         priority: "medium" as "urgent" | "high" | "medium" | "low",
-        status: "backlog" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
+        status: "backlog" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
         labels: ["dashboard", "kpi", "bi", "frontend"],
         dueDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 5,
@@ -705,7 +705,7 @@ export const tasks = [
         assignedTo: [5, 16],
         createdBy: 5,
         priority: "medium" as "urgent" | "high" | "medium" | "low",
-        status: "done" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
+        status: "done" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
         labels: ["evento", "rh", "cultura"],
         dueDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 100,
@@ -730,7 +730,7 @@ export const tasks = [
         assignedTo: [11, 29, 32],
         createdBy: 27,
         priority: "high" as "urgent" | "high" | "medium" | "low",
-        status: "blocked" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
+        status: "blocked" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
         labels: ["compliance", "aml", "revisão"],
         dueDate: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 50,
@@ -750,7 +750,7 @@ export const tasks = [
         assignedTo: [9, 18],
         createdBy: 1,
         priority: "high" as "urgent" | "high" | "medium" | "low",
-        status: "todo" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
+        status: "todo" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
         labels: ["api", "backend", "devops"],
         dueDate: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 0,
@@ -775,7 +775,7 @@ export const tasks = [
         assignedTo: [13],
         createdBy: 3,
         priority: "low" as "urgent" | "high" | "medium" | "low",
-        status: "done" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
+        status: "done" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
         labels: ["seo", "marketing"],
         dueDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 100,
@@ -958,7 +958,7 @@ export const menuItems = [
 export const knowledgeBase = [
     {
         id: 1,
-        title: "Guia de Boas-Vindas ao Standard Bank",
+        title: "Guia de Boas-Vindas ao Txuna Bet",
         category: "Recursos Humanos",
         views: 1250,
         tags: ["onboarding", "cultura", "beneficios"]
@@ -979,7 +979,7 @@ export const knowledgeBase = [
     },
     {
         id: 4,
-        title: "Brand Guidelines do Standard Bank",
+        title: "Brand Guidelines do Txuna Bet",
         category: "Marketing",
         views: 780,
         tags: ["marca", "design", "logo"]
@@ -1217,7 +1217,7 @@ export const feedItems: FeedItem[] = [
 
 export const messages = {
     "geral": [
-        { id: 1, userId: 1, content: "Bem-vindos ao Oryon Enterprise! 🎉 A nova plataforma de colaboração do STANDARD BANK.", timestamp: "2024-11-01T09:00:00Z", reactions: [{ userId: 2, emoji: "👍" }, { userId: 3, emoji: "🎉" }] },
+        { id: 1, userId: 1, content: "Bem-vindos ao Oryon Enterprise! 🎉 A nova plataforma de colaboração da Txuna Bet.", timestamp: "2024-11-01T09:00:00Z", reactions: [{ userId: 2, emoji: "👍" }, { userId: 3, emoji: "🎉" }] },
         { id: 2, userId: 3, content: "Lembrando que temos reunião de departamento amanhã às 10h. Por favor tragam as atualizações dos vossos projetos.", timestamp: "2024-11-15T16:30:00Z", reactions: [{ userId: 2, emoji: "👌" }, { userId: 4, emoji: "👍" }] },
         { id: 3, userId: 4, content: "Partilho o relatório financeiro do último trimestre para revisão.", timestamp: "2024-11-16T11:20:00Z", attachments: [{ name: "relatorio-trimestral-q3.pdf", size: "4.8 MB", type: "pdf" }], reactions: [] },
     ],

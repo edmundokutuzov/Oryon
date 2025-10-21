@@ -142,14 +142,14 @@ export default function SignupPage() {
           </div>
           <div className="space-y-2">
             <Label htmlFor="email" className="text-muted-foreground">
-              Email Corporativo
+              Email
             </Label>
             <Input
               type="email"
               id="email"
               name="email"
               className="pl-4 p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground"
-              placeholder="seu.email@standardbank.com"
+              placeholder="seu.email@txunabet.com"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}

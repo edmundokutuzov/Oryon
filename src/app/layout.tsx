@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
   title: 'Enterprise Command',
-  description: 'Oryon Enterprise - STANDARD BANK',
+  description: 'Oryon Enterprise - Txuna Bet',
 };
 
 export default function RootLayout({

@@ -1,4 +1,3 @@
-
 // This file mocks a database.
 // In a real application, you would fetch this data from a server.
 
@@ -133,7 +132,7 @@ export const tasks = [
         assignedTo: [2],
         createdBy: 3,
         priority: "medium" as "urgent" | "high" | "medium" | "low",
-        status: "todo" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
+        status: "todo" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
         labels: ["branding", "design", "sportsbook"],
         dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 10,
@@ -155,7 +154,7 @@ export const tasks = [
         assignedTo: [4, 1],
         createdBy: 1,
         priority: "high" as "urgent" | "high" | "medium" | "low",
-        status: "in-progress" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
+        status: "in-progress" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
         labels: ["relatório", "financeiro", "ggr"],
         dueDate: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 40,
@@ -181,7 +180,7 @@ export const tasks = [
         assignedTo: [1, 4],
         createdBy: 1,
         priority: "high" as "urgent" | "high" | "medium" | "low",
-        status: "in-progress" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
+        status: "in-progress" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
         labels: ["segurança", "cloud", "auditoria"],
         dueDate: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 30,
@@ -206,7 +205,7 @@ export const tasks = [
         assignedTo: [1],
         createdBy: 1,
         priority: "medium" as "urgent" | "high" | "medium" | "low",
-        status: "backlog" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
+        status: "backlog" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
         labels: ["dashboard", "kpi", "risco", "frontend"],
         dueDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 5,
@@ -228,7 +227,7 @@ export const tasks = [
         assignedTo: [5],
         createdBy: 5,
         priority: "medium" as "urgent" | "high" | "medium" | "low",
-        status: "done" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
+        status: "done" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
         labels: ["evento", "rh", "cultura"],
         dueDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 100,
@@ -254,7 +253,7 @@ export const tasks = [
         assignedTo: [1, 4],
         createdBy: 1,
         priority: "high" as "urgent" | "high" | "medium" | "low",
-        status: "blocked" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
+        status: "blocked" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
         labels: ["compliance", "aml", "revisão"],
         dueDate: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 50,
@@ -275,7 +274,7 @@ export const tasks = [
         assignedTo: [1],
         createdBy: 1,
         priority: "high" as "urgent" | "high" | "medium" | "low",
-        status: "todo" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
+        status: "todo" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
         labels: ["api", "backend", "kyc"],
         dueDate: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 0,
@@ -301,7 +300,7 @@ export const tasks = [
         assignedTo: [3],
         createdBy: 3,
         priority: "low" as "urgent" | "high" | "medium" | "low",
-        status: "done" as "backlog" | "todo" | "in_progress" | "blocked" | "done",
+        status: "done" as "backlog" | "todo" | "in-progress" | "blocked" | "done",
         labels: ["seo", "marketing", "sportsbook"],
         dueDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
         progress: 100,
@@ -387,7 +386,7 @@ export const campaigns = [
         kpis: {
             signups: 1254,
             cpa: 45.50, // Cost Per Acquisition
-            bonus_total: 62700,
+            ggr: 62700,
         }
     },
     {
@@ -405,8 +404,66 @@ export const campaigns = [
         kpis: {
             signups: 0,
             cpa: 0,
-            bonus_total: 0,
+            ggr: 0,
         }
+    },
+];
+
+export const gameOperations: {
+    id: string;
+    name: string;
+    provider: string;
+    gameType: 'slot' | 'live_casino' | 'sports_market';
+    riskLevel: 'low' | 'medium' | 'high';
+    integrationStatus: 'prospecting' | 'integration' | 'testing' | 'live' | 'monitoring';
+}[] = [
+    {
+        id: 'GO001',
+        name: "Aviator 2.0",
+        provider: "Spribe",
+        gameType: 'live_casino',
+        riskLevel: 'high',
+        integrationStatus: 'live',
+    },
+    {
+        id: 'GO002',
+        name: "Fortune Tiger",
+        provider: "Pragmatic Play",
+        gameType: 'slot',
+        riskLevel: 'medium',
+        integrationStatus: 'monitoring',
+    },
+    {
+        id: 'GO003',
+        name: "Mercado 'Vencedor Euro 2024'",
+        provider: "In-house",
+        gameType: 'sports_market',
+        riskLevel: 'high',
+        integrationStatus: 'live',
+    },
+    {
+        id: 'GO004',
+        name: "Sweet Bonanza",
+        provider: "Pragmatic Play",
+        gameType: 'slot',
+        riskLevel: 'low',
+        integrationStatus: 'testing',
+    },
+    {
+        id: 'GO005',
+        name: "Roleta Relâmpago",
+        provider: "Evolution",
+        gameType: 'live_casino',
+        riskLevel: 'medium',
+        integrationStatus: 'integration',
+    },
+    {
+        id: 'GO006',
+        name: "Prospecção de Jogos Crash",
+        provider: "Vários",
+        gameType: 'live_casino',
+        riskLevel: 'medium',
+        integrationStatus: 'prospecting',
     },
 ];
 
@@ -775,3 +832,4 @@ export const getWorkspaceById = (workspaceId: string) => workspaces.find(w => w.
 export const getWorkspaceTasks = (taskIds: number[]) => tasks.filter(t => taskIds.includes(t.id));
 export const getWorkspaceFiles = (fileIds: number[]) => cloudFiles.filter(f => fileIds.includes(f.id));
 export const getCampaignById = (campaignId: string) => campaigns.find(c => c.id === campaignId);
+export const projects = campaigns;

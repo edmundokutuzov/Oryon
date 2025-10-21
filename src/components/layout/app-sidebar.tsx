@@ -137,8 +137,9 @@ export default function AppSidebar() {
 
   return (
     <aside className="w-64 h-full flex flex-col flex-shrink-0 gradient-surface shadow-2xl transition-all duration-300 fixed md:relative z-40 md:translate-x-0 -translate-x-full">
-      <div className="p-6 flex items-center h-24 border-b border-border">
-        <TxunaLogo className="w-auto" />
+      <div className="p-6 flex flex-col justify-center h-24 border-b border-border">
+        <h1 className="text-xl font-bold text-foreground tracking-wider text-center">TXUNA BET</h1>
+        <p className="text-xs text-muted-foreground mt-1 text-center">Powered by ORYON.</p>
       </div>
 
       <nav className="flex-grow p-4 overflow-y-auto custom-scrollbar">

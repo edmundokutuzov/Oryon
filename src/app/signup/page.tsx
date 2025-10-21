@@ -4,7 +4,7 @@ import { LogIn, AlertCircle, Eye, EyeOff, Loader2, UserPlus, ArrowLeft } from 'l
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import OryonLogo from '@/components/icons/oryon-logo';
+import TxunaLogo from '@/components/icons/txuna-logo';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
@@ -91,7 +91,7 @@ export default function SignupPage() {
       return (
           <main className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950">
             <div className="gradient-surface p-8 md:p-10 rounded-2xl w-full max-w-md mx-4 border-2 border-primary/50 bounce-in text-center">
-                <OryonLogo className="mx-auto mb-4" />
+                <TxunaLogo className="mx-auto mb-4 h-12 w-auto" />
                 <h1 className="text-2xl font-bold text-foreground mb-2">Verifique o seu Email</h1>
                 <p className="text-muted-foreground mb-8">
                     Enviámos um link de verificação para <strong>{email}</strong>. Por favor, clique no link para ativar a sua conta antes de fazer login.
@@ -111,7 +111,7 @@ export default function SignupPage() {
     <main className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950">
       <div className="gradient-surface p-8 md:p-10 rounded-2xl w-full max-w-md mx-4 border-2 border-primary/50 bounce-in">
         <div className="text-center mb-8">
-          <OryonLogo className="mx-auto mb-4" />
+          <TxunaLogo className="mx-auto mb-4 h-12 w-auto" />
           <h1 className="text-3xl font-bold text-foreground mb-1">Criar Conta Oryon</h1>
           <p className="text-muted-foreground">Junte-se à plataforma corporativa segura.</p>
         </div>

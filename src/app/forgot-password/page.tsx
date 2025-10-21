@@ -5,7 +5,7 @@ import { Mail, ShieldCheck, Send, ArrowLeft, Loader2, CheckCircle } from 'lucide
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import OryonLogo from '@/components/icons/oryon-logo';
+import TxunaLogo from '@/components/icons/txuna-logo';
 import { useFormState, useFormStatus } from 'react-dom';
 import { handleForgotPassword } from '@/app/auth/actions';
 import { useEffect } from 'react';
@@ -60,7 +60,7 @@ export default function ForgotPasswordPage() {
     <main className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="gradient-surface p-8 md:p-10 rounded-2xl w-full max-w-md mx-4 border-2 border-primary/50 bounce-in">
         <div className="text-center mb-8">
-          <OryonLogo className="mx-auto mb-4" />
+          <TxunaLogo className="mx-auto mb-4 h-12 w-auto" />
           <h1 className="text-2xl font-bold text-foreground mb-1">Recuperar Password</h1>
           <p className="text-muted-foreground">Insira o seu email para receber um link de recuperação.</p>
         </div>
@@ -96,4 +96,3 @@ export default function ForgotPasswordPage() {
     </main>
   );
 }
-

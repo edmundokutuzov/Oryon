@@ -4,7 +4,7 @@
 import { useUser } from '@/firebase';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import OryonLogo from './icons/oryon-logo';
+import TxunaLogo from './icons/txuna-logo';
 import { Loader2 } from 'lucide-react';
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -31,7 +31,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   if (isUserLoading) {
     return (
       <main className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-slate-950">
-        <OryonLogo className="mx-auto mb-4" />
+        <TxunaLogo className="mx-auto mb-4 h-12 w-auto" />
         <div className="flex items-center gap-2 text-muted-foreground">
           <Loader2 className="h-5 w-5 animate-spin" />
           A verificar a sua sessão...

@@ -1,9 +1,10 @@
+// src/app/page.tsx
 'use client';
 
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import TxunaLogo from '@/components/icons/txuna-logo';
-import { ArrowRight, Play, Shield, Zap, Users, BarChart3, MessageSquare, Calendar, Target, Trophy, Sparkles } from 'lucide-react';
+import { ArrowRight, Shield, Zap, Users, BarChart3, MessageSquare, Calendar, Target, Trophy, Sparkles, CheckCircle } from 'lucide-react';
 
 export default function HomePage() {
   const [isVisible, setIsVisible] = useState(false);
@@ -15,41 +16,43 @@ export default function HomePage() {
   const features = [
     {
       icon: <Zap className="w-8 h-8" />,
-      title: "Velocidade de Resultados",
-      description: "Processos acelerados em 300% com nossa tecnologia de ponta"
+      title: "Velocidade Operacional",
+      description: "Processos otimizados e fluxos de trabalho acelerados em até 300%"
     },
     {
       icon: <Target className="w-8 h-8" />,
-      title: "Foco em Performance",
-      description: "Metas claras, resultados mensuráveis e conquistas diárias"
+      title: "Gestão por Objetivos",
+      description: "Metas claras, acompanhamento em tempo real e resultados mensuráveis"
     },
     {
       icon: <Users className="w-8 h-8" />,
-      title: "Equipe Conectada",
-      description: "Colaboração perfeita entre todos os departamentos"
+      title: "Colaboração Unificada",
+      description: "Conexão perfeita entre todos os departamentos e equipas"
     },
     {
       icon: <BarChart3 className="w-8 h-8" />,
-      title: "Dados em Tempo Real",
-      description: "Analytics instantâneos para decisões estratégicas"
+      title: "Inteligência de Dados",
+      description: "Analytics avançados para decisões estratégicas informadas"
     },
     {
       icon: <MessageSquare className="w-8 h-8" />,
-      title: "Comunicação Imediata",
-      description: "Chats dedicados por projeto e comunicação direta"
+      title: "Comunicação Centralizada",
+      description: "Canais dedicados por projeto e comunicação direta entre equipas"
     },
     {
       icon: <Calendar className="w-8 h-8" />,
-      title: "Gestão Inteligente",
-      description: "Agendamentos automáticos e lembretes inteligentes"
+      title: "Otimização de Tempo",
+      description: "Agendamentos inteligentes e gestão eficiente de prazos"
     }
   ];
 
-  const stats = [
-    { number: "24/7", label: "Operação Contínua" },
-    { number: "99.9%", label: "Uptime Garantido" },
-    { number: "5.2x", label: "Mais Eficiência" },
-    { number: "∞", label: "Possibilidades" }
+  const benefits = [
+    "Redução de 65% no tempo de gestão de projetos",
+    "Comunicação interna 100% integrada",
+    "Relatórios de performance automáticos",
+    "Acesso seguro e restrito aos colaboradores",
+    "Suporte técnico dedicado 24/7",
+    "Atualizações contínuas sem custos adicionais"
   ];
 
   return (
@@ -111,18 +114,18 @@ export default function HomePage() {
             >
               <Sparkles className="w-4 h-4 text-[hsl(90,85%,55%)]" />
               <span className="text-sm text-[hsl(0,0%,98%)] font-medium">
-                Plataforma Exclusiva Txuna Bet
+                Plataforma Corporativa Txuna Bet
               </span>
             </motion.div>
 
             {/* Main Headline */}
             <h1 className="text-6xl md:text-8xl font-bold mb-6">
               <span className="bg-gradient-to-r from-[hsl(0,0%,98%)] via-[hsl(90,85%,55%)] to-[hsl(0,0%,98%)] bg-clip-text text-transparent">
-                O Jogo
+                A Nova Era
               </span>
               <br />
               <span className="bg-gradient-to-r from-[hsl(90,85%,55%)] to-[hsl(90,85%,75%)] bg-clip-text text-transparent">
-                Mudou.
+                da Operação
               </span>
             </h1>
 
@@ -133,58 +136,51 @@ export default function HomePage() {
               transition={{ delay: 0.5 }}
               className="text-xl md:text-2xl text-[hsl(260,5%,75%)] max-w-4xl mx-auto mb-12 leading-relaxed"
             >
-              Bem-vindo à <span className="text-[hsl(90,85%,55%)] font-semibold">Oryon</span> - 
-              onde a excelência da Txuna Bet encontra a potência da gestão inteligente. 
+              Desenvolvida pela <span className="text-[hsl(90,85%,55%)] font-semibold">Oryon</span> 
+              {" "}exclusivamente para a excelência operacional da Txuna Bet.
               <span className="block mt-2 text-lg">
-                Mais do que uma plataforma, uma revolução na forma como sua equipe vence.
+                Mais do que uma plataforma, o centro nervoso da sua produtividade.
               </span>
             </motion.p>
 
-            {/* CTA Buttons */}
+            {/* CTA Button */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
+              className="flex justify-center items-center mb-16"
             >
               <a
                 href="/login"
                 className="group relative px-12 py-4 bg-[hsl(90,85%,55%)] text-[hsl(260,25%,10%)] rounded-2xl font-bold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[hsl(90,85%,55%)]/30"
               >
                 <span className="relative z-10 flex items-center gap-3">
-                  Começar a Vencer
+                  Iniciar Sessão
                   <Trophy className="w-5 h-5" />
                 </span>
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
               </a>
-
-              <button className="group flex items-center gap-3 px-8 py-4 text-[hsl(0,0%,98%)] font-semibold rounded-2xl border border-[hsl(260,25%,22%)] hover:border-[hsl(90,85%,55%)] transition-all duration-300">
-                <Play className="w-5 h-5" />
-                Ver Demonstração
-              </button>
             </motion.div>
 
-            {/* Stats */}
+            {/* Benefits List */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto"
             >
-              {stats.map((stat, index) => (
+              {benefits.map((benefit, index) => (
                 <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
+                  key={benefit}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 1 + index * 0.1 }}
-                  className="text-center p-6 bg-[hsl(260,25%,12%)] border border-[hsl(260,25%,18%)] rounded-2xl hover:border-[hsl(90,85%,55%)] transition-all duration-300"
+                  className="flex items-center gap-3 p-4 bg-[hsl(260,25%,12%)] border border-[hsl(260,25%,18%)] rounded-xl"
                 >
-                  <div className="text-2xl md:text-3xl font-bold text-[hsl(90,85%,55%)] mb-2">
-                    {stat.number}
-                  </div>
-                  <div className="text-sm text-[hsl(260,5%,75%)] font-medium">
-                    {stat.label}
-                  </div>
+                  <CheckCircle className="w-5 h-5 text-[hsl(90,85%,55%)] flex-shrink-0" />
+                  <span className="text-sm text-[hsl(260,5%,75%)] font-medium">
+                    {benefit}
+                  </span>
                 </motion.div>
               ))}
             </motion.div>
@@ -205,11 +201,11 @@ export default function HomePage() {
               <span className="bg-gradient-to-r from-[hsl(0,0%,98%)] to-[hsl(90,85%,55%)] bg-clip-text text-transparent">
                 Potência
               </span>
-              <span className="text-[hsl(0,0%,98%)]"> em Cada Movimento</span>
+              <span className="text-[hsl(0,0%,98%)]"> Operacional</span>
             </h2>
             <p className="text-xl text-[hsl(260,5%,75%)] max-w-2xl mx-auto">
-              Ferramentas projetadas para quem joga para vencer. 
-              Cada recurso é uma vantagem competitiva.
+              Ferramentas corporativas projetadas para a excelência da Txuna Bet. 
+              Cada recurso é uma vantagem competitiva interna.
             </p>
           </motion.div>
 
@@ -237,7 +233,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Final CTA Section */}
+      {/* Partnership Section */}
       <section className="relative z-10 px-6 py-20">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div
@@ -246,24 +242,24 @@ export default function HomePage() {
             transition={{ duration: 0.8 }}
           >
             <h2 className="text-4xl md:text-6xl font-bold mb-6">
-              <span className="text-[hsl(0,0%,98%)]">Pronto para</span>
+              <span className="text-[hsl(0,0%,98%)]">Desenvolvido pela</span>
               <span className="block bg-gradient-to-r from-[hsl(90,85%,55%)] to-[hsl(90,85%,75%)] bg-clip-text text-transparent">
-                Dominar o Jogo?
+                Oryon
               </span>
             </h2>
             
             <p className="text-xl text-[hsl(260,5%,75%)] mb-8 max-w-2xl mx-auto">
-              Junte-se aos campeões da Txuna Bet e experimente a plataforma 
-              que está redefinindo o conceito de produtividade no setor.
+              Uma parceria estratégica para elevar a excelência operacional da Txuna Bet. 
+              Tecnologia de ponta focada em resultados reais para a sua equipa.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="flex flex-col gap-4 justify-center items-center">
               <a
                 href="/login"
                 className="group relative px-12 py-4 bg-[hsl(90,85%,55%)] text-[hsl(260,25%,10%)] rounded-2xl font-bold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[hsl(90,85%,55%)]/40"
               >
                 <span className="relative z-10 flex items-center gap-3">
-                  Acessar Agora - É Grátis
+                  Acessar Plataforma
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
                 <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/40 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
@@ -271,7 +267,7 @@ export default function HomePage() {
 
               <div className="flex items-center gap-2 text-sm text-[hsl(260,5%,65%)]">
                 <Shield className="w-4 h-4" />
-                Ambiente 100% seguro e exclusivo para colaboradores Txuna Bet
+                Ambiente corporativo 100% seguro e exclusivo para colaboradores Txuna Bet
               </div>
             </div>
           </motion.div>
@@ -282,10 +278,15 @@ export default function HomePage() {
       <footer className="relative z-10 px-6 py-12 border-t border-[hsl(260,25%,18%)]">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <TxunaLogo className="w-32 h-10 mb-6 md:mb-0" />
+            <div className="flex flex-col items-center md:items-start mb-6 md:mb-0">
+              <TxunaLogo className="w-32 h-10 mb-4" />
+              <p className="text-[hsl(260,5%,65%)] text-sm text-center md:text-left">
+                Plataforma de gestão interna desenvolvida pela Oryon
+              </p>
+            </div>
             <div className="text-center md:text-right">
               <p className="text-[hsl(260,5%,65%)] text-sm">
-                Plataforma Oryon • Exclusivo para Colaboradores Txuna Bet
+                Exclusivo para Colaboradores Txuna Bet
               </p>
               <p className="text-[hsl(260,5%,55%)] text-xs mt-2">
                 © 2024 Txuna Bet. Todos os direitos reservados.

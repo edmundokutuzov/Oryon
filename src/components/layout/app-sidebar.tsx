@@ -50,6 +50,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { signOut } from 'firebase/auth';
 import { useAuth, useUser } from '@/firebase';
 import { ROLES } from '@/config/roles';
+import { motion } from 'framer-motion';
 
 
 const statusClasses: { [key: string]: string } = {
@@ -139,8 +140,22 @@ export default function AppSidebar() {
   return (
     <aside className="w-64 h-full flex flex-col flex-shrink-0 gradient-surface shadow-2xl transition-all duration-300 fixed md:relative z-40 md:translate-x-0 -translate-x-full">
        <div className="p-6 flex flex-col justify-center h-24 border-b border-border pl-6">
-        <h1 className="text-xl font-bold text-foreground tracking-wider">TXUNA BET</h1>
-        <p className="text-xs text-muted-foreground mt-1">Powered by ORYON.</p>
+        <motion.h1
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="text-2xl font-bold tracking-wider bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent"
+        >
+          TXUNA BET
+        </motion.h1>
+        <motion.p
+           initial={{ opacity: 0, x: -20 }}
+           animate={{ opacity: 1, x: 0 }}
+           transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+           className="text-xs text-muted-foreground mt-1"
+        >
+            Powered by ORYON.
+        </motion.p>
       </div>
 
       <nav className="flex-grow p-4 overflow-y-auto custom-scrollbar">

@@ -8,10 +8,8 @@ import { portalData } from '@/lib/data';
 export default function LandingPage() {
   return (
     <div className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-center text-white bg-background">
-      {/* Animated Gradient Background */}
-      <div className="absolute inset-0 z-0">
-        <div className="aurora-bg"></div>
-      </div>
+      {/* Artistic Background */}
+      <div className="artistic-bg"></div>
       
       {/* Overlay */}
       <div className="absolute top-0 left-0 w-full h-full bg-black/50 z-10"></div>

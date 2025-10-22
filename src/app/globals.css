@@ -190,8 +190,6 @@
 .aurora-bg::after {
   content: '';
   position: absolute;
-  width: 800px;
-  height: 800px;
   border-radius: 9999px;
   mix-blend-mode: screen;
   will-change: transform;
@@ -200,11 +198,13 @@
 }
 
 .aurora-bg::before {
-  --x-start: -400px;
-  --y-start: -400px;
-  --x-end: 400px;
-  --y-end: 400px;
-  background: hsla(var(--primary), 0.2);
+  --x-start: -500px;
+  --y-start: -500px;
+  --x-end: 500px;
+  --y-end: 500px;
+  width: 1000px;
+  height: 1000px;
+  background: hsla(var(--primary), 0.3);
   animation-duration: 25s;
 }
 
@@ -213,7 +213,9 @@
   --y-start: 100%;
   --x-end: 20%;
   --y-end: -20%;
-  background: hsla(var(--secondary), 0.3);
+  width: 800px;
+  height: 800px;
+  background: hsla(var(--primary), 0.15);
   animation-duration: 18s;
   animation-direction: alternate-reverse;
 }

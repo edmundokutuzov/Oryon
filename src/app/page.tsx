@@ -1,193 +1,78 @@
 
-'use client';
-import { LogIn, AlertCircle, Eye, EyeOff, Loader2, UserPlus, ArrowRight } from 'lucide-react';
+import { ArrowRight, BarChart3, Calendar, Cpu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import TxunaLogo from '@/components/icons/txuna-logo';
-import { useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, getIdToken } from 'firebase/auth';
-import { useAuth } from '@/firebase';
-import { useRouter } from 'next/navigation';
-import { users } from '@/lib/data';
+import TxunaLogo from '@/components/icons/txuna-logo';
 
-export default function LoginPage() {
-  const { toast } = useToast();
-  const auth = useAuth();
-  const router = useRouter();
+const portalData = {
+  dailyFocus: "A semana é um jogo de 5 dias. Vamos ganhar o primeiro.",
+  hotMarkets: ["Liga dos Campeões", "Finais da NBA"],
+  countdownEvent: "Mundial 2026",
+  countdownDays: 354,
+  recordOdd: 150.75,
+};
 
-  const [email, setEmail] = useState('admin@txunabet.com');
-  const [password, setPassword] = useState('Oryon@2024!');
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      
-      const idToken = await userCredential.user.getIdToken(true);
-
-      // Placeholder for backend session creation
-      // await fetch('/api/sessionLogin', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ idToken })
-      // });
-      
-      toast({
-        title: 'Login bem-sucedido!',
-        description: 'Bem-vindo de volta à Txuna Bet.',
-      });
-
-      // Redirection is handled by the AuthGuard
-    } catch (err: any) {
-      // If user doesn't exist or credentials are wrong, check if it's a valid mock user
-      if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
-        const mockUser = users.find(u => u.email === email && u.password === password);
-        
-        if (mockUser) {
-          // If it's a valid mock user, try to create the account and sign in
-          try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const idToken = await userCredential.user.getIdToken(true);
-            
-            // Placeholder for backend session creation
-            // await fetch('/api/sessionLogin', {
-            //   method: 'POST',
-            //   headers: { 'Content-Type': 'application/json' },
-            //   body: JSON.stringify({ idToken })
-            // });
-
-            toast({
-              title: `Conta para ${mockUser.name} criada!`,
-              description: 'A sua conta foi criada com sucesso e a sessão iniciada.',
-            });
-             // Redirection is handled by the AuthGuard
-
-          } catch (signupErr: any) {
-            // Handle cases where sign-up might fail (e.g., weak password in Firebase although it's hardcoded here)
-            setError('Falha ao criar e autenticar a sua conta. Contacte o administrador.');
-          }
-        } else {
-          // If not a valid mock user or wrong password for an existing Firebase user
-          setError('Credenciais inválidas. Verifique o seu email e password.');
-        }
-      } else {
-        let errorMessage = 'Ocorreu um erro desconhecido.';
-        switch (err.code) {
-          case 'auth/wrong-password':
-            errorMessage = 'Password incorreta. Por favor, verifique a sua password.';
-            break;
-          case 'auth/invalid-email':
-            errorMessage = 'O formato do email é inválido.';
-            break;
-          default:
-            errorMessage = 'Falha no login. Por favor, tente novamente.';
-            break;
-        }
-        setError(errorMessage);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
+export default function LandingPage() {
   return (
-    <main className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950">
-      <div className="gradient-surface p-8 md:p-10 rounded-2xl w-full max-w-md mx-4 border-2 border-primary/50 bounce-in">
-        <div className="text-center mb-8">
-          <TxunaLogo className="mx-auto mb-4 h-16 w-auto" />
-          <h1 className="text-4xl font-bold text-foreground mb-1">Entre para a Ação</h1>
-          <p className="text-muted-foreground">Plataforma de Gestão Txuna Bet</p>
+    <div className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-center text-white">
+      {/* Video Background */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute top-0 left-0 w-full h-full object-cover z-0"
+        poster="https://i.imgur.com/G0G6w4j.png"
+      >
+        <source src="https://i.imgur.com/o2n1Q2a.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      
+      {/* Overlay */}
+      <div className="absolute top-0 left-0 w-full h-full bg-black/70 z-10"></div>
+      
+      {/* Content */}
+      <main className="relative z-20 flex flex-col items-center justify-center p-4 text-center w-full max-w-4xl mx-auto bounce-in">
+        <TxunaLogo className="h-20 w-auto mb-6" />
+        
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-4">
+          O Jogo Começa Agora.
+        </h1>
+        <p className="text-xl md:text-2xl text-primary font-medium mb-10">
+          {portalData.dailyFocus}
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 w-full">
+          <div className="bg-white/5 backdrop-blur-md rounded-xl p-6 border border-white/10">
+            <h3 className="text-sm font-semibold text-muted-foreground flex items-center gap-2 justify-center"><BarChart3 className="w-4 h-4"/> Mercados em Alta Hoje</h3>
+            <p className="text-lg font-bold text-foreground mt-2">{portalData.hotMarkets.join(', ')}</p>
+          </div>
+          <div className="bg-white/5 backdrop-blur-md rounded-xl p-6 border border-white/10">
+            <h3 className="text-sm font-semibold text-muted-foreground flex items-center gap-2 justify-center"><Calendar className="w-4 h-4"/> Contagem Regressiva</h3>
+            <p className="text-lg font-bold text-foreground mt-2">{portalData.countdownEvent}: <span className="text-primary">{portalData.countdownDays} Dias</span></p>
+          </div>
+           <div className="bg-white/5 backdrop-blur-md rounded-xl p-6 border border-white/10">
+            <h3 className="text-sm font-semibold text-muted-foreground flex items-center gap-2 justify-center"><Cpu className="w-4 h-4"/> Recorde da Casa (Ontem)</h3>
+            <p className="text-lg font-bold text-foreground mt-2">Maior Odd Vencedora: <span className="text-primary">{portalData.recordOdd}x</span></p>
+          </div>
         </div>
 
-        {error && (
-          <div className="bg-destructive/20 text-destructive-foreground p-3 rounded-lg mb-6 flex items-center gap-3 text-sm">
-            <AlertCircle className="w-5 h-5" />
-            <span>{error}</span>
-          </div>
-        )}
+        <Link href="/login">
+            <Button size="lg" className="btn-primary-gradient rounded-full px-12 py-7 text-lg font-bold h-auto">
+                Entrar na Plataforma
+                <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+        </Link>
+      </main>
 
-        <form onSubmit={handleLogin} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-muted-foreground">
-              Email
-            </Label>
-            <div className="relative">
-              <Input
-                type="email"
-                id="email"
-                name="email"
-                className="pl-4 p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground"
-                placeholder="seu.email@txunabet.com"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={loading}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <div className="relative">
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                id="password"
-                name="password"
-                className="pl-4 pr-10 p-3 h-auto rounded-xl bg-card border-border focus:border-primary placeholder:text-muted-foreground"
-                placeholder="••••••••"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={loading}
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:bg-transparent"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-              </Button>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between text-sm">
-            <Label
-              htmlFor="remember"
-              className="flex items-center gap-2 font-normal text-muted-foreground cursor-pointer"
-            >
-              <Checkbox id="remember" name="remember" className="rounded bg-card border-border text-primary focus:ring-primary" />
-              Lembrar-me
-            </Label>
-            <Link href="/forgot-password" className="text-primary/80 hover:text-primary transition-colors">
-              Esqueceu a password?
-            </Link>
-          </div>
-
-          <Button type="submit" className="w-full btn-primary-gradient py-3 h-auto text-base font-semibold" disabled={loading}>
-            {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <LogIn className="mr-2 h-5 w-5" />}
-            {loading ? 'A verificar...' : 'Entrar'}
-          </Button>
-        </form>
-
-        <div className="mt-8 text-center">
-            <p className="text-sm text-muted-foreground">Não tem uma conta?</p>
-            <Link href="/signup" className="font-semibold text-primary hover:text-primary/80 transition-colors flex items-center justify-center gap-2 mt-1">
-                Registe-se e ganhe o seu bónus <ArrowRight className="w-4 h-4"/>
-            </Link>
+       {/* Footer */}
+      <footer className="absolute bottom-0 left-0 w-full p-4 z-20">
+        <div className="flex justify-center items-center gap-6 text-sm text-muted-foreground">
+          <Link href="#" className="hover:text-primary transition-colors">Suporte Técnico</Link>
+          <Link href="#" className="hover:text-primary transition-colors">Status da Plataforma</Link>
+          <Link href="#" className="hover:text-primary transition-colors">Política de Segurança</Link>
         </div>
-      </div>
-    </main>
+      </footer>
+    </div>
   );
 }

@@ -45,7 +45,7 @@ export default function ForgotPasswordPage() {
             <p className="text-muted-foreground mb-8">
                 {state.message}
             </p>
-            <Link href="/">
+            <Link href="/login">
               <Button variant="outline" className="w-full">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Voltar para o Login
@@ -87,7 +87,7 @@ export default function ForgotPasswordPage() {
         </form>
 
         <div className="mt-8 text-center">
-           <Link href="/" className="text-sm text-primary/80 hover:text-primary transition-colors flex items-center justify-center gap-2">
+           <Link href="/login" className="text-sm text-primary/80 hover:text-primary transition-colors flex items-center justify-center gap-2">
               <ArrowLeft className="w-4 h-4"/>
               Lembrou-se da password? Voltar ao Login
             </Link>

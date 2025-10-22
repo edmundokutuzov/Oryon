@@ -134,7 +134,7 @@ export default function AppSidebar() {
     return requiredPermissions.some(p => p === currentUserData.role);
   }
   
-  const avatarUrl = user ? PlaceHolderImages.find(p => p.id === `user-avatar-${currentUserData?.id}`)?.imageUrl : '';
+  const avatarUrl = user ? PlaceHolderImages.find(p => p.id === `user-avatar-${currentUserData?.id}`)?.imageUrl : undefined;
 
   return (
     <aside className="w-64 h-full flex flex-col flex-shrink-0 gradient-surface shadow-2xl transition-all duration-300 fixed md:relative z-40 md:translate-x-0 -translate-x-full">

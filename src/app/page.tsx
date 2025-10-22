@@ -8,22 +8,14 @@ import { portalData } from '@/lib/data';
 
 export default function LandingPage() {
   return (
-    <div className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-center text-white">
-      {/* Video Background */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute top-0 left-0 w-full h-full object-cover z-0"
-        poster="https://i.imgur.com/G0G6w4j.png"
-      >
-        <source src="https://i.imgur.com/o2n1Q2a.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+    <div className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-center text-white bg-background">
+      {/* Animated Gradient Background */}
+      <div className="absolute inset-0 z-0 opacity-50">
+        <div className="aurora-bg"></div>
+      </div>
       
       {/* Overlay */}
-      <div className="absolute top-0 left-0 w-full h-full bg-black/70 z-10"></div>
+      <div className="absolute top-0 left-0 w-full h-full bg-black/50 z-10"></div>
       
       {/* Content */}
       <main className="relative z-20 flex flex-col items-center justify-center p-4 text-center w-full max-w-4xl mx-auto bounce-in">

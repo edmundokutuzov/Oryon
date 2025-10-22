@@ -168,3 +168,52 @@
 .slide-in-right { animation: slideInRight 0.5s ease-out; }
 .pulse-soft { animation: pulseSoft 2s infinite; }
 .bounce-in { animation: bounceIn 0.6s ease-out; }
+
+/* New Aurora Background */
+@keyframes aurora {
+  from {
+    transform: translate(var(--x-start), var(--y-start));
+  }
+  to {
+    transform: translate(var(--x-end), var(--y-end));
+  }
+}
+
+.aurora-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background-color: hsl(var(--background));
+}
+
+.aurora-bg::before,
+.aurora-bg::after {
+  content: '';
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  border-radius: 9999px;
+  mix-blend-mode: screen;
+  will-change: transform;
+  animation: aurora 20s linear infinite alternate;
+  filter: blur(100px);
+}
+
+.aurora-bg::before {
+  --x-start: -400px;
+  --y-start: -400px;
+  --x-end: 400px;
+  --y-end: 400px;
+  background: hsla(var(--primary), 0.2);
+  animation-duration: 25s;
+}
+
+.aurora-bg::after {
+  --x-start: 50%;
+  --y-start: 100%;
+  --x-end: 20%;
+  --y-end: -20%;
+  background: hsla(var(--secondary), 0.3);
+  animation-duration: 18s;
+  animation-direction: alternate-reverse;
+}

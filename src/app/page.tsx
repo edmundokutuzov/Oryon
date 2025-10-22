@@ -1,5 +1,4 @@
 
-
 import { ArrowRight, BarChart3, Calendar, Cpu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -10,7 +9,7 @@ export default function LandingPage() {
   return (
     <div className="relative min-h-screen w-full overflow-hidden flex flex-col items-center justify-center text-white bg-background">
       {/* Animated Gradient Background */}
-      <div className="absolute inset-0 z-0 opacity-50">
+      <div className="absolute inset-0 z-0">
         <div className="aurora-bg"></div>
       </div>
       

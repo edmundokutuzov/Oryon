@@ -6,6 +6,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/theme-provider';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import AuthGuard from '@/components/auth-guard';
+import ArtisticBackground from '@/components/layout/artistic-background';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
@@ -21,7 +22,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt" suppressHydrationWarning>
-      <body className={`${inter.variable} font-body antialiased`}>
+      <body className={`${inter.variable} font-body antialiased bg-transparent`}>
+        <ArtisticBackground />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

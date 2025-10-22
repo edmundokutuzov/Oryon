@@ -56,10 +56,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[hsl(260,25%,8%)] via-[hsl(260,25%,12%)] to-[hsl(260,25%,6%)] overflow-hidden">
-      {/* Background Elements */}
-      <div className="artistic-bg"></div>
-
+    <div className="relative z-10">
       {/* Navigation */}
       <nav className="relative z-50 px-6 py-6">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -71,7 +68,7 @@ export default function HomePage() {
           >
             <a
               href="/login"
-              className="group relative px-8 py-3 bg-[hsl(90,85%,55%)] text-white rounded-full font-semibold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[hsl(90,85%,55%)]/20"
+              className="group relative px-8 py-3 bg-[hsl(var(--primary))] text-white rounded-full font-semibold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[hsl(var(--primary))]/20"
             >
               <span className="relative z-10 flex items-center gap-2">
                 Acessar Plataforma
@@ -99,7 +96,7 @@ export default function HomePage() {
               transition={{ delay: 0.3 }}
               className="inline-flex items-center gap-2 px-4 py-2 bg-[hsl(260,25%,18%)] border border-[hsl(260,25%,22%)] rounded-full mb-8"
             >
-              <Sparkles className="w-4 h-4 text-[hsl(90,85%,55%)]" />
+              <Sparkles className="w-4 h-4 text-[hsl(var(--primary))]" />
               <span className="text-sm text-[hsl(0,0%,98%)] font-medium">
                 Plataforma Corporativa Txuna Bet
               </span>
@@ -107,11 +104,11 @@ export default function HomePage() {
 
             {/* Main Headline */}
             <h1 className="text-6xl md:text-8xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-[hsl(0,0%,98%)] via-[hsl(90,85%,55%)] to-[hsl(0,0%,98%)] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[hsl(0,0%,98%)] via-[hsl(var(--primary))] to-[hsl(0,0%,98%)] bg-clip-text text-transparent">
                 A Nova Era
               </span>
               <br />
-              <span className="bg-gradient-to-r from-[hsl(90,85%,55%)] to-[hsl(90,85%,75%)] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(90,85%,75%)] bg-clip-text text-transparent">
                 da Operação
               </span>
             </h1>
@@ -123,7 +120,7 @@ export default function HomePage() {
               transition={{ delay: 0.5 }}
               className="text-xl md:text-2xl text-[hsl(260,5%,75%)] max-w-4xl mx-auto mb-12 leading-relaxed"
             >
-              Desenvolvida pela <span className="text-[hsl(90,85%,55%)] font-semibold">Oryon</span> 
+              Desenvolvida pela <span className="text-[hsl(var(--primary))] font-semibold">Oryon</span> 
               {" "}exclusivamente para a excelência operacional da Txuna Bet.
               <span className="block mt-2 text-lg">
                 Mais do que uma plataforma, o centro nervoso da sua produtividade.
@@ -139,7 +136,7 @@ export default function HomePage() {
             >
               <a
                 href="/login"
-                className="group relative px-12 py-4 bg-[hsl(90,85%,55%)] text-[hsl(260,25%,10%)] rounded-2xl font-bold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[hsl(90,85%,55%)]/30"
+                className="group relative px-12 py-4 bg-[hsl(var(--primary))] text-[hsl(260,25%,10%)] rounded-2xl font-bold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[hsl(var(--primary))]/30"
               >
                 <span className="relative z-10 flex items-center gap-3">
                   Iniciar Sessão
@@ -164,7 +161,7 @@ export default function HomePage() {
                   transition={{ delay: 1 + index * 0.1 }}
                   className="flex items-center gap-3 p-4 bg-[hsl(260,25%,12%)] border border-[hsl(260,25%,18%)] rounded-xl"
                 >
-                  <CheckCircle className="w-5 h-5 text-[hsl(90,85%,55%)] flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-[hsl(var(--primary))] flex-shrink-0" />
                   <span className="text-sm text-[hsl(260,5%,75%)] font-medium">
                     {benefit}
                   </span>
@@ -185,7 +182,7 @@ export default function HomePage() {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-6xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-[hsl(0,0%,98%)] to-[hsl(90,85%,55%)] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[hsl(0,0%,98%)] to-[hsl(var(--primary))] bg-clip-text text-transparent">
                 Potência
               </span>
               <span className="text-[hsl(0,0%,98%)]"> Operacional</span>
@@ -203,9 +200,9 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 + index * 0.1 }}
-                className="group p-8 bg-[hsl(260,25%,12%)] border border-[hsl(260,25%,18%)] rounded-3xl hover:border-[hsl(90,85%,55%)] hover:transform hover:scale-105 transition-all duration-500"
+                className="group p-8 bg-[hsl(260,25%,12%)] border border-[hsl(260,25%,18%)] rounded-3xl hover:border-[hsl(var(--primary))] hover:transform hover:scale-105 transition-all duration-500"
               >
-                <div className="w-16 h-16 mb-6 rounded-2xl bg-[hsl(260,25%,15%)] border border-[hsl(260,25%,22%)] flex items-center justify-center text-[hsl(90,85%,55%)] group-hover:bg-[hsl(90,85%,55%)] group-hover:text-[hsl(260,25%,10%)] transition-all duration-300">
+                <div className="w-16 h-16 mb-6 rounded-2xl bg-[hsl(260,25%,15%)] border border-[hsl(260,25%,22%)] flex items-center justify-center text-[hsl(var(--primary))] group-hover:bg-[hsl(var(--primary))] group-hover:text-[hsl(260,25%,10%)] transition-all duration-300">
                   {feature.icon}
                 </div>
                 <h3 className="text-xl font-bold text-[hsl(0,0%,98%)] mb-3">
@@ -230,7 +227,7 @@ export default function HomePage() {
           >
             <h2 className="text-4xl md:text-6xl font-bold mb-6">
               <span className="text-[hsl(0,0%,98%)]">Desenvolvido pela</span>
-              <span className="block bg-gradient-to-r from-[hsl(90,85%,55%)] to-[hsl(90,85%,75%)] bg-clip-text text-transparent">
+              <span className="block bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(90,85%,75%)] bg-clip-text text-transparent">
                 Oryon
               </span>
             </h2>
@@ -243,7 +240,7 @@ export default function HomePage() {
             <div className="flex flex-col gap-4 justify-center items-center">
               <a
                 href="/login"
-                className="group relative px-12 py-4 bg-[hsl(90,85%,55%)] text-[hsl(260,25%,10%)] rounded-2xl font-bold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[hsl(90,85%,55%)]/40"
+                className="group relative px-12 py-4 bg-[hsl(var(--primary))] text-[hsl(260,25%,10%)] rounded-2xl font-bold text-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-[hsl(var(--primary))]/40"
               >
                 <span className="relative z-10 flex items-center gap-3">
                   Acessar Plataforma

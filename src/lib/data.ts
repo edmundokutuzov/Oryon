@@ -1,4 +1,5 @@
 
+
 // This file mocks a database.
 // In a real application, you would fetch this data from a server.
 
@@ -92,6 +93,14 @@ export const users: User[] = [
     },
     // ... other users with their respective roles
 ];
+
+export const portalData = {
+  dailyFocus: "A semana é um jogo de 5 dias. Vamos ganhar o primeiro.",
+  hotMarkets: ["Liga dos Campeões", "Finais da NBA"],
+  countdownEvent: "Mundial 2026",
+  countdownDays: 354,
+  recordOdd: 150.75,
+};
 
 export const tasks = [
     // --- Marketing Tasks ---

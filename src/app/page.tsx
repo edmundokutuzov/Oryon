@@ -1,16 +1,10 @@
 
+
 import { ArrowRight, BarChart3, Calendar, Cpu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import TxunaLogo from '@/components/icons/txuna-logo';
-
-const portalData = {
-  dailyFocus: "A semana é um jogo de 5 dias. Vamos ganhar o primeiro.",
-  hotMarkets: ["Liga dos Campeões", "Finais da NBA"],
-  countdownEvent: "Mundial 2026",
-  countdownDays: 354,
-  recordOdd: 150.75,
-};
+import { portalData } from '@/lib/data';
 
 export default function LandingPage() {
   return (

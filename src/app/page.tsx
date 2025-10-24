@@ -159,10 +159,10 @@ export default function HomePage() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 1 + index * 0.1 }}
-                  className="flex items-center gap-3 p-4 bg-[hsl(260,25%,12%)] border border-[hsl(260,25%,18%)] rounded-xl"
+                  className="flex items-start h-full gap-3 p-4 bg-[hsl(260,25%,12%)] border border-[hsl(260,25%,18%)] rounded-xl"
                 >
                   <CheckCircle className="w-5 h-5 text-[hsl(var(--primary))] flex-shrink-0" />
-                  <span className="text-sm text-[hsl(260,5%,75%)] font-medium">
+                  <span className="text-sm text-left text-[hsl(260,5%,75%)] font-medium">
                     {benefit}
                   </span>
                 </motion.div>

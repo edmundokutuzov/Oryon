@@ -174,36 +174,4 @@ service cloud.firestore {
      *    request.auth.uid = 'contentManagerUser', UserProfile.role = 'contentManager'
      * @allow (delete) Users with role 'admin' can delete claims.
      *    request.auth.uid = 'adminUser', UserProfile.role = 'admin'
-     * @deny (delete) Users with role 'contentManager' cannot delete claims.
-     *    request.auth.uid = 'contentManagerUser', UserProfile.role = 'contentManager'
-     */
-    match /claims/{claimId} {
-      allow get, list: if isAdmin() || isRiskAnalyst() || isSupportAgent();
-      allow create, update, delete: if isAdmin();
-    }
-
-    /**
-     * @description Rules for claim documents.
-     * @path /claims/{claimId}/documents/{documentId}
-     *   Access to claim documents is restricted to users with 'admin', 'riskAnalyst', or 'supportAgent' roles.
-     *   These roles have the authority to read, create, update, and delete claim documents.
-     *   The goal is to ensure that only authorized personnel can manage documents related to claims.
-     */
-    match /claims/{claimId}/documents/{documentId} {
-      allow get, list: if isAdmin() || isRiskAnalyst() || isSupportAgent();
-      allow create, update, delete: if isAdmin();
-    }
-
-    /**
-     * @description Rules for claim tasks.
-     * @path /claims/{claimId}/tasks/{taskId}
-     *   Access to claim tasks is restricted to users with 'admin', 'riskAnalyst', or 'supportAgent' roles.
-     *   These roles have the authority to read, create, update, and delete claim tasks.
-     *   The goal is to ensure that only authorized personnel can manage tasks related to claims.
-     */
-    match /claims/{claimId}/tasks/{taskId} {
-      allow get, list: if isAdmin() || isRiskAnalyst() || isSupportAgent();
-      allow create, update, delete: if isAdmin();
-    }
-  }
-}
+     * @deny (delete) Users with role 'contentManager' cannot delete claims

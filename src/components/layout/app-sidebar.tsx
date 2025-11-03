@@ -51,6 +51,7 @@ import { signOut } from 'firebase/auth';
 import { useAuth, useUser } from '@/firebase';
 import { ROLES } from '@/config/roles';
 import { motion } from 'framer-motion';
+import TxunaLogo from '../icons/txuna-logo';
 
 
 const statusClasses: { [key: string]: string } = {
@@ -72,6 +73,7 @@ const iconMap: { [key: string]: React.ElementType } = {
   calendar: Calendar,
   team: Users,
   cloud: Cloud,
+  documents: FileText,
   'departments/marketing': Megaphone,
   'departments/finance': LineChart,
   'departments/hr': Users,
@@ -83,7 +85,6 @@ const iconMap: { [key: string]: React.ElementType } = {
   'chat/department': Users,
   'chat/direct': MessagesSquare,
   'knowledge-base': Book,
-  documents: Folder,
   reports: BarChart3,
   analytics: PieChart,
   workflows: Workflow,
@@ -140,14 +141,15 @@ export default function AppSidebar() {
   return (
     <aside className="w-64 h-full flex flex-col flex-shrink-0 gradient-surface shadow-2xl transition-all duration-300 fixed md:relative z-40 md:translate-x-0 -translate-x-full">
        <div className="p-6 flex flex-col justify-center h-24 border-b border-border pl-6">
-        <motion.h1
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="text-2xl font-bold tracking-wider bg-gradient-to-r from-foreground to-primary bg-clip-text text-transparent"
-        >
-          TXUNA BET
-        </motion.h1>
+        <Link href="/dashboard" className="block w-fit">
+            <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            >
+            <TxunaLogo className="w-32 h-10" />
+            </motion.div>
+        </Link>
         <motion.p
            initial={{ opacity: 0, x: -20 }}
            animate={{ opacity: 1, x: 0 }}

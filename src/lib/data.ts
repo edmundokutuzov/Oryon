@@ -9,7 +9,7 @@ type User = {
     id: number;
     name: string;
     email: string;
-    password: string;
+    password?: string;
     role: UserRole;
     department: string;
     avatar: string;
@@ -18,6 +18,7 @@ type User = {
     bio: string;
     phone: string;
     location: string;
+    permissions: string[];
 }
 
 export const users: User[] = [
@@ -28,70 +29,74 @@ export const users: User[] = [
         password: "Oryon@2024!",
         role: ROLES.ADMIN, // Admin role
         department: "Administração",
-        avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTk3Nzk4MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+        avatar: "user-avatar-1",
         status: "online",
         lastSeen: new Date().toISOString(),
         bio: "Administrador do sistema Oryon, garantindo a segurança e a operacionalidade da plataforma.",
         phone: "+258 84 123 4567",
         location: "Maputo, Moçambique",
+        permissions: ['2fa']
     },
     {
         id: 2,
         name: "Edmundo Kutuzov",
         email: "edmundo.kutuzov@txunabet.com",
         password: "Oryon@2024!",
-        role: ROLES.CONTENT_MANAGER, // Content Manager role
+        role: ROLES.CONTENT_MANAGER,
         department: "Marketing",
-        avatar: "https://images.unsplash.com/photo-1590086782792-42dd2350140d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTk3Nzk4MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+        avatar: "user-avatar-2",
         status: "online",
         lastSeen: new Date().toISOString(),
         bio: "Designer criativo especializado em campanhas digitais e identidade visual. Apaixonado por interfaces intuitivas.",
         phone: "+258 84 234 5678",
         location: "Maputo, Moçambique",
+        permissions: []
     },
     {
         id: 3,
         name: "Maria Silva",
         email: "maria.silva@txunabet.com",
         password: "Oryon@2024!",
-        role: ROLES.CONTENT_MANAGER, // Content Manager role
+        role: ROLES.CONTENT_MANAGER,
         department: "Marketing",
-        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTk3Nzk4MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+        avatar: "user-avatar-3",
         status: "online",
         lastSeen: new Date().toISOString(),
         bio: "Chefe de Departamento de Marketing com 10 anos de experiência em estratégia digital e gestão de equipas.",
         phone: "+258 84 345 6789",
         location: "Maputo, Moçambique",
+        permissions: ['2fa']
     },
     {
         id: 4,
         name: "Carlos Santos",
         email: "carlos.santos@txunabet.com",
         password: "Oryon@2024!",
-        role: ROLES.RISK_ANALYST, // Risk Analyst role
+        role: ROLES.RISK_ANALYST,
         department: "Financeiro",
-        avatar: "https://images.unsplash.com/photo-1583195764359-c67133f93a74?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxibGFjayUyMG1hbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc1OTc4ODQ4OHww&ixlib=rb-4.1.0&q=80&w=1080",
+        avatar: "user-avatar-4",
         status: "away",
         lastSeen: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
         bio: "Analista financeiro especializado em relatórios trimestrais e análise de risco.",
         phone: "+258 84 456 7890",
         location: "Maputo, Moçambique",
+        permissions: []
     },
     {
         id: 5,
         name: "Ana Costa",
         email: "ana.costa@txunabet.com",
         password: "Oryon@2024!",
-        role: ROLES.SUPPORT_AGENT, // Support Agent role
+        role: ROLES.SUPPORT_AGENT,
         department: "Recursos Humanos",
-        avatar: "https://images.unsplash.com/photo-1590086782792-42dd2350140d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NTk3Nzk4MDR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+        avatar: "user-avatar-5",
         status: "busy",
         lastSeen: new Date().toISOString(),
         bio: "Gestora de RH focada em desenvolvimento organizacional, recrutamento e bem-estar dos colaboradores.",
         phone: "+258 84 567 8901",
         location: "Maputo, Moçambique",
+        permissions: ['2fa']
     },
-    // ... other users with their respective roles
 ];
 
 export const portalData = {
@@ -100,6 +105,12 @@ export const portalData = {
   countdownEvent: "Mundial 2026",
   countdownDays: 354,
   recordOdd: 150.75,
+};
+
+export type Context = {
+  type: 'campaign' | 'game_operation' | 'user' | 'meeting';
+  id: string;
+  name: string;
 };
 
 export const tasks = [
@@ -482,7 +493,7 @@ export const menuItems = [
             { id: 'meetings', title: 'Reuniões', badge: 2, permissions: [] },
             { id: 'calendar', title: 'Calendário', permissions: [] },
             { id: 'team', title: 'Equipa', permissions: [] },
-            { id: 'cloud', title: 'Minha Nuvem', permissions: [] },
+            { id: 'documents', title: 'Documentos', permissions: [] },
         ],
     },
     {
@@ -510,7 +521,6 @@ export const menuItems = [
         title: 'Recursos',
         items: [
             { id: 'knowledge-base', title: 'Base de Conhecimento', permissions: [] },
-            { id: 'documents', title: 'Documentos', permissions: [] },
             { id: 'reports', title: 'Relatórios', permissions: [] },
             { id: 'analytics', title: 'Analytics', permissions: [ROLES.ADMIN] },
         ],
@@ -573,11 +583,11 @@ export const knowledgeBase = [
 ];
 
 export const documents = [
-    { id: 1, title: "Relatório de GGR Anual 2023", type: "PDF", size: "5.8 MB", lastModified: "2024-03-15" },
-    { id: 2, title: "Plano de Marketing Q4 2024", type: "DOCX", size: "1.2 MB", lastModified: "2024-10-28" },
-    { id: 3, title: "Apresentação Institucional", type: "PPTX", size: "12.3 MB", lastModified: "2024-09-05" },
-    { id: 4, title: "Formulário de Avaliação de Desempenho", type: "PDF", size: "350 KB", lastModified: "2024-01-10" },
-    { id: 5, title: "Templates para Redes Sociais", type: "ZIP", size: "25.5 MB", lastModified: "2024-11-02" },
+    { id: '1', title: "Relatório de GGR Anual 2023", type: "PDF", size: "5.8 MB", lastModified: "2024-03-15", ownerId: '4' },
+    { id: '2', title: "Plano de Marketing Q4 2024", type: "DOCX", size: "1.2 MB", lastModified: "2024-10-28", ownerId: '3' },
+    { id: '3', title: "Apresentação Institucional", type: "PPTX", size: "12.3 MB", lastModified: "2024-09-05", ownerId: '1' },
+    { id: '4', title: "Formulário de Avaliação de Desempenho", type: "PDF", size: "350 KB", lastModified: "2024-01-10", ownerId: '5' },
+    { id: '5', title: "Templates para Redes Sociais", type: "ZIP", size: "25.5 MB", lastModified: "2024-11-02", ownerId: '2' },
 ];
 
 export const reports = [
@@ -643,7 +653,7 @@ export const nationalHolidays = [
 export const calendarEvents = [
     { id: 1, title: "Reunião de Equipa - Marketing", description: "Reunião semanal da equipa de Marketing", start: "2024-11-20T10:00:00", end: "2024-11-20T11:00:00", createdBy: 3, participants: [2, 3, 1], type: "meeting", department: "Marketing", location: "Sala de Reuniões A", color: "purple" },
     { id: 2, title: "Apresentação aos Investidores", description: "Apresentação dos resultados do trimestre aos investidores", start: "2024-11-22T14:00:00", end: "2024-11-22T16:00:00", createdBy: 1, participants: [1, 3, 4], type: "presentation", department: "Administração", location: "Auditório Principal", color: "blue" },
-    { id: 3, title: "Workshop de Inovação", description: "Workshop sobre tendências de inovação no sector de apostas", start: "2024-11-25T09:00:00", end: "2024-11-25T13:00:00", createdBy: 1, participants: [1, 2, 3, 4, 5], type: "workshop", department: "Plataforma", location: "Centro de Formação", color: "green" },
+    { id: 3, title: "Workshop de Inovação", description: "Sessão de brainstorming para identificar oportunidades de novas funcionalidades para o Sportsbook e Casino", start: "2024-11-25T09:00:00", end: "2024-11-25T13:00:00", createdBy: 1, participants: [1, 2, 3, 4, 5], type: "workshop", department: "Plataforma", location: "Centro de Formação", color: "green" },
 ];
 
 export const cloudFiles = [
@@ -654,11 +664,6 @@ export const cloudFiles = [
     { id: 5, name: 'Logos_Campanha_Natal.zip', size: '15.8 MB', type: 'zip', lastModified: '2024-11-05T12:00:00Z', sharedWith: [3] },
 ];
 
-export type Context = {
-  type: 'campaign' | 'game_operation' | 'user' | 'meeting';
-  id: string;
-  name: string;
-};
 
 
 export type Workspace = {

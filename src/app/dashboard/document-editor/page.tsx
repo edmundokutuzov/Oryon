@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-    Bold, Italic, Underline, List, ListOrdered, Heading1, Heading2, Heading3, TextQuote, Code, Link, Image, Pilcrow, AlignLeft, AlignCenter, AlignRight, AlignJustify, Undo, Redo, Paintbrush, Highlighter, CaseSensitive, Strikethrough, Subscript, Superscript, Wand2, Sparkles, Save, Loader2, Cloud, Download
+    Bold, Italic, Underline, List, ListOrdered, Heading1, Heading2, TextQuote, Link as LinkIcon, Image, Pilcrow, AlignLeft, AlignCenter, AlignRight, Undo, Redo, Wand2, Sparkles, Save, Loader2, Cloud, Download, ArrowLeft
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect, useRef } from "react";
@@ -17,14 +17,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 
 
 const toneStyles = {
     'Neutro': 'text-muted-foreground',
     'Formal': 'text-primary',
-    'Confiante': 'text-success-500',
-    'Analítico': 'text-purple-400',
-    'Amigável': 'text-accent-500',
+    'Confiante': 'text-green-400',
+    'Analítico': 'text-blue-400',
+    'Amigável': 'text-yellow-400',
 }
 
 type AiAction = 'summarize' | 'translate' | 'correct' | null;
@@ -154,8 +155,11 @@ export default function DocumentEditorPage() {
         <div className="p-6 fade-in flex flex-col h-full">
             <div className="flex justify-between items-center mb-6">
                  <div>
-                    <h1 className="text-3xl font-bold text-foreground">Editor de Documentos Nexus</h1>
-                    <p className="text-muted-foreground">Crie, edite e colabore com a ajuda da OryonAI.</p>
+                    <h1 className="text-3xl font-bold text-foreground">Editor de Documentos</h1>
+                     <Link href="/dashboard/documents" className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
+                        <ArrowLeft className="w-4 h-4" />
+                        Voltar para Documentos
+                    </Link>
                 </div>
                  <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -180,16 +184,16 @@ export default function DocumentEditorPage() {
                     <Card className="gradient-surface border-0 rounded-2xl">
                         <CardContent className="p-4">
                             <h3 className="font-semibold text-lg flex items-center gap-2 mb-3"><Wand2 className="text-primary"/>Nexus Assist</h3>
-                            <p className="text-sm text-muted-foreground mb-4">Selecione texto no editor e use os comandos, ou escreva /nexus no documento.</p>
-                             <Button variant="outline" className="w-full justify-start bg-card/50 mt-2" onClick={() => handleAiAction('summarize')} disabled={loadingAiAction === 'summarize'}>
+                            <p className="text-sm text-muted-foreground mb-4">Selecione texto e use os comandos, ou escreva /nexus no documento.</p>
+                             <Button variant="outline" className="w-full justify-start bg-card/50 mt-2" onClick={() => handleAiAction('summarize')} disabled={!!loadingAiAction}>
                                 {loadingAiAction === 'summarize' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
                                 Resumir Texto
                             </Button>
-                             <Button variant="outline" className="w-full justify-start bg-card/50 mt-2" onClick={() => handleAiAction('translate')} disabled={loadingAiAction === 'translate'}>
+                             <Button variant="outline" className="w-full justify-start bg-card/50 mt-2" onClick={() => handleAiAction('translate')} disabled={!!loadingAiAction}>
                                 {loadingAiAction === 'translate' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
                                 Traduzir para Inglês
                              </Button>
-                             <Button variant="outline" className="w-full justify-start bg-card/50 mt-2" onClick={() => handleAiAction('correct')} disabled={loadingAiAction === 'correct'}>
+                             <Button variant="outline" className="w-full justify-start bg-card/50 mt-2" onClick={() => handleAiAction('correct')} disabled={!!loadingAiAction}>
                                 {loadingAiAction === 'correct' ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : null}
                                 Corrigir Gramática
                             </Button>
@@ -215,7 +219,6 @@ export default function DocumentEditorPage() {
                             <Button variant="ghost" size="icon" onClick={() => handleCommand('bold')} title="Negrito"><Bold className="w-4 h-4" /></Button>
                             <Button variant="ghost" size="icon" onClick={() => handleCommand('italic')} title="Itálico"><Italic className="w-4 h-4" /></Button>
                             <Button variant="ghost" size="icon" onClick={() => handleCommand('underline')} title="Sublinhado"><Underline className="w-4 h-4" /></Button>
-                            <Button variant="ghost" size="icon" onClick={() => handleCommand('strikeThrough')} title="Riscado"><Strikethrough className="w-4 h-4" /></Button>
                             <div className="h-6 w-px bg-border mx-2"></div>
                             <Button variant="ghost" size="icon" onClick={() => handleCommand('formatBlock', 'h1')} title="Título 1"><Heading1 className="w-4 h-4" /></Button>
                             <Button variant="ghost" size="icon" onClick={() => handleCommand('formatBlock', 'h2')} title="Título 2"><Heading2 className="w-4 h-4" /></Button>
@@ -229,7 +232,7 @@ export default function DocumentEditorPage() {
                             <Button variant="ghost" size="icon" onClick={() => handleCommand('insertUnorderedList')} title="Lista"><List className="w-4 h-4" /></Button>
                             <Button variant="ghost" size="icon" onClick={() => handleCommand('insertOrderedList')} title="Lista Ordenada"><ListOrdered className="w-4 h-4" /></Button>
                             <div className="h-6 w-px bg-border mx-2"></div>
-                            <Button variant="ghost" size="icon" onClick={handleInsertLink} title="Inserir Link"><Link className="w-4 h-4" /></Button>
+                            <Button variant="ghost" size="icon" onClick={handleInsertLink} title="Inserir Link"><LinkIcon className="w-4 h-4" /></Button>
                             <Button variant="ghost" size="icon" onClick={handleInsertImage} title="Inserir Imagem"><Image className="w-4 h-4" /></Button>
                         </div>
                         <div 
@@ -241,19 +244,8 @@ export default function DocumentEditorPage() {
                             onInput={updateTextContent}
                             onBlur={updateTextContent}
                         >
-                            <h1>Relatório Semanal de Marketing</h1>
-                            <p>Esta é uma análise do progresso das nossas campanhas de marketing para a primeira semana de Dezembro. A nossa principal proposta de valor continua a ser a inovação.</p>
-                            <h2>Campanha 'Conta Pro'</h2>
-                            <ul>
-                                <li><strong>CPL:</strong> Reduzimos o Custo por Lead em 15% esta semana.</li>
-                                <li><strong>CTR:</strong> O Click-Through Rate nos anúncios do Facebook aumentou para 2.5%.</li>
-                            </ul>
-                            <blockquote>Olá equipa, certamente estamos no caminho certo. Obrigado a todos pelo esforço. Por favor, mantenham o bom trabalho.</blockquote>
-                            <p>Ações para a próxima semana:</p>
-                            <ol>
-                                <li>Otimizar os anúncios com base nos dados demográficos.</li>
-                                <li>Preparar o relatório final para a direção.</li>
-                            </ol>
+                            <h1>Comece a escrever o seu documento...</h1>
+                            <p>Utilize as ferramentas acima para formatar o texto, ou use o assistente de IA para gerar conteúdo, resumir ou traduzir.</p>
                         </div>
                     </Card>
                 </div>

@@ -1,45 +1,101 @@
 
-'use client'
+'use client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { documents as initialDocuments } from '@/lib/data';
-import { Download, FileText, FileArchive, FileVideo, Folder, Plus, ArrowUpDown } from 'lucide-react';
-import { useState, useMemo } from 'react';
+import { File as FileIcon, FileText, Folder, MoreVertical, Plus, Search, UploadCloud, FileSpreadsheet, FileVideo, Globe, HardDrive, Trash2, Download, Share2, Loader2, ArrowUpDown } from 'lucide-react';
+import { useState, useMemo, useRef } from 'react';
 import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
+import { useUser, useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, serverTimestamp, doc } from 'firebase/firestore';
+import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { setDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import Link from 'next/link';
 
-const fileIcons: { [key: string]: React.ReactNode } = {
-    PDF: <FileText className="w-5 h-5 text-destructive" />,
-    DOCX: <FileText className="w-5 h-5 text-blue-400" />,
-    PPTX: <FileVideo className="w-5 h-5 text-orange-400" />,
-    ZIP: <FileArchive className="w-5 h-5 text-yellow-400" />,
-    folder: <Folder className="w-5 h-5 text-accent-500" />,
-    default: <FileText className="w-5 h-5" />,
+const fileTypeIcons: { [key: string]: React.ReactNode } = {
+  'application/pdf': <FileText className="w-5 h-5 text-red-400" />,
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': <FileText className="w-5 h-5 text-blue-400" />,
+  'application/msword': <FileText className="w-5 h-5 text-blue-400" />,
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation': <FileVideo className="w-5 h-5 text-orange-400" />,
+  'application/vnd.ms-powerpoint': <FileVideo className="w-5 h-5 text-orange-400" />,
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': <FileSpreadsheet className="w-5 h-5 text-green-400" />,
+  'application/vnd.ms-excel': <FileSpreadsheet className="w-5 h-5 text-green-400" />,
+  'application/zip': <FileIcon className="w-5 h-5 text-yellow-400" />,
+  'image/jpeg': <FileIcon className="w-5 h-5 text-purple-400" />,
+  'image/png': <FileIcon className="w-5 h-5 text-purple-400" />,
+  'folder': <Folder className="w-5 h-5 text-yellow-500" />,
+  'default': <FileIcon className="w-5 h-5" />,
+};
+
+const getFileIcon = (fileType: string) => {
+    if (fileType === 'folder') return fileTypeIcons.folder;
+    const match = Object.keys(fileTypeIcons).find(key => fileType.startsWith(key));
+    return match ? fileTypeIcons[match] : fileTypeIcons.default;
 }
 
-type Doc = (typeof initialDocuments)[0];
-type Folder = { id: string, title: string, type: 'folder', lastModified: string, size: string };
+type File = {
+  id: string,
+  name: string,
+  type: string,
+  size: number, // size in bytes
+  url: string,
+  ownerId: string,
+  createdAt: any, // Can be Date or serverTimestamp
+  lastModified: any
+};
+type Folder = { id: string, name: string, type: 'folder', lastModified: string, size: string, ownerId: string };
 
 export default function DocumentsPage() {
-    const [items, setItems] = useState<(Doc | Folder)[]>([
-        { id: 'folder-1', title: 'Relatórios Anuais', type: 'folder', lastModified: '2024-10-01', size: '--'},
-        { id: 'folder-2', title: 'Recursos de Marketing', type: 'folder', lastModified: '2024-09-15', size: '--'},
-        ...initialDocuments,
-    ]);
-    const [filter, setFilter] = useState('');
-    const [sort, setSort] = useState({ key: 'title', order: 'asc' });
+    const { toast } = useToast();
+    const { user, isUserLoading } = useUser();
+    const firestore = useFirestore();
 
-     const sortedAndFilteredItems = useMemo(() => {
-        return [...items]
-            .filter(item => item.title.toLowerCase().includes(filter.toLowerCase()))
+    const userFilesCollection = useMemoFirebase(() => {
+        if (!firestore || !user?.uid) return null;
+        return collection(firestore, 'users', user.uid, 'files');
+    }, [firestore, user?.uid]);
+    
+    const { data: files, isLoading: areFilesLoading } = useCollection<File>(userFilesCollection);
+
+    const [folders, setFolders] = useState<Folder[]>([]);
+    const [filter, setFilter] = useState('');
+    const [sort, setSort] = useState({ key: 'name', order: 'asc' });
+    const uploadInputRef = useRef<HTMLInputElement>(null);
+
+    const filesAndFolders = useMemo(() => {
+        const fileItems = files ? files.map(f => ({ ...f, size: (f.size / (1024*1024)).toFixed(2) + ' MB' })) : [];
+        return [...fileItems, ...folders];
+    }, [files, folders]);
+
+    const sortedAndFilteredItems = useMemo(() => {
+        return [...filesAndFolders]
+            .filter(item => item.name.toLowerCase().includes(filter.toLowerCase()))
             .sort((a, b) => {
-                const aValue = a[sort.key as keyof typeof a] as string;
-                const bValue = b[sort.key as keyof typeof b] as string;
+                const aValue = a[sort.key as keyof typeof a] as any;
+                const bValue = b[sort.key as keyof typeof b] as any;
+
+                if (sort.key === 'size') {
+                    const sizeA = a.type === 'folder' ? -1 : parseFloat(a.size);
+                    const sizeB = b.type === 'folder' ? -1 : parseFloat(b.size);
+                    if (sizeA < sizeB) return sort.order === 'asc' ? -1 : 1;
+                    if (sizeA > sizeB) return sort.order === 'asc' ? 1 : -1;
+                    return 0;
+                }
+
+                if (a.type !== 'folder' && b.type !=='folder' && (sort.key === 'lastModified' || sort.key === 'createdAt')) {
+                    const dateA = a[sort.key]?.toDate ? a[sort.key].toDate().getTime() : 0;
+                    const dateB = b[sort.key]?.toDate ? b[sort.key].toDate().getTime() : 0;
+                     if (dateA < dateB) return sort.order === 'asc' ? -1 : 1;
+                    if (dateA > dateB) return sort.order === 'asc' ? 1 : -1;
+                    return 0;
+                }
+
                 if (aValue < bValue) return sort.order === 'asc' ? -1 : 1;
                 if (aValue > bValue) return sort.order === 'asc' ? 1 : -1;
                 return 0;
             });
-    }, [items, filter, sort]);
+    }, [filesAndFolders, filter, sort]);
 
     const handleSort = (key: string) => {
         setSort(prev => ({
@@ -47,57 +103,163 @@ export default function DocumentsPage() {
             order: prev.key === key && prev.order === 'asc' ? 'desc' : 'asc'
         }));
     };
+    
+    const handleUploadClick = () => uploadInputRef.current?.click();
 
-  return (
-    <div className="p-6 fade-in">
-        <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-foreground">Documentos da Empresa</h1>
-             <Input 
-                placeholder="Filtrar por nome..."
-                className="w-80 bg-card border-border"
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-                />
-        </div>
-        <Card className="gradient-surface border-0 rounded-2xl">
-            <CardContent className="p-6">
-                <Table>
-                    <TableHeader>
-                        <TableRow className="border-b-border hover:bg-transparent">
-                            <TableHead onClick={() => handleSort('title')} className="cursor-pointer"><span className="flex items-center gap-2">Nome <ArrowUpDown className="w-4 h-4"/></span></TableHead>
-                            <TableHead>Tipo</TableHead>
-                            <TableHead onClick={() => handleSort('size')} className="cursor-pointer"><span className="flex items-center gap-2">Tamanho <ArrowUpDown className="w-4 h-4"/></span></TableHead>
-                            <TableHead onClick={() => handleSort('lastModified')} className="cursor-pointer"><span className="flex items-center gap-2">Última Modificação <ArrowUpDown className="w-4 h-4"/></span></TableHead>
-                            <TableHead className="text-right">Ações</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {sortedAndFilteredItems.map(doc => (
-                            <TableRow key={doc.id} className="border-b-border/50 hover:bg-muted/50">
-                                <TableCell className="font-medium text-foreground flex items-center gap-3">
-                                    {fileIcons[doc.type] || <FileText className="w-5 h-5" />}
-                                    {doc.title}
-                                </TableCell>
-                                <TableCell>
-                                   {doc.type !== 'folder' && (
-                                     <span className="bg-primary/20 text-primary text-xs font-bold py-1 px-2 rounded-full">
-                                        {doc.type}
-                                    </span>
-                                   )}
-                                </TableCell>
-                                <TableCell className="text-muted-foreground">{doc.size}</TableCell>
-                                <TableCell className="text-muted-foreground">{new Date(doc.lastModified).toLocaleDateString('pt-PT')}</TableCell>
-                                <TableCell className="text-right">
-                                    <Button variant="ghost" size="icon" className="text-primary/80 hover:text-primary">
-                                        <Download className="w-5 h-5"/>
-                                    </Button>
-                                </TableCell>
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files || e.target.files.length === 0 || !user?.uid || !firestore) return;
+        
+        const file = e.target.files[0];
+        const storage = getStorage();
+        const filePath = `users/${user.uid}/${Date.now()}_${file.name}`;
+        const fileStorageRef = storageRef(storage, filePath);
+        const uploadTask = uploadBytesResumable(fileStorageRef, file);
+
+        toast({ title: 'Upload Iniciado', description: `A carregar o ficheiro "${file.name}".`});
+
+        uploadTask.on('state_changed', 
+            (snapshot) => { /* can be used for progress bar */ }, 
+            (error) => {
+                console.error("Upload error:", error);
+                toast({ title: 'Erro no Upload', description: `Não foi possível carregar "${file.name}".`, variant: 'destructive'});
+            }, 
+            () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    const fileDocRef = doc(collection(firestore, 'users', user.uid, 'files'));
+                    const newFile: Omit<File, 'id'> = {
+                        name: file.name,
+                        type: file.type,
+                        size: file.size,
+                        url: downloadURL,
+                        ownerId: user.uid,
+                        createdAt: serverTimestamp(),
+                        lastModified: serverTimestamp()
+                    };
+                    setDocumentNonBlocking(fileDocRef, newFile, {});
+                    toast({ title: 'Upload Concluído', description: `"${file.name}" foi carregado com sucesso.`});
+                });
+            }
+        );
+        e.target.value = '';
+    };
+
+    const handleDelete = (itemId: string) => {
+        if (!user?.uid || !firestore) return;
+        const docRef = doc(firestore, 'users', user.uid, 'files', itemId);
+        deleteDocumentNonBlocking(docRef);
+        toast({ title: 'Item Apagado', description: `O ficheiro foi movido para o lixo.`, variant: 'destructive'});
+    };
+
+    const QuickActionCard = ({ icon: Icon, title, description, href, onClick, comingSoon }: { icon: React.ElementType, title: string, description: string, href?: string, onClick?: () => void, comingSoon?: boolean }) => {
+        const { toast } = useToast();
+        const content = (
+             <Card className="gradient-surface border-0 rounded-2xl text-left h-full hover:bg-muted/50 transition-colors">
+                <CardContent className="p-4 flex flex-col justify-between h-full">
+                    <div>
+                        <div className="p-2 bg-primary/20 text-primary rounded-lg w-fit mb-4"><Icon className="w-5 h-5"/></div>
+                        <h3 className="font-semibold text-foreground">{title}</h3>
+                        <p className="text-xs text-muted-foreground mt-1">{description}</p>
+                    </div>
+                     {comingSoon && <Badge variant="outline" className="mt-4 w-fit">Em Breve</Badge>}
+                </CardContent>
+            </Card>
+        );
+
+        const handleClick = () => {
+            if (comingSoon) {
+                toast({ title: "Funcionalidade em desenvolvimento", description: `${title} estará disponível em breve.` });
+            } else if (onClick) {
+                onClick();
+            }
+        };
+
+        if (href && !comingSoon) {
+            return <Link href={href}>{content}</Link>;
+        }
+        return <button onClick={handleClick} className="w-full h-full disabled:opacity-50" disabled={comingSoon}>{content}</button>;
+    };
+
+    return (
+        <div className="p-6 fade-in">
+             <input type="file" ref={uploadInputRef} onChange={handleFileChange} className="hidden" />
+            <div className="flex justify-between items-center mb-8">
+                <h1 className="text-3xl font-bold text-foreground">Documentos</h1>
+                <div className="flex items-center gap-4">
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input placeholder="Pesquisar documentos..." className="w-64 bg-card border-border pl-10 h-10" value={filter} onChange={e => setFilter(e.target.value)} />
+                    </div>
+                    <Button className="btn-primary-gradient">
+                        <Plus className="mr-2 h-4 w-4" /> Novo
+                    </Button>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <QuickActionCard icon={FileText} title="Documento" description="Crie um novo documento de texto." href="/dashboard/document-editor" />
+                <QuickActionCard icon={FileSpreadsheet} title="Planilha" description="Crie uma nova planilha." comingSoon />
+                <QuickActionCard icon={FileVideo} title="Apresentação" description="Crie uma nova apresentação." comingSoon />
+                <QuickActionCard icon={HardDrive} title="Do meu computador" description="Carregue ficheiros do seu dispositivo." onClick={handleUploadClick} />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <QuickActionCard icon={Globe} title="Do Google Drive" description="Importe do Google Drive." comingSoon />
+                <QuickActionCard icon={HardDrive} title="Do Dropbox" description="Importe do Dropbox." comingSoon />
+            </div>
+
+            <Card className="gradient-surface border-0 rounded-2xl">
+                <CardContent className="p-4">
+                    <Table>
+                        <TableHeader>
+                            <TableRow className="border-b-border hover:bg-transparent">
+                                <TableHead onClick={() => handleSort('name')} className="cursor-pointer"><span className="flex items-center gap-2">Nome <ArrowUpDown className="w-4 h-4"/></span></TableHead>
+                                <TableHead>Proprietário</TableHead>
+                                <TableHead onClick={() => handleSort('lastModified')} className="cursor-pointer"><span className="flex items-center gap-2">Última Modificação <ArrowUpDown className="w-4 h-4"/></span></TableHead>
+                                <TableHead onClick={() => handleSort('size')} className="cursor-pointer"><span className="flex items-center gap-2">Tamanho <ArrowUpDown className="w-4 h-4"/></span></TableHead>
+                                <TableHead className="text-right">Ações</TableHead>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </CardContent>
-        </Card>
-    </div>
-  );
+                        </TableHeader>
+                        <TableBody>
+                             {(isUserLoading || areFilesLoading) && (
+                                <TableRow>
+                                    <TableCell colSpan={5} className="h-24 text-center">
+                                        <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                            {!isUserLoading && !areFilesLoading && sortedAndFilteredItems.length === 0 && (
+                                <TableRow>
+                                    <TableCell colSpan={5} className="h-48 text-center">
+                                        <FileText className="mx-auto h-12 w-12 text-muted-foreground/50" />
+                                        <h3 className="mt-4 text-lg font-semibold text-foreground">Sem documentos ainda</h3>
+                                        <p className="mt-1 text-sm text-muted-foreground">Comece por criar um novo documento ou carregar um ficheiro.</p>
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                            {!isUserLoading && !areFilesLoading && sortedAndFilteredItems.map(item => (
+                                <TableRow key={item.id} className="border-b-border/50 hover:bg-muted/50">
+                                    <TableCell className="font-medium text-foreground flex items-center gap-3">
+                                        {getFileIcon(item.type)}
+                                        {item.name}
+                                    </TableCell>
+                                    <TableCell className="text-muted-foreground">{item.ownerId === user?.uid ? "Eu" : "Outro"}</TableCell>
+                                    <TableCell className="text-muted-foreground">
+                                        {item.type !== 'folder' && item.lastModified?.toDate ? item.lastModified.toDate().toLocaleDateString('pt-PT') : '-'}
+                                    </TableCell>
+                                    <TableCell className="text-muted-foreground">{item.size}</TableCell>
+                                    <TableCell className="text-right">
+                                        <Button variant="ghost" size="icon" onClick={() => toast({title: "Funcionalidade em breve"})}><Share2 className="w-4 h-4 text-primary/80" /></Button>
+                                        <a href={item.type !== 'folder' ? (item as File).url : '#'} download={item.name} target="_blank" rel="noopener noreferrer">
+                                            <Button variant="ghost" size="icon" disabled={item.type === 'folder'}><Download className="w-4 h-4 text-primary/80" /></Button>
+                                        </a>
+                                        <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)}><Trash2 className="w-4 h-4 text-red-400/80" /></Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+        </div>
+    );
 }

@@ -121,6 +121,15 @@ service cloud.firestore {
       allow create: if isOwner(userId) && request.resource.data.id == userId;
       allow update: if isAdmin() && request.resource.data.id == resource.data.id && request.resource.data.id == userId && request.resource.data.role == resource.data.role;
       allow delete: if isAdmin();
+      
+      /**
+       * @description Rules for user files.
+       * @path /users/{userId}/files/{fileId}
+       *   Each user can only read, write, and delete their own files.
+       */
+      match /files/{fileId} {
+        allow read, write, delete: if isOwner(userId);
+      }
     }
 
     /**

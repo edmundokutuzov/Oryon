@@ -1,11 +1,9 @@
-
 'use client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { cloudFiles as initialFiles, users } from '@/lib/data';
-import { Download, File as FileIcon, FileArchive, FileText, FileVideo, Folder, MoreVertical, Share2, Trash2, UploadCloud, Plus, ArrowUpDown, FolderPlus } from 'lucide-react';
+import { Download, File as FileIcon, FileArchive, FileText, FileVideo, Folder, MoreVertical, Share2, Trash2, UploadCloud, Plus, ArrowUpDown, FolderPlus, Loader2 } from 'lucide-react';
 import { useState, useMemo, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import {
@@ -30,6 +28,8 @@ import {
 } from "@/components/ui/dialog"
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { useUser, useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection } from 'firebase/firestore';
 
 
 const fileIcons: { [key: string]: React.ReactNode } = {
@@ -44,41 +44,71 @@ const fileIcons: { [key: string]: React.ReactNode } = {
     default: <FileIcon className="w-5 h-5" />,
 }
 
-type File = (typeof initialFiles)[0] & { type: string };
-type Folder = { id: string, name: string, type: 'folder', lastModified: string, size: string, sharedWith: never[] };
+type File = {
+  id: string,
+  name: string,
+  type: string,
+  size: number, // size in bytes
+  url: string,
+  ownerId: string,
+  createdAt: string,
+  lastModified: string
+};
+type Folder = { id: string, name: string, type: 'folder', lastModified: string, size: string };
 
 export default function CloudPage() {
     const { toast } = useToast();
-    const [filesAndFolders, setFilesAndFolders] = useState<(File | Folder)[]>([
-        ...initialFiles,
-        { id: 'folder-1', name: 'Relatórios Q3', type: 'folder', lastModified: '2024-11-10T11:00:00Z', size: '--', sharedWith: [] },
-        { id: 'folder-2', name: 'Projetos 2024', type: 'folder', lastModified: '2024-10-20T09:00:00Z', size: '--', sharedWith: [] },
-        { id: 'folder-3', name: 'Recursos de Marketing', type: 'folder', lastModified: '2024-11-01T14:00:00Z', size: '--', sharedWith: [] },
-        { id: 'folder-4', name: 'Documentos Pessoais', type: 'folder', lastModified: '2024-09-05T18:00:00Z', size: '--', sharedWith: [] },
+    const { user, isUserLoading } = useUser();
+    const firestore = useFirestore();
+
+    const userFilesCollection = useMemoFirebase(() => {
+        if (!firestore || !user?.uid) return null;
+        return collection(firestore, 'users', user.uid, 'files');
+    }, [firestore, user?.uid]);
+    
+    const { data: files, isLoading: areFilesLoading } = useCollection<File>(userFilesCollection);
+
+    const [folders, setFolders] = useState<Folder[]>([
+        { id: 'folder-1', name: 'Relatórios Q3', type: 'folder', lastModified: '2024-11-10T11:00:00Z', size: '--' },
     ]);
+
     const [filter, setFilter] = useState('');
     const [sort, setSort] = useState({ key: 'name', order: 'asc' });
     const [isNewFolderOpen, setIsNewFolderOpen] = useState(false);
     const newFolderNameRef = useRef<HTMLInputElement>(null);
     const uploadInputRef = useRef<HTMLInputElement>(null);
 
+    const filesAndFolders = useMemo(() => {
+        const fileItems = files ? files.map(f => ({ ...f, size: (f.size / (1024*1024)).toFixed(2) + ' MB' })) : [];
+        return [...fileItems, ...folders];
+    }, [files, folders]);
+
     const totalStorage = 20; // GB
-    const usedStorage = useMemo(() => filesAndFolders.filter(f => f.type !== 'folder').reduce((acc, file) => acc + parseFloat(file.size), 0) / 1024, [filesAndFolders]);
+    const usedStorage = useMemo(() => files ? files.reduce((acc, file) => acc + file.size, 0) / (1024 * 1024 * 1024) : 0, [files]);
     const usedPercentage = (usedStorage / totalStorage) * 100;
     
     const sortedAndFilteredItems = useMemo(() => {
         return [...filesAndFolders]
             .filter(item => item.name.toLowerCase().includes(filter.toLowerCase()))
             .sort((a, b) => {
-                const aValue = a[sort.key as keyof typeof a] as string;
-                const bValue = b[sort.key as keyof typeof b] as string;
+                const aValue = a[sort.key as keyof typeof a] as any;
+                const bValue = b[sort.key as keyof typeof b] as any;
 
                 if (sort.key === 'size') {
-                    const sizeA = a.type === 'folder' ? -1 : parseFloat(a.size) * 1024;
-                    const sizeB = b.type === 'folder' ? -1 : parseFloat(b.size) * 1024;
+                    const sizeA = a.type === 'folder' ? -1 : parseFloat(a.size);
+                    const sizeB = b.type === 'folder' ? -1 : parseFloat(b.size);
                      if (sizeA < sizeB) return sort.order === 'asc' ? -1 : 1;
                     if (sizeA > sizeB) return sort.order === 'asc' ? 1 : -1;
                     return 0;
+                }
+                
+                const valA = new Date(aValue).getTime();
+                const valB = new Date(bValue).getTime();
+
+                if (sort.key === 'lastModified' && !isNaN(valA) && !isNaN(valB)) {
+                  if (valA < valB) return sort.order === 'asc' ? -1 : 1;
+                  if (valA > valB) return sort.order === 'asc' ? 1 : -1;
+                  return 0;
                 }
 
                 if (aValue < bValue) return sort.order === 'asc' ? -1 : 1;
@@ -102,10 +132,9 @@ export default function CloudPage() {
                 name: folderName.trim(),
                 type: 'folder',
                 lastModified: new Date().toISOString(),
-                size: '--',
-                sharedWith: []
+                size: '--'
             };
-            setFilesAndFolders(prev => [newFolder, ...prev]);
+            setFolders(prev => [newFolder, ...prev]);
             toast({ title: 'Pasta Criada', description: `A pasta "${folderName}" foi criada.` });
             setIsNewFolderOpen(false);
         } else {
@@ -129,7 +158,6 @@ export default function CloudPage() {
     };
     
     const handleDelete = (itemId: string, itemName: string) => {
-        setFilesAndFolders(prev => prev.filter(item => item.id !== itemId));
         toast({ title: 'Item Apagado', description: `"${itemName}" foi movido para o lixo.`, variant: 'destructive'});
     }
 
@@ -214,7 +242,21 @@ export default function CloudPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {sortedAndFilteredItems.map(item => (
+                            {(isUserLoading || areFilesLoading) && (
+                                <TableRow>
+                                    <TableCell colSpan={5} className="h-24 text-center">
+                                        <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                            {!isUserLoading && !areFilesLoading && sortedAndFilteredItems.length === 0 && (
+                                <TableRow>
+                                    <TableCell colSpan={5} className="h-24 text-center">
+                                        Nenhum ficheiro encontrado. Comece a carregar!
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                            {!isUserLoading && !areFilesLoading && sortedAndFilteredItems.map(item => (
                                 <TableRow key={item.id} className="border-b-border/50 hover:bg-muted/50">
                                     <TableCell className="font-medium text-foreground flex items-center gap-3">
                                         {fileIcons[item.type] || fileIcons.default}
@@ -223,12 +265,7 @@ export default function CloudPage() {
                                     <TableCell className="text-muted-foreground">{item.size}</TableCell>
                                     <TableCell className="text-muted-foreground">{new Date(item.lastModified).toLocaleDateString('pt-PT')}</TableCell>
                                     <TableCell>
-                                        <div className="flex -space-x-2">
-                                            {item.sharedWith?.map(userId => {
-                                                const user = users.find(u => u.id === userId);
-                                                return user ? <div key={user.id} className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs font-bold ring-2 ring-background" title={user.name}>{user.name.charAt(0)}</div> : null;
-                                            })}
-                                        </div>
+                                        {/* Placeholder for shared users */}
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <Button variant="ghost" size="icon" onClick={() => handleAction('Partilhar', item.name)}><Share2 className="w-4 h-4 text-primary/80" /></Button>

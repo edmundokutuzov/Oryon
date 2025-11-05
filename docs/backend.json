@@ -288,51 +288,85 @@
     "File": {
       "title": "File",
       "type": "object",
-      "description": "Represents a file in cloud storage.",
+      "description": "Represents a file, its metadata, and access controls.",
       "properties": {
-        "id": {
+        "title": {
           "type": "string",
-          "description": "Unique identifier for the file."
+          "description": "The name or title of the document."
         },
-        "name": {
+        "owner": {
           "type": "string",
-          "description": "Name of the file."
+          "description": "The UID of the user who owns the document."
+        },
+        "workspaceId": {
+          "type": "string",
+          "description": "The ID of the workspace this document belongs to."
         },
         "type": {
           "type": "string",
-          "description": "File type or extension."
+          "enum": ["doc", "sheet", "ppt", "board", "pdf", "image"],
+          "description": "The type of the document."
+        },
+        "storagePath": {
+          "type": "string",
+          "description": "The full path to the file in Firebase Storage."
+        },
+        "previewPath": {
+          "type": "string",
+          "description": "The path to a generated thumbnail or preview in Storage."
         },
         "size": {
           "type": "number",
           "description": "File size in bytes."
         },
-        "url": {
-          "type": "string",
-          "format": "uri",
-          "description": "Download URL for the file."
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "An array of tags for categorization."
         },
-        "ownerId": {
-          "type": "string",
-          "description": "The UID of the user who owns the file."
+        "sharedWith": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "uid": { "type": "string" },
+              "role": { "type": "string", "enum": ["editor", "viewer"] }
+            }
+          },
+          "description": "List of users and their roles with whom the document is shared."
         },
-        "createdAt": {
-          "type": "string",
-          "format": "date-time"
+        "published": {
+          "type": "boolean",
+          "description": "Indicates if the document is published or a draft."
         },
-        "lastModified": {
-          "type": "string",
-          "format": "date-time"
+        "version": {
+          "type": "number",
+          "description": "The current version number of the document."
+        },
+        "versions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "v": { "type": "number" },
+              "path": { "type": "string" }
+            }
+          },
+          "description": "History of previous file versions."
+        },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "lastOpenedAt": { "type": "string", "format": "date-time" },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "pages": { "type": "number" },
+            "mime": { "type": "string" }
+          },
+          "description": "Additional file-specific metadata."
         }
       },
-      "required": [
-        "id",
-        "name",
-        "type",
-        "size",
-        "url",
-        "ownerId",
-        "createdAt"
-      ]
+      "required": ["title", "owner", "type", "storagePath", "version", "createdAt", "updatedAt"]
     }
   },
   "auth": {
@@ -379,12 +413,12 @@
         }
       },
       {
-        "path": "/users/{userId}/files/{fileId}",
+        "path": "/docs/{docId}",
         "definition": {
           "schema": {
             "$ref": "#/entities/File"
           },
-          "description": "Stores metadata for files owned by a specific user."
+          "description": "Stores metadata for all documents, regardless of owner."
         }
       }
     ]

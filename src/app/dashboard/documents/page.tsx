@@ -1,4 +1,3 @@
-
 'use client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -12,18 +11,22 @@ import { collection, serverTimestamp, doc } from 'firebase/firestore';
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { setDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import Link from 'next/link';
+import { Badge } from '@/components/ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator
+} from "@/components/ui/dropdown-menu";
 
 const fileTypeIcons: { [key: string]: React.ReactNode } = {
-  'application/pdf': <FileText className="w-5 h-5 text-red-400" />,
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': <FileText className="w-5 h-5 text-blue-400" />,
-  'application/msword': <FileText className="w-5 h-5 text-blue-400" />,
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation': <FileVideo className="w-5 h-5 text-orange-400" />,
-  'application/vnd.ms-powerpoint': <FileVideo className="w-5 h-5 text-orange-400" />,
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': <FileSpreadsheet className="w-5 h-5 text-green-400" />,
-  'application/vnd.ms-excel': <FileSpreadsheet className="w-5 h-5 text-green-400" />,
-  'application/zip': <FileIcon className="w-5 h-5 text-yellow-400" />,
-  'image/jpeg': <FileIcon className="w-5 h-5 text-purple-400" />,
-  'image/png': <FileIcon className="w-5 h-5 text-purple-400" />,
+  'doc': <FileText className="w-5 h-5 text-blue-400" />,
+  'sheet': <FileSpreadsheet className="w-5 h-5 text-green-400" />,
+  'ppt': <FileVideo className="w-5 h-5 text-orange-400" />,
+  'board': <FileIcon className="w-5 h-5 text-purple-400" />,
+  'pdf': <FileText className="w-5 h-5 text-red-400" />,
+  'image': <FileIcon className="w-5 h-5 text-pink-400" />,
   'folder': <Folder className="w-5 h-5 text-yellow-500" />,
   'default': <FileIcon className="w-5 h-5" />,
 };
@@ -36,35 +39,36 @@ const getFileIcon = (fileType: string) => {
 
 type File = {
   id: string,
-  name: string,
+  title: string,
   type: string,
-  size: number, // size in bytes
+  size: number,
   url: string,
-  ownerId: string,
-  createdAt: any, // Can be Date or serverTimestamp
-  lastModified: any
+  owner: string,
+  createdAt: any,
+  updatedAt: any
 };
-type Folder = { id: string, name: string, type: 'folder', lastModified: string, size: string, ownerId: string };
+type Folder = { id: string, name: string, type: 'folder', lastModified: string, size: string, owner: string };
 
 export default function DocumentsPage() {
     const { toast } = useToast();
     const { user, isUserLoading } = useUser();
     const firestore = useFirestore();
 
+    // Note: In a real app, this query would be more complex, fetching docs owned by user OR shared with user.
     const userFilesCollection = useMemoFirebase(() => {
-        if (!firestore || !user?.uid) return null;
-        return collection(firestore, 'users', user.uid, 'files');
-    }, [firestore, user?.uid]);
+        if (!firestore) return null;
+        return collection(firestore, 'docs');
+    }, [firestore]);
     
     const { data: files, isLoading: areFilesLoading } = useCollection<File>(userFilesCollection);
 
     const [folders, setFolders] = useState<Folder[]>([]);
     const [filter, setFilter] = useState('');
-    const [sort, setSort] = useState({ key: 'name', order: 'asc' });
+    const [sort, setSort] = useState({ key: 'title', order: 'asc' });
     const uploadInputRef = useRef<HTMLInputElement>(null);
 
     const filesAndFolders = useMemo(() => {
-        const fileItems = files ? files.map(f => ({ ...f, size: (f.size / (1024*1024)).toFixed(2) + ' MB' })) : [];
+        const fileItems = files ? files.map(f => ({ ...f, name: f.title, size: (f.size / (1024*1024)).toFixed(2) + ' MB' })) : [];
         return [...fileItems, ...folders];
     }, [files, folders]);
 
@@ -82,14 +86,15 @@ export default function DocumentsPage() {
                     if (sizeA > sizeB) return sort.order === 'asc' ? 1 : -1;
                     return 0;
                 }
-
-                if (a.type !== 'folder' && b.type !=='folder' && (sort.key === 'lastModified' || sort.key === 'createdAt')) {
+                
+                if (a.type !== 'folder' && b.type !=='folder' && (sort.key === 'updatedAt' || sort.key === 'createdAt')) {
                     const dateA = a[sort.key]?.toDate ? a[sort.key].toDate().getTime() : 0;
                     const dateB = b[sort.key]?.toDate ? b[sort.key].toDate().getTime() : 0;
                      if (dateA < dateB) return sort.order === 'asc' ? -1 : 1;
                     if (dateA > dateB) return sort.order === 'asc' ? 1 : -1;
                     return 0;
                 }
+
 
                 if (aValue < bValue) return sort.order === 'asc' ? -1 : 1;
                 if (aValue > bValue) return sort.order === 'asc' ? 1 : -1;
@@ -111,7 +116,7 @@ export default function DocumentsPage() {
         
         const file = e.target.files[0];
         const storage = getStorage();
-        const filePath = `users/${user.uid}/${Date.now()}_${file.name}`;
+        const filePath = `docs/${user.uid}/${Date.now()}_${file.name}`;
         const fileStorageRef = storageRef(storage, filePath);
         const uploadTask = uploadBytesResumable(fileStorageRef, file);
 
@@ -125,15 +130,15 @@ export default function DocumentsPage() {
             }, 
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    const fileDocRef = doc(collection(firestore, 'users', user.uid, 'files'));
+                    const fileDocRef = doc(collection(firestore, 'docs'));
                     const newFile: Omit<File, 'id'> = {
-                        name: file.name,
+                        title: file.name,
                         type: file.type,
                         size: file.size,
                         url: downloadURL,
-                        ownerId: user.uid,
+                        owner: user.uid,
                         createdAt: serverTimestamp(),
-                        lastModified: serverTimestamp()
+                        updatedAt: serverTimestamp()
                     };
                     setDocumentNonBlocking(fileDocRef, newFile, {});
                     toast({ title: 'Upload Concluído', description: `"${file.name}" foi carregado com sucesso.`});
@@ -145,7 +150,7 @@ export default function DocumentsPage() {
 
     const handleDelete = (itemId: string) => {
         if (!user?.uid || !firestore) return;
-        const docRef = doc(firestore, 'users', user.uid, 'files', itemId);
+        const docRef = doc(firestore, 'docs', itemId);
         deleteDocumentNonBlocking(docRef);
         toast({ title: 'Item Apagado', description: `O ficheiro foi movido para o lixo.`, variant: 'destructive'});
     };
@@ -189,9 +194,28 @@ export default function DocumentsPage() {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input placeholder="Pesquisar documentos..." className="w-64 bg-card border-border pl-10 h-10" value={filter} onChange={e => setFilter(e.target.value)} />
                     </div>
-                    <Button className="btn-primary-gradient">
-                        <Plus className="mr-2 h-4 w-4" /> Novo
-                    </Button>
+                     <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button className="btn-primary-gradient">
+                                <Plus className="mr-2 h-4 w-4" /> Novo
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56" align="end">
+                             <DropdownMenuItem asChild>
+                                <Link href="/dashboard/document-editor"><FileText className="mr-2 h-4 w-4" />Documento</Link>
+                             </DropdownMenuItem>
+                             <DropdownMenuItem onSelect={() => toast({title: "Em breve!"})}>
+                                <FileSpreadsheet className="mr-2 h-4 w-4" />Planilha
+                            </DropdownMenuItem>
+                             <DropdownMenuItem onSelect={() => toast({title: "Em breve!"})}>
+                                <FileVideo className="mr-2 h-4 w-4" />Apresentação
+                            </DropdownMenuItem>
+                             <DropdownMenuSeparator />
+                             <DropdownMenuItem onSelect={handleUploadClick}>
+                                <UploadCloud className="mr-2 h-4 w-4" />Carregar Ficheiro
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
 
@@ -212,9 +236,9 @@ export default function DocumentsPage() {
                     <Table>
                         <TableHeader>
                             <TableRow className="border-b-border hover:bg-transparent">
-                                <TableHead onClick={() => handleSort('name')} className="cursor-pointer"><span className="flex items-center gap-2">Nome <ArrowUpDown className="w-4 h-4"/></span></TableHead>
+                                <TableHead onClick={() => handleSort('title')} className="cursor-pointer"><span className="flex items-center gap-2">Nome <ArrowUpDown className="w-4 h-4"/></span></TableHead>
                                 <TableHead>Proprietário</TableHead>
-                                <TableHead onClick={() => handleSort('lastModified')} className="cursor-pointer"><span className="flex items-center gap-2">Última Modificação <ArrowUpDown className="w-4 h-4"/></span></TableHead>
+                                <TableHead onClick={() => handleSort('updatedAt')} className="cursor-pointer"><span className="flex items-center gap-2">Última Modificação <ArrowUpDown className="w-4 h-4"/></span></TableHead>
                                 <TableHead onClick={() => handleSort('size')} className="cursor-pointer"><span className="flex items-center gap-2">Tamanho <ArrowUpDown className="w-4 h-4"/></span></TableHead>
                                 <TableHead className="text-right">Ações</TableHead>
                             </TableRow>
@@ -242,9 +266,9 @@ export default function DocumentsPage() {
                                         {getFileIcon(item.type)}
                                         {item.name}
                                     </TableCell>
-                                    <TableCell className="text-muted-foreground">{item.ownerId === user?.uid ? "Eu" : "Outro"}</TableCell>
+                                    <TableCell className="text-muted-foreground">{item.owner === user?.uid ? "Eu" : "Outro"}</TableCell>
                                     <TableCell className="text-muted-foreground">
-                                        {item.type !== 'folder' && item.lastModified?.toDate ? item.lastModified.toDate().toLocaleDateString('pt-PT') : '-'}
+                                        {item.type !== 'folder' && item.updatedAt?.toDate ? item.updatedAt.toDate().toLocaleDateString('pt-PT') : '-'}
                                     </TableCell>
                                     <TableCell className="text-muted-foreground">{item.size}</TableCell>
                                     <TableCell className="text-right">

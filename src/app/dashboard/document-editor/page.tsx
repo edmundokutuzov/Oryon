@@ -1,4 +1,3 @@
-
 'use client';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -66,7 +65,7 @@ export default function DocumentEditorPage() {
     const handleSaveToDevice = async () => {
         if (editorRef.current) {
             const content = editorRef.current.innerText;
-            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-t' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;

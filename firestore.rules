@@ -52,126 +52,105 @@ service cloud.firestore {
     }
 
     /**
-     * @description Checks if the user has the 'contentManager' role.
-     * @return {bool} True if the user has the 'contentManager' role, false otherwise.
-     */
-    function isContentManager() {
-      return getUserRole() == 'contentManager';
-    }
-
-        /**
-     * @description Checks if the user has the 'riskAnalyst' role.
-     * @return {bool} True if the user has the 'riskAnalyst' role, false otherwise.
-     */
-    function isRiskAnalyst() {
-      return getUserRole() == 'riskAnalyst';
-    }
-
-        /**
-     * @description Checks if the user has the 'supportAgent' role.
-     * @return {bool} True if the user has the 'supportAgent' role, false otherwise.
-     */
-    function isSupportAgent() {
-      return getUserRole() == 'supportAgent';
-    }
-
-    /**
-     * @description Checks if the user is the owner of the document (userId matches request.auth.uid).
-     * @param {string} userId The user ID to compare against the auth UID.
+     * @description Checks if the user is the owner of a document.
+     * @param {object} docResource The resource object of the document.
      * @return {bool} True if the user is the owner, false otherwise.
      */
-    function isOwner(userId) {
-      return isSignedIn() && request.auth.uid == userId;
+    function isOwner(docResource) {
+      return isSignedIn() && request.auth.uid == docResource.data.owner;
     }
-
+    
     /**
-     * @description Checks if the user is the owner of the document and the document exists.
-     *               Used for update and delete operations.
-     * @param {string} userId The user ID to compare against the auth UID.
-     * @return {bool} True if the user is the owner and the document exists, false otherwise.
+     * @description Checks if the user is a member of a document's sharedWith list.
+     * @param {object} docResource The resource object of the document.
+     * @return {bool} True if the user is a member, false otherwise.
      */
-    function isExistingOwner(userId) {
-      return isOwner(userId) && resource != null;
+    function isSharedMember(docResource) {
+      return isSignedIn() && request.auth.uid in docResource.data.sharedWith.map(s => s.uid);
     }
 
     /**
-     * @description Rules for user profiles.
-     * @path /users/{userId}
-     * @allow (read) User with ID 'user123' can read their own profile.
-     *    request.auth.uid = 'user123'
-     * @allow (read) User with role 'admin' can read any user profile.
-     *    request.auth.uid = 'adminUser', /users/user123, UserProfile.role = 'admin'
-     * @deny (read) User with ID 'user456' cannot read user profile 'user123'.
-     *    request.auth.uid = 'user456', /users/user123
-     * @allow (create) User with ID 'user123' can create their own profile if the user id matches the auth ID.
-     *    request.auth.uid = 'user123', /users/user123
-     * @deny (create) User with ID 'user456' cannot create user profile 'user123'.
-     *    request.auth.uid = 'user456', /users/user123
-     * @allow (update) User with role 'admin' can update any user profile.
-     *    request.auth.uid = 'adminUser', /users/user123, UserProfile.role = 'admin'
-     * @deny (update) User with ID 'user123' cannot update their profile with a mismatched id.
-     *    request.auth.uid = 'user123', /users/user456
-     * @deny (update) User with ID 'user123' cannot change the role field
-     *    request.auth.uid = 'user123', /users/user123, request.resource.data.role != resource.data.role
-     * @principle Enforces document ownership for reads and admin-only writes for user profiles.
+     * @description Checks if a user has a specific role on a document.
+     * @param {object} docResource The resource object of the document.
+     * @param {string} role The role to check for ('editor', 'viewer').
+     * @return {bool} True if the user has the specified role, false otherwise.
+     */
+    function hasRole(docResource, role) {
+      let userShare = docResource.data.sharedWith.filter(s => s.uid == request.auth.uid);
+      return userShare.size() > 0 && userShare[0].role == role;
+    }
+
+    /**
+     * @description Checks if a user is an editor of a document (owner or has 'editor' role).
+     * @param {object} docResource The resource object of the document.
+     * @return {bool} True if the user is an editor, false otherwise.
+     */
+    function isEditor(docResource) {
+        return isOwner(docResource) || hasRole(docResource, 'editor');
+    }
+
+    /**
+     * @description Checks if a user can view a document (owner, editor, or viewer).
+     * @param {object} docResource The resource object of the document.
+     * @return {bool} True if the user can view, false otherwise.
+     */
+    function isViewer(docResource) {
+       return isOwner(docResource) || hasRole(docResource, 'editor') || hasRole(docResource, 'viewer');
+    }
+
+    /**
+     * @description Rules for user profiles. Only admins can list/delete, owners can read/create,
+     *              and admins or owners can update (but not change role).
      */
     match /users/{userId} {
-      allow get: if isOwner(userId) || isAdmin();
+      allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
       allow list: if isAdmin();
-      allow create: if isOwner(userId) && request.resource.data.id == userId;
-      allow update: if isAdmin() && request.resource.data.id == resource.data.id && request.resource.data.id == userId && request.resource.data.role == resource.data.role;
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow update: if isSignedIn() && (request.auth.uid == userId || isAdmin()) && request.resource.data.role == resource.data.role;
       allow delete: if isAdmin();
-      
+    }
+
+    /**
+     * @description Rules for documents. Access is based on ownership and sharing roles.
+     * @path /docs/{docId}
+     */
+    match /docs/{docId} {
+      allow read: if isViewer(get(/databases/$(database)/documents/docs/$(docId)));
+      allow create: if isSignedIn() && request.resource.data.owner == request.auth.uid;
+      allow update: if isEditor(get(/databases/$(database)/documents/docs/$(docId)));
+      allow delete: if isOwner(get(/databases/$(database)/documents/docs/$(docId)));
+
       /**
-       * @description Rules for user files.
-       * @path /users/{userId}/files/{fileId}
-       *   Each user can only read, write, and delete their own files.
+       * @description Rules for comments within a document.
+       * @path /docs/{docId}/comments/{commentId}
        */
-      match /files/{fileId} {
-        allow read, write, delete: if isOwner(userId);
+      match /comments/{commentId} {
+        allow read: if isViewer(get(/databases/$(database)/documents/docs/$(docId)));
+        allow create: if isSignedIn() && isViewer(get(/databases/$(database)/documents/docs/$(docId)));
+        allow update, delete: if isOwner(resource) || isOwner(get(/databases/$(database)/documents/docs/$(docId)));
       }
     }
 
     /**
-     * @description Rules for insurance policies.
-     * @path /policies/{policyId}
-     * @allow (read) Users with role 'admin', 'riskAnalyst', or 'supportAgent' can read any policy.
-     *    request.auth.uid = 'adminUser', UserProfile.role = 'admin'
-     * @deny (read) User with role 'contentManager' cannot read policies.
-     *    request.auth.uid = 'contentManagerUser', UserProfile.role = 'contentManager'
-     * @allow (create) Users with role 'admin' can create policies.
-     *    request.auth.uid = 'adminUser', UserProfile.role = 'admin'
-     * @deny (create) Users with role 'contentManager' cannot create policies.
-     *    request.auth.uid = 'contentManagerUser', UserProfile.role = 'contentManager'
-     * @allow (update) Users with role 'admin' can update policies.
-     *    request.auth.uid = 'adminUser', UserProfile.role = 'admin'
-     * @deny (update) Users with role 'contentManager' cannot update policies.
-     *    request.auth.uid = 'contentManagerUser', UserProfile.role = 'contentManager'
-     * @allow (delete) Users with role 'admin' can delete policies.
-     *    request.auth.uid = 'adminUser', UserProfile.role = 'admin'
-     * @deny (delete) Users with role 'contentManager' cannot delete policies.
-     *    request.auth.uid = 'contentManagerUser', UserProfile.role = 'contentManager'
+     * @description Rules for campaigns. Only admins and content managers have access.
      */
-    match /policies/{policyId} {
-      allow get, list: if isAdmin() || isRiskAnalyst() || isSupportAgent();
-      allow create, update, delete: if isAdmin();
+    match /campaigns/{campaignId} {
+      allow read, write: if isAdmin() || getUserRole() == 'contentManager';
     }
 
     /**
-     * @description Rules for insurance claims.
-     * @path /claims/{claimId}
-     * @allow (read) Users with role 'admin', 'riskAnalyst', or 'supportAgent' can read any claim.
-     *    request.auth.uid = 'adminUser', UserProfile.role = 'admin'
-     * @deny (read) User with role 'contentManager' cannot read claims.
-     *    request.auth.uid = 'contentManagerUser', UserProfile.role = 'contentManager'
-     * @allow (create) Users with role 'admin' can create claims.
-     *    request.auth.uid = 'adminUser', UserProfile.role = 'admin'
-     * @deny (create) Users with role 'contentManager' cannot create claims.
-     *    request.auth.uid = 'contentManagerUser', UserProfile.role = 'contentManager'
-     * @allow (update) Users with role 'admin' can update claims.
-     *    request.auth.uid = 'adminUser', UserProfile.role = 'admin'
-     * @deny (update) Users with role 'contentManager' cannot update claims.
-     *    request.auth.uid = 'contentManagerUser', UserProfile.role = 'contentManager'
-     * @allow (delete) Users with role 'admin' can delete claims.
-     *    request.auth.uid = 'adminUser', UserProfile.role = 'admin'
-     * @deny (delete) Users with role 'contentManager' cannot delete claims
+     * @description Rules for game operations. Admin, Risk Analysts have access.
+     */
+    match /game_operations/{operationId} {
+       allow read, write: if isAdmin() || getUserRole() == 'riskAnalyst';
+    }
+
+    /**
+     * @description Rules for tasks. Users can only access their own tasks.
+     *              (This is a simplification; a real app might share tasks).
+     */
+    match /tasks/{taskId} {
+      allow read, write: if isSignedIn() && resource.data.assignedTo.hasAny([request.auth.uid]);
+    }
+  }
+}

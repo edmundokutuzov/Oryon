@@ -97,6 +97,15 @@ service cloud.firestore {
     function isViewer(docResource) {
        return isOwner(docResource) || hasRole(docResource, 'editor') || hasRole(docResource, 'viewer');
     }
+    
+    /**
+     * @description Checks if the user is a direct member of a document.
+     * @param {object} docId The ID of the document.
+     * @return {bool} True if the user is a member, false otherwise.
+     */
+    function isDocMember(docId) {
+      return request.auth.uid in get(/databases/$(database)/documents/docs/$(docId)).data.members;
+    }
 
     /**
      * @description Rules for user profiles. Only admins can list/delete, owners can read/create,
@@ -123,9 +132,8 @@ service cloud.firestore {
      * @path /docs/{docId}
      */
     match /docs/{docId} {
-      allow list: if request.auth != null
-                  && request.query.where[0] == ['members', 'array-contains', request.auth.uid];
-      allow read: if isViewer(get(/databases/$(database)/documents/docs/$(docId)));
+      allow get: if isDocViewer(get(/databases/$(database)/documents/docs/$(docId)));
+      allow list: if isAdmin() || (request.query.where != null && request.query.where[0] == ['members', 'array-contains', request.auth.uid]);
       allow create: if isSignedIn() && request.resource.data.owner == request.auth.uid;
       allow update: if isEditor(get(/databases/$(database)/documents/docs/$(docId)));
       allow delete: if isOwner(get(/databases/$(database)/documents/docs/$(docId)));
@@ -135,8 +143,8 @@ service cloud.firestore {
        * @path /docs/{docId}/comments/{commentId}
        */
       match /comments/{commentId} {
-        allow read: if isViewer(get(/databases/$(database)/documents/docs/$(docId)));
-        allow create: if isSignedIn() && isViewer(get(/databases/$(database)/documents/docs/$(docId)));
+        allow read: if isDocViewer(get(/databases/$(database)/documents/docs/$(docId)));
+        allow create: if isSignedIn() && isDocViewer(get(/databases/$(database)/documents/docs/$(docId)));
         allow update, delete: if isOwner(resource) || isOwner(get(/databases/$(database)/documents/docs/$(docId)));
       }
     }
@@ -164,3 +172,5 @@ service cloud.firestore {
     }
   }
 }
+
+    

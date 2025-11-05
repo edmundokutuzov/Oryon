@@ -77,7 +77,7 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
         if (firebaseUser) {
           // Utilizador autenticado. Agora, buscamos o perfil no mock data.
           const userProfile = users.find(u => u.email === firebaseUser.email);
-          setUserAuthState({ user: {...firebaseUser, role: userProfile?.role}, isUserLoading: false, userError: null });
+          setUserAuthState({ user: {...firebaseUser, role: userProfile?.role as UserRole}, isUserLoading: false, userError: null });
 
         } else {
           setUserAuthState({ user: null, isUserLoading: false, userError: null });

@@ -68,7 +68,6 @@ export default function DocumentsPage() {
     const userFilesQuery = useMemoFirebase(() => {
         if (!firestore || !user?.uid) return null;
         
-        // Admin can see all documents, others see only their own.
         if (user.role === ROLES.ADMIN) {
             return collection(firestore, 'docs');
         }
@@ -85,14 +84,20 @@ export default function DocumentsPage() {
     const [filter, setFilter] = useState('');
     const [sort, setSort] = useState({ key: 'title', order: 'asc' });
     const uploadInputRef = useRef<HTMLInputElement>(null);
-
+    
     const normalizedItems = useMemo(() => {
         const fileItems: (FileData & { itemType: 'file' })[] = files ? files.map(f => ({ ...f, itemType: 'file' })) : [];
         const folderItems: (FileData & { itemType: 'folder' })[] = folders.map(f => ({
             ...f,
             itemType: 'folder',
-            members: [],
+            id: f.id,
+            title: f.title,
+            type: 'folder',
+            size: f.size,
+            owner: f.owner,
+            members: [f.owner],
             createdAt: f.updatedAt,
+            updatedAt: f.updatedAt,
             url: '',
         }));
         return [...fileItems, ...folderItems];
@@ -102,18 +107,31 @@ export default function DocumentsPage() {
         return [...normalizedItems]
             .filter(item => item.title.toLowerCase().includes(filter.toLowerCase()))
             .sort((a, b) => {
-                const getSortableValue = (item: FileData, key: keyof FileData | 'size') => {
-                    const value = item[key as keyof FileData];
+                const getSortableValue = (item: any, key: string) => {
+                    const value = item[key as keyof typeof item];
+
                     if (key === 'updatedAt' || key === 'createdAt') {
                         if (!value) return 0;
-                        if (typeof value.toDate === 'function') return value.toDate().getTime(); // Firestore Timestamp
-                        if (typeof value === 'string') return new Date(value).getTime(); // ISO String
+                        // Handle Firebase Timestamps
+                        if (typeof value.toDate === 'function') {
+                            return value.toDate().getTime();
+                        }
+                        // Handle ISO strings (from our local folders)
+                        if (typeof value === 'string') {
+                            const date = new Date(value);
+                            return isNaN(date.getTime()) ? 0 : date.getTime();
+                        }
+                        return 0;
                     }
+                    if (key === 'owner') {
+                         return value || '';
+                    }
+                    
                     return value ?? '';
                 };
 
-                const aValue = getSortableValue(a, sort.key as keyof FileData);
-                const bValue = getSortableValue(b, sort.key as keyof FileData);
+                const aValue = getSortableValue(a, sort.key);
+                const bValue = getSortableValue(b, sort.key);
                 
                 if (aValue < bValue) return sort.order === 'asc' ? -1 : 1;
                 if (aValue > bValue) return sort.order === 'asc' ? 1 : -1;

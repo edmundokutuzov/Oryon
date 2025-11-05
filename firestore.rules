@@ -40,7 +40,11 @@ service cloud.firestore {
      * @return {string} The user's role, or an empty string if not found.
      */
     function getUserRole() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+      let userDoc = get(/databases/$(database)/documents/users/$(request.auth.uid));
+      if (exists(/databases/$(database)/documents/users/$(request.auth.uid))) {
+        return userDoc.data.role;
+      }
+      return '';
     }
 
     /**
@@ -112,7 +116,7 @@ service cloud.firestore {
      *              and admins or owners can update (but not change role).
      */
     match /users/{userId} {
-      allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
       allow list: if isAdmin();
       allow create: if isSignedIn() && request.auth.uid == userId;
       allow update: if isSignedIn() && (request.auth.uid == userId || isAdmin()) && request.resource.data.role == resource.data.role;
@@ -132,8 +136,8 @@ service cloud.firestore {
      * @path /docs/{docId}
      */
     match /docs/{docId} {
-      allow get: if isDocViewer(get(/databases/$(database)/documents/docs/$(docId)));
-      allow list: if isAdmin() || (request.query.where != null && request.query.where[0] == ['members', 'array-contains', request.auth.uid]);
+      allow get: if isViewer(get(/databases/$(database)/documents/docs/$(docId)));
+      allow list: if isAdmin() || (request.query.where[0] == ['members', 'array-contains', request.auth.uid]);
       allow create: if isSignedIn() && request.resource.data.owner == request.auth.uid;
       allow update: if isEditor(get(/databases/$(database)/documents/docs/$(docId)));
       allow delete: if isOwner(get(/databases/$(database)/documents/docs/$(docId)));
@@ -143,8 +147,8 @@ service cloud.firestore {
        * @path /docs/{docId}/comments/{commentId}
        */
       match /comments/{commentId} {
-        allow read: if isDocViewer(get(/databases/$(database)/documents/docs/$(docId)));
-        allow create: if isSignedIn() && isDocViewer(get(/databases/$(database)/documents/docs/$(docId)));
+        allow read: if isViewer(get(/databases/$(database)/documents/docs/$(docId)));
+        allow create: if isSignedIn() && isViewer(get(/databases/$(database)/documents/docs/$(docId)));
         allow update, delete: if isOwner(resource) || isOwner(get(/databases/$(database)/documents/docs/$(docId)));
       }
     }
@@ -172,5 +176,3 @@ service cloud.firestore {
     }
   }
 }
-
-    

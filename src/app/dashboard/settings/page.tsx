@@ -5,10 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Languages, Palette, Accessibility, FileDown, Sun, Moon, Bell, Volume2 } from 'lucide-react';
+import { Languages, Palette, Accessibility, FileDown, Sun, Moon, Bell, Shield, Key } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useTheme } from 'next-themes';
 import { useState } from 'react';
+import { useUser } from '@/firebase';
+import { Input } from '@/components/ui/input';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import { ROLES } from '@/config/roles';
+
 
 const translations: any = {
     pt: {
@@ -107,10 +112,85 @@ const translations: any = {
     }
 };
 
+const AdminPanel = () => {
+    const { toast } = useToast();
+    const [emailToPromote, setEmailToPromote] = useState('');
+    const [secret, setSecret] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handlePromote = async () => {
+        if (!emailToPromote) {
+            toast({ variant: 'destructive', title: 'Erro', description: 'Por favor, insira um email.' });
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            const functions = getFunctions();
+            const setAdminRole = httpsCallable(functions, 'setAdminRole');
+            const result: any = await setAdminRole({ email: emailToPromote, adminSecret: secret });
+
+            toast({
+                title: 'Sucesso!',
+                description: result.data.message,
+            });
+            setEmailToPromote('');
+            setSecret('');
+        } catch (error: any) {
+            console.error(error);
+            toast({
+                variant: 'destructive',
+                title: 'Erro ao promover utilizador',
+                description: error.message,
+            });
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <Card className="gradient-surface border-0 rounded-2xl border-primary/50">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2"><Shield className="text-primary"/>Painel de Administração</CardTitle>
+                <CardDescription>Gerir permissões de administrador. Use com precaução.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <div className="space-y-2">
+                    <Label htmlFor="email-promote">Email do Utilizador a Promover</Label>
+                    <Input 
+                        id="email-promote" 
+                        type="email" 
+                        placeholder="utilizador@txunabet.com" 
+                        className="bg-card border-border"
+                        value={emailToPromote}
+                        onChange={(e) => setEmailToPromote(e.target.value)}
+                    />
+                </div>
+                 <div className="space-y-2">
+                    <Label htmlFor="admin-secret">Chave Mestra de Admin (Opcional)</Label>
+                    <Input 
+                        id="admin-secret" 
+                        type="password" 
+                        placeholder="Apenas para a primeira promoção" 
+                        className="bg-card border-border"
+                        value={secret}
+                        onChange={(e) => setSecret(e.target.value)}
+                    />
+                </div>
+                <Button className="w-full btn-primary-gradient" onClick={handlePromote} disabled={isLoading}>
+                    {isLoading ? 'A promover...' : 'Promover a Administrador'}
+                </Button>
+            </CardContent>
+        </Card>
+    );
+};
+
+
 export default function SettingsPage() {
     const { toast } = useToast();
     const { setTheme, theme } = useTheme();
     const [lang, setLang] = useState('pt');
+    const { user } = useUser();
     const t = translations[lang] || translations.en;
 
     const handleSaveChanges = (section: string) => {
@@ -123,10 +203,16 @@ export default function SettingsPage() {
     return (
         <div className="p-6 fade-in">
             <h1 className="text-3xl font-bold text-foreground mb-8">{t.title}</h1>
+            
+            {user?.email === 'admin@txunabet.com' && (
+                <div className="mb-8">
+                    <AdminPanel />
+                </div>
+            )}
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
 
                 <div className="space-y-8">
-                    {/* General Settings Card */}
                     <Card className="gradient-surface border-0 rounded-2xl">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2"><Languages className="text-primary"/>{t.generalTitle}</CardTitle>
@@ -164,7 +250,6 @@ export default function SettingsPage() {
                         </CardContent>
                     </Card>
 
-                    {/* Notifications Settings Card */}
                     <Card className="gradient-surface border-0 rounded-2xl">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2"><Bell className="text-primary"/>{t.notificationsTitle}</CardTitle>
@@ -196,8 +281,7 @@ export default function SettingsPage() {
                         </CardContent>
                     </Card>
 
-                     {/* Data & Privacy Settings Card */}
-                    <Card className="gradient-surface border-0 rounded-2xl">
+                     <Card className="gradient-surface border-0 rounded-2xl">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2"><FileDown className="text-primary"/>{t.dataPrivacyTitle}</CardTitle>
                             <CardDescription>{t.dataPrivacyDescription}</CardDescription>
@@ -215,8 +299,7 @@ export default function SettingsPage() {
                 </div>
 
                 <div className="space-y-8">
-                     {/* Appearance Settings Card */}
-                    <Card className="gradient-surface border-0 rounded-2xl">
+                     <Card className="gradient-surface border-0 rounded-2xl">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2"><Palette className="text-primary"/>{t.appearanceTitle}</CardTitle>
                             <CardDescription>{t.appearanceDescription}</CardDescription>
@@ -239,7 +322,6 @@ export default function SettingsPage() {
                         </CardContent>
                     </Card>
 
-                    {/* Accessibility Settings Card */}
                     <Card className="gradient-surface border-0 rounded-2xl">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2"><Accessibility className="text-primary"/>{t.accessibilityTitle}</CardTitle>

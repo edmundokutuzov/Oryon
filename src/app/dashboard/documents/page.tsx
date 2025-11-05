@@ -52,12 +52,12 @@ type FileData = {
 };
 
 type FolderData = { 
-  id: string, 
-  title: string, 
-  type: 'folder', 
-  updatedAt: any, 
-  size: number,
-  owner: string 
+  id: string; 
+  title: string; 
+  type: 'folder'; 
+  updatedAt: any; 
+  size: number;
+  owner: string;
 };
 
 
@@ -69,19 +69,16 @@ export default function DocumentsPage() {
     const userFilesQuery = useMemoFirebase(() => {
         if (!firestore || !user?.uid) return null;
 
-        // Admin can see all documents
-        if (user.role === ROLES.ADMIN) {
-            return collection(firestore, 'docs');
-        }
-        
-        // Non-admins only see documents they are members of
+        // ALL users (including admin) will query for documents they are members of.
+        // The security rules will grant the admin broader access if needed for other operations,
+        // but for listing, this is the safest and most scalable approach.
         return query(
             collection(firestore, 'docs'),
             where('members', 'array-contains', user.uid)
         );
-    }, [firestore, user?.uid, user?.role]);
+    }, [firestore, user?.uid]);
     
-    const { data: files, isLoading: areFilesLoading } = useCollection<FileData>(userFilesQuery);
+    const { data: files, isLoading: areFilesLoading, error: filesError } = useCollection<FileData>(userFilesQuery);
 
     const [folders, setFolders] = useState<FolderData[]>([]);
     const [filter, setFilter] = useState('');
@@ -89,21 +86,21 @@ export default function DocumentsPage() {
     const uploadInputRef = useRef<HTMLInputElement>(null);
     
     const normalizedItems = useMemo(() => {
-        const fileItems = files ? files.map(f => ({ ...f, itemType: 'file' })) : [];
-        const folderItems: (FileData & { itemType: 'folder' })[] = folders.map(f => ({
-            ...f,
-            itemType: 'folder',
-            id: f.id,
-            title: f.title,
-            type: 'folder',
-            size: f.size,
-            owner: f.owner,
-            members: [f.owner],
-            createdAt: f.updatedAt,
-            updatedAt: f.updatedAt,
-            url: '',
-        }));
-        return [...fileItems, ...folderItems];
+      const fileItems = files ? files.map(f => ({ ...f, itemType: 'file' as const })) : [];
+      const folderItems = folders.map(f => ({
+          ...f,
+          itemType: 'folder' as const,
+          id: f.id,
+          title: f.title,
+          type: 'folder' as const,
+          size: f.size,
+          owner: f.owner,
+          members: [f.owner],
+          createdAt: f.updatedAt,
+          updatedAt: f.updatedAt,
+          url: '',
+      }));
+      return [...fileItems, ...folderItems];
     }, [files, folders]);
 
     const sortedAndFilteredItems = useMemo(() => {
@@ -112,6 +109,10 @@ export default function DocumentsPage() {
             .sort((a, b) => {
                 const getSortableValue = (item: any, key: string) => {
                     const value = item[key as keyof typeof item];
+                     if (key === 'owner') {
+                        const ownerValue = item.owner || '';
+                        return ownerValue;
+                    }
                     if (key === 'updatedAt' || key === 'createdAt') {
                          if (!value) return 0;
                          if (typeof value.toDate === 'function') { // Firebase Timestamp
@@ -122,10 +123,6 @@ export default function DocumentsPage() {
                             return isNaN(date.getTime()) ? 0 : date.getTime();
                          }
                          return 0;
-                    }
-                    if (key === 'owner') {
-                        const ownerValue = item.owner || '';
-                        return ownerValue;
                     }
                     return value ?? '';
                 };
@@ -169,16 +166,17 @@ export default function DocumentsPage() {
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                     const fileDocRef = doc(collection(firestore, 'docs'));
-                    const newFile: Omit<FileData, 'id' | 'url'> = {
+                    const newFile: Omit<FileData, 'id'> = {
                         title: file.name,
                         type: file.type || 'default',
                         size: file.size,
                         owner: user.uid,
                         members: [user.uid],
                         createdAt: serverTimestamp(),
-                        updatedAt: serverTimestamp()
+                        updatedAt: serverTimestamp(),
+                        url: downloadURL
                     };
-                    setDocumentNonBlocking(fileDocRef, { ...newFile, url: downloadURL }, {});
+                    setDocumentNonBlocking(fileDocRef, newFile, { merge: true });
                     toast({ title: 'Upload Concluído', description: `"${file.name}" foi carregado com sucesso.`});
                 });
             }
@@ -309,7 +307,14 @@ export default function DocumentsPage() {
                                     </TableCell>
                                 </TableRow>
                             )}
-                            {!isUserLoading && !areFilesLoading && sortedAndFilteredItems.length === 0 && (
+                            {filesError && (
+                                <TableRow>
+                                  <TableCell colSpan={5} className="h-24 text-center text-red-400">
+                                      Erro ao carregar documentos: Permissões insuficientes. Contacte o administrador.
+                                  </TableCell>
+                                </TableRow>
+                            )}
+                            {!isUserLoading && !areFilesLoading && !filesError && sortedAndFilteredItems.length === 0 && (
                                 <TableRow>
                                     <TableCell colSpan={5} className="h-48 text-center">
                                         <FileText className="mx-auto h-12 w-12 text-muted-foreground/50" />
@@ -318,7 +323,7 @@ export default function DocumentsPage() {
                                     </TableCell>
                                 </TableRow>
                             )}
-                            {!isUserLoading && !areFilesLoading && sortedAndFilteredItems.map(item => (
+                            {!isUserLoading && !areFilesLoading && !filesError && sortedAndFilteredItems.map(item => (
                                 <TableRow key={item.id} className="border-b-border/50 hover:bg-muted/50">
                                     <TableCell className="font-medium text-foreground flex items-center gap-3">
                                         {getFileIcon(item.type)}

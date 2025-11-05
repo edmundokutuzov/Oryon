@@ -3,11 +3,8 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Função auxiliar (opcional, mas limpa)
+
     function isAdmin() {
-      // Lê a Custom Claim do token, não da base de dados!
-      // Isto é instantâneo e funciona para operações de 'list'.
       return request.auth.token.admin == true;
     }
 
@@ -22,27 +19,21 @@ service cloud.firestore {
     }
 
     function isDocEditor(docId) {
-      return isDocViewer(docId) && ( true ); // Placeholder, a lógica de role de edição estaria aqui
+       // Placeholder for role-based editing logic within the `members` array
+      return isDocViewer(docId);
     }
 
-    // Regra para a coleção de documentos
     match /docs/{docId} {
+      allow get: if isDocViewer(docId) || isAdmin();
       
-      // Permite ler (get) ou listar (list) a coleção
-      // se o utilizador for admin OU se a consulta filtrar por 'members'.
-      allow read: if request.auth != null && (isAdmin() || (request.query != null && request.query.where[0] == ['members', 'array-contains', request.auth.uid]));
-      
-      // Permite criar, atualizar ou apagar
-      // apenas se o utilizador for um administrador.
-      allow write: if request.auth != null && isAdmin();
+      // Allow list if user is admin OR if the query is securely filtered by member
+      allow list: if request.auth != null && (isAdmin() || (request.query != null && request.query.where[0] == ['members', 'array-contains', request.auth.uid]));
 
-      // Regras mais granulares para não-admins
       allow create: if request.auth != null;
-      allow update: if isDocEditor(docId);
-      allow delete: if isDocOwner(docId);
+      allow update: if isDocEditor(docId) || isAdmin();
+      allow delete: if isDocOwner(docId) || isAdmin();
     }
     
-    // As suas outras regras permanecem aqui...
     match /users/{userId} {
       allow read: if request.auth != null && (isAdmin() || request.auth.uid == userId);
       allow list: if isAdmin();

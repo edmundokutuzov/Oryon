@@ -3,7 +3,7 @@
 import React, { DependencyList, createContext, useContext, ReactNode, useMemo, useState, useEffect } from 'react';
 import { FirebaseApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
-import { Auth, User, onAuthStateChanged } from 'firebase/auth';
+import { Auth, User, onAuthStateChanged, getIdTokenResult } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener'
 import { users } from '@/lib/data';
 import { UserRole } from '@/config/roles';
@@ -75,9 +75,21 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
       auth,
       async (firebaseUser) => { // Auth state determined
         if (firebaseUser) {
-          // Utilizador autenticado. Agora, buscamos o perfil no mock data.
-          const userProfile = users.find(u => u.email === firebaseUser.email);
-          setUserAuthState({ user: {...firebaseUser, role: userProfile?.role as UserRole}, isUserLoading: false, userError: null });
+          // User is authenticated. Now, get custom claims.
+          const idTokenResult = await getIdTokenResult(firebaseUser, true); // Force refresh
+          const customClaims = idTokenResult.claims;
+
+          // Determine role from custom claims first, then fall back to mock data
+          let userRole: UserRole | undefined = customClaims.admin ? 'admin' : undefined;
+
+          if (!userRole) {
+            const userProfile = users.find(u => u.email === firebaseUser.email);
+            if(userProfile) {
+                userRole = userProfile.role as UserRole;
+            }
+          }
+          
+          setUserAuthState({ user: {...firebaseUser, role: userRole}, isUserLoading: false, userError: null });
 
         } else {
           setUserAuthState({ user: null, isUserLoading: false, userError: null });

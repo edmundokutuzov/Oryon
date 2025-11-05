@@ -7,7 +7,7 @@ import { useState, useMemo, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useUser, useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, serverTimestamp, doc } from 'firebase/firestore';
+import { collection, serverTimestamp, doc, query, where } from 'firebase/firestore';
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { setDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import Link from 'next/link';
@@ -54,13 +54,15 @@ export default function DocumentsPage() {
     const { user, isUserLoading } = useUser();
     const firestore = useFirestore();
 
-    // Note: In a real app, this query would be more complex, fetching docs owned by user OR shared with user.
-    const userFilesCollection = useMemoFirebase(() => {
-        if (!firestore) return null;
-        return collection(firestore, 'docs');
-    }, [firestore]);
+    const userFilesQuery = useMemoFirebase(() => {
+        if (!firestore || !user?.uid) return null;
+        return query(
+            collection(firestore, 'docs'),
+            where('members', 'array-contains', user.uid)
+        );
+    }, [firestore, user?.uid]);
     
-    const { data: files, isLoading: areFilesLoading } = useCollection<File>(userFilesCollection);
+    const { data: files, isLoading: areFilesLoading } = useCollection<File>(userFilesQuery);
 
     const [folders, setFolders] = useState<Folder[]>([]);
     const [filter, setFilter] = useState('');
@@ -87,18 +89,17 @@ export default function DocumentsPage() {
                 return 0;
             }
             
-            if (sort.key === 'updatedAt' || sort.key === 'createdAt') {
-                // Helper to safely get a comparable timestamp
-                const getTimestamp = (item: typeof a) => {
+             if (sort.key === 'updatedAt' || sort.key === 'createdAt') {
+                const getTimestamp = (item: any) => {
                     const value = item[sort.key as keyof typeof item];
-                    if (value?.toDate) { // Firebase Timestamp object
+                    if (value && typeof value.toDate === 'function') { // Firebase Timestamp
                         return value.toDate().getTime();
                     }
-                    if (typeof value === 'string') { // ISO string date
+                    if (typeof value === 'string') { // ISO string
                         const date = new Date(value);
                         return isNaN(date.getTime()) ? 0 : date.getTime();
                     }
-                    return 0; // Default for non-date types
+                    return 0;
                 };
 
                 const dateA = getTimestamp(a);

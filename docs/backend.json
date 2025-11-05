@@ -304,7 +304,14 @@
         },
         "type": {
           "type": "string",
-          "enum": ["doc", "sheet", "ppt", "board", "pdf", "image"],
+          "enum": [
+            "doc",
+            "sheet",
+            "ppt",
+            "board",
+            "pdf",
+            "image"
+          ],
           "description": "The type of the document."
         },
         "storagePath": {
@@ -321,16 +328,33 @@
         },
         "tags": {
           "type": "array",
-          "items": { "type": "string" },
+          "items": {
+            "type": "string"
+          },
           "description": "An array of tags for categorization."
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "An array of UIDs of users who have access to the document."
         },
         "sharedWith": {
           "type": "array",
           "items": {
             "type": "object",
             "properties": {
-              "uid": { "type": "string" },
-              "role": { "type": "string", "enum": ["editor", "viewer"] }
+              "uid": {
+                "type": "string"
+              },
+              "role": {
+                "type": "string",
+                "enum": [
+                  "editor",
+                  "viewer"
+                ]
+              }
             }
           },
           "description": "List of users and their roles with whom the document is shared."
@@ -348,25 +372,51 @@
           "items": {
             "type": "object",
             "properties": {
-              "v": { "type": "number" },
-              "path": { "type": "string" }
+              "v": {
+                "type": "number"
+              },
+              "path": {
+                "type": "string"
+              }
             }
           },
           "description": "History of previous file versions."
         },
-        "createdAt": { "type": "string", "format": "date-time" },
-        "updatedAt": { "type": "string", "format": "date-time" },
-        "lastOpenedAt": { "type": "string", "format": "date-time" },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastOpenedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
         "metadata": {
           "type": "object",
           "properties": {
-            "pages": { "type": "number" },
-            "mime": { "type": "string" }
+            "pages": {
+              "type": "number"
+            },
+            "mime": {
+              "type": "string"
+            }
           },
           "description": "Additional file-specific metadata."
         }
       },
-      "required": ["title", "owner", "type", "storagePath", "version", "createdAt", "updatedAt"]
+      "required": [
+        "title",
+        "owner",
+        "members",
+        "type",
+        "storagePath",
+        "version",
+        "createdAt",
+        "updatedAt"
+      ]
     }
   },
   "auth": {
@@ -420,9 +470,16 @@
           },
           "description": "Stores metadata for all documents, regardless of owner."
         }
+      },
+      {
+        "path": "/users/{userId}/files/{fileId}",
+        "definition": {
+          "schema": {
+            "$ref": "#/entities/File"
+          },
+          "description": "Stores metadata for a user's private files."
+        }
       }
     ]
   }
 }
-
-    

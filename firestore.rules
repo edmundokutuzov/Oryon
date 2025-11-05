@@ -123,7 +123,8 @@ service cloud.firestore {
      * @path /docs/{docId}
      */
     match /docs/{docId} {
-      allow list: if isAdmin();
+      allow list: if request.auth != null
+                  && request.query.where[0] == ['members', 'array-contains', request.auth.uid];
       allow read: if isViewer(get(/databases/$(database)/documents/docs/$(docId)));
       allow create: if isSignedIn() && request.resource.data.owner == request.auth.uid;
       allow update: if isEditor(get(/databases/$(database)/documents/docs/$(docId)));

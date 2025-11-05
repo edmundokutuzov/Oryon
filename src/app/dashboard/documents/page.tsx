@@ -6,7 +6,7 @@ import { File as FileIcon, FileText, Folder, MoreVertical, Plus, Search, UploadC
 import { useState, useMemo, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { useUser, useFirestore, useMemoFirebase } from '@/firebase';
+import { useUser, useFirestore, useMemoFirebase, useCollection } from '@/firebase';
 import { collection, serverTimestamp, doc, query, where } from 'firebase/firestore';
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { setDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
@@ -19,6 +19,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
+import { ROLES } from '@/config/roles';
 
 const fileTypeIcons: { [key: string]: React.ReactNode } = {
   'doc': <FileText className="w-5 h-5 text-blue-400" />,
@@ -66,11 +67,17 @@ export default function DocumentsPage() {
 
     const userFilesQuery = useMemoFirebase(() => {
         if (!firestore || !user?.uid) return null;
+        
+        // Admin can see all documents, others see only their own.
+        if (user.role === ROLES.ADMIN) {
+            return collection(firestore, 'docs');
+        }
+        
         return query(
             collection(firestore, 'docs'),
             where('members', 'array-contains', user.uid)
         );
-    }, [firestore, user?.uid]);
+    }, [firestore, user?.uid, user?.role]);
     
     const { data: files, isLoading: areFilesLoading } = useCollection<FileData>(userFilesQuery);
 
@@ -80,37 +87,38 @@ export default function DocumentsPage() {
     const uploadInputRef = useRef<HTMLInputElement>(null);
 
     const normalizedItems = useMemo(() => {
-        const fileItems: FileData[] = files ? files : [];
-        const folderItems: FileData[] = folders.map(f => ({
+        const fileItems: (FileData & { itemType: 'file' })[] = files ? files.map(f => ({ ...f, itemType: 'file' })) : [];
+        const folderItems: (FileData & { itemType: 'folder' })[] = folders.map(f => ({
             ...f,
+            itemType: 'folder',
             members: [],
             createdAt: f.updatedAt,
+            url: '',
         }));
         return [...fileItems, ...folderItems];
     }, [files, folders]);
 
     const sortedAndFilteredItems = useMemo(() => {
-    return [...normalizedItems]
-        .filter(item => item.title.toLowerCase().includes(filter.toLowerCase()))
-        .sort((a, b) => {
-            const getSortableValue = (item: FileData, key: keyof FileData | 'size') => {
-                 if (key === 'updatedAt' || key === 'createdAt') {
-                    const value = item[key];
-                    if (!value) return 0;
-                    if (typeof value.toDate === 'function') return value.toDate().getTime(); // Firestore Timestamp
-                    if (typeof value === 'string') return new Date(value).getTime(); // ISO String
-                    return 0;
-                }
-                return item[key as keyof FileData] ?? '';
-            };
+        return [...normalizedItems]
+            .filter(item => item.title.toLowerCase().includes(filter.toLowerCase()))
+            .sort((a, b) => {
+                const getSortableValue = (item: FileData, key: keyof FileData | 'size') => {
+                    const value = item[key as keyof FileData];
+                    if (key === 'updatedAt' || key === 'createdAt') {
+                        if (!value) return 0;
+                        if (typeof value.toDate === 'function') return value.toDate().getTime(); // Firestore Timestamp
+                        if (typeof value === 'string') return new Date(value).getTime(); // ISO String
+                    }
+                    return value ?? '';
+                };
 
-            const aValue = getSortableValue(a, sort.key as keyof FileData);
-            const bValue = getSortableValue(b, sort.key as keyof FileData);
-            
-            if (aValue < bValue) return sort.order === 'asc' ? -1 : 1;
-            if (aValue > bValue) return sort.order === 'asc' ? 1 : -1;
-            return 0;
-        });
+                const aValue = getSortableValue(a, sort.key as keyof FileData);
+                const bValue = getSortableValue(b, sort.key as keyof FileData);
+                
+                if (aValue < bValue) return sort.order === 'asc' ? -1 : 1;
+                if (aValue > bValue) return sort.order === 'asc' ? 1 : -1;
+                return 0;
+            });
     }, [normalizedItems, filter, sort]);
 
 
@@ -197,7 +205,7 @@ export default function DocumentsPage() {
     };
 
     const formatSize = (bytes: number) => {
-        if (bytes === 0) return '0 KB';
+        if (bytes === 0) return '-';
         const k = 1024;
         const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -298,7 +306,7 @@ export default function DocumentsPage() {
                                         {getFileIcon(item.type)}
                                         {item.title}
                                     </TableCell>
-                                    <TableCell className="text-muted-foreground">{item.owner === user?.uid ? "Eu" : "Outro"}</TableCell>
+                                    <TableCell className="text-muted-foreground">{item.owner === user?.uid ? 'Eu' : 'Outro'}</TableCell>
                                     <TableCell className="text-muted-foreground">
                                         {formatDate(item.updatedAt)}
                                     </TableCell>

@@ -11,6 +11,7 @@ import { useTheme } from 'next-themes';
 import { useState } from 'react';
 import { useUser } from '@/firebase';
 import AdminPanel from './_components/admin-panel';
+import { ROLES } from '@/config/roles';
 
 
 const translations: any = {
@@ -128,7 +129,7 @@ export default function SettingsPage() {
         <div className="p-6 fade-in">
             <h1 className="text-3xl font-bold text-foreground mb-8">{t.title}</h1>
             
-            {user?.email === 'admin@txunabet.com' && (
+            {user?.role === ROLES.ADMIN && (
                 <div className="mb-8">
                     <AdminPanel />
                 </div>

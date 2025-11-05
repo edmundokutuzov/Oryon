@@ -73,34 +73,48 @@ export default function DocumentsPage() {
     }, [files, folders]);
 
     const sortedAndFilteredItems = useMemo(() => {
-        return [...filesAndFolders]
-            .filter(item => item.name.toLowerCase().includes(filter.toLowerCase()))
-            .sort((a, b) => {
-                const aValue = a[sort.key as keyof typeof a] as any;
-                const bValue = b[sort.key as keyof typeof b] as any;
+    return [...filesAndFolders]
+        .filter(item => item.name.toLowerCase().includes(filter.toLowerCase()))
+        .sort((a, b) => {
+            const aValue = a[sort.key as keyof typeof a] as any;
+            const bValue = b[sort.key as keyof typeof b] as any;
 
-                if (sort.key === 'size') {
-                    const sizeA = a.type === 'folder' ? -1 : parseFloat(a.size);
-                    const sizeB = b.type === 'folder' ? -1 : parseFloat(b.size);
-                    if (sizeA < sizeB) return sort.order === 'asc' ? -1 : 1;
-                    if (sizeA > sizeB) return sort.order === 'asc' ? 1 : -1;
-                    return 0;
-                }
-                
-                if (a.type !== 'folder' && b.type !=='folder' && (sort.key === 'updatedAt' || sort.key === 'createdAt')) {
-                    const dateA = a[sort.key]?.toDate ? a[sort.key].toDate().getTime() : 0;
-                    const dateB = b[sort.key]?.toDate ? b[sort.key].toDate().getTime() : 0;
-                     if (dateA < dateB) return sort.order === 'asc' ? -1 : 1;
-                    if (dateA > dateB) return sort.order === 'asc' ? 1 : -1;
-                    return 0;
-                }
-
-
-                if (aValue < bValue) return sort.order === 'asc' ? -1 : 1;
-                if (aValue > bValue) return sort.order === 'asc' ? 1 : -1;
+            if (sort.key === 'size') {
+                const sizeA = a.type === 'folder' ? -1 : parseFloat(a.size);
+                const sizeB = b.type === 'folder' ? -1 : parseFloat(b.size);
+                 if (sizeA < sizeB) return sort.order === 'asc' ? -1 : 1;
+                if (sizeA > sizeB) return sort.order === 'asc' ? 1 : -1;
                 return 0;
-            });
-    }, [filesAndFolders, filter, sort]);
+            }
+            
+            if (sort.key === 'updatedAt' || sort.key === 'createdAt') {
+                // Helper to safely get a comparable timestamp
+                const getTimestamp = (item: typeof a) => {
+                    const value = item[sort.key as keyof typeof item];
+                    if (value?.toDate) { // Firebase Timestamp object
+                        return value.toDate().getTime();
+                    }
+                    if (typeof value === 'string') { // ISO string date
+                        const date = new Date(value);
+                        return isNaN(date.getTime()) ? 0 : date.getTime();
+                    }
+                    return 0; // Default for non-date types
+                };
+
+                const dateA = getTimestamp(a);
+                const dateB = getTimestamp(b);
+                
+                if (dateA < dateB) return sort.order === 'asc' ? -1 : 1;
+                if (dateA > dateB) return sort.order === 'asc' ? 1 : -1;
+                return 0;
+            }
+
+
+            if (aValue < bValue) return sort.order === 'asc' ? -1 : 1;
+            if (aValue > bValue) return sort.order === 'asc' ? 1 : -1;
+            return 0;
+        });
+}, [filesAndFolders, filter, sort]);
 
     const handleSort = (key: string) => {
         setSort(prev => ({
@@ -287,3 +301,4 @@ export default function DocumentsPage() {
         </div>
     );
 }
+    

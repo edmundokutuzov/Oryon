@@ -38,16 +38,18 @@ const getFileIcon = (fileType: string) => {
 }
 
 type File = {
-  id: string,
-  title: string,
-  type: string,
-  size: number,
-  url: string,
-  owner: string,
-  createdAt: any,
-  updatedAt: any
+  id: string;
+  title: string;
+  type: string;
+  size: number;
+  url: string;
+  owner: string;
+  members: string[];
+  createdAt: any;
+  updatedAt: any;
 };
-type Folder = { id: string, name: string, type: 'folder', lastModified: string, size: string, owner: string };
+
+type Folder = { id: string, name: string, type: 'folder', updatedAt: string, size: string, owner: string };
 
 export default function DocumentsPage() {
     const { toast } = useToast();
@@ -89,30 +91,35 @@ export default function DocumentsPage() {
                 return 0;
             }
             
-             if (sort.key === 'updatedAt' || sort.key === 'createdAt') {
-                const getTimestamp = (item: any) => {
-                    const value = item[sort.key as keyof typeof item];
-                    if (value && typeof value.toDate === 'function') { // Firebase Timestamp
-                        return value.toDate().getTime();
-                    }
-                    if (typeof value === 'string') { // ISO string
-                        const date = new Date(value);
-                        return isNaN(date.getTime()) ? 0 : date.getTime();
-                    }
-                    return 0;
-                };
+            if (sort.key === 'updatedAt' || sort.key === 'createdAt') {
+              const getTimestamp = (item: any) => {
+                  const value = item[sort.key as keyof typeof item];
+                  if (!value) return 0;
 
-                const dateA = getTimestamp(a);
-                const dateB = getTimestamp(b);
-                
-                if (dateA < dateB) return sort.order === 'asc' ? -1 : 1;
-                if (dateA > dateB) return sort.order === 'asc' ? 1 : -1;
-                return 0;
+                  if (typeof value.toDate === 'function') { // Firebase Timestamp
+                      return value.toDate().getTime();
+                  }
+                  if (typeof value === 'string') { // ISO string
+                      const date = new Date(value);
+                      return isNaN(date.getTime()) ? 0 : date.getTime();
+                  }
+                  return 0;
+              };
+
+              const dateA = getTimestamp(a);
+              const dateB = getTimestamp(b);
+              
+              if (dateA < dateB) return sort.order === 'asc' ? -1 : 1;
+              if (dateA > dateB) return sort.order === 'asc' ? 1 : -1;
+              return 0;
             }
+            
+            // Generic string/number comparison for other fields like 'title' or 'owner'
+            const valA = a[sort.key as keyof typeof a] ?? '';
+            const valB = b[sort.key as keyof typeof b] ?? '';
 
-
-            if (aValue < bValue) return sort.order === 'asc' ? -1 : 1;
-            if (aValue > bValue) return sort.order === 'asc' ? 1 : -1;
+            if (valA < valB) return sort.order === 'asc' ? -1 : 1;
+            if (valA > valB) return sort.order === 'asc' ? 1 : -1;
             return 0;
         });
 }, [filesAndFolders, filter, sort]);
@@ -146,16 +153,16 @@ export default function DocumentsPage() {
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                     const fileDocRef = doc(collection(firestore, 'docs'));
-                    const newFile: Omit<File, 'id'> = {
+                    const newFile: Omit<File, 'id' | 'url'> = {
                         title: file.name,
                         type: file.type,
                         size: file.size,
-                        url: downloadURL,
                         owner: user.uid,
+                        members: [user.uid],
                         createdAt: serverTimestamp(),
                         updatedAt: serverTimestamp()
                     };
-                    setDocumentNonBlocking(fileDocRef, newFile, {});
+                    setDocumentNonBlocking(fileDocRef, { ...newFile, url: downloadURL }, {});
                     toast({ title: 'Upload Concluído', description: `"${file.name}" foi carregado com sucesso.`});
                 });
             }
@@ -252,7 +259,7 @@ export default function DocumentsPage() {
                         <TableHeader>
                             <TableRow className="border-b-border hover:bg-transparent">
                                 <TableHead onClick={() => handleSort('title')} className="cursor-pointer"><span className="flex items-center gap-2">Nome <ArrowUpDown className="w-4 h-4"/></span></TableHead>
-                                <TableHead>Proprietário</TableHead>
+                                <TableHead onClick={() => handleSort('owner')} className="cursor-pointer"><span className="flex items-center gap-2">Proprietário <ArrowUpDown className="w-4 h-4"/></span></TableHead>
                                 <TableHead onClick={() => handleSort('updatedAt')} className="cursor-pointer"><span className="flex items-center gap-2">Última Modificação <ArrowUpDown className="w-4 h-4"/></span></TableHead>
                                 <TableHead onClick={() => handleSort('size')} className="cursor-pointer"><span className="flex items-center gap-2">Tamanho <ArrowUpDown className="w-4 h-4"/></span></TableHead>
                                 <TableHead className="text-right">Ações</TableHead>
@@ -283,7 +290,7 @@ export default function DocumentsPage() {
                                     </TableCell>
                                     <TableCell className="text-muted-foreground">{item.owner === user?.uid ? "Eu" : "Outro"}</TableCell>
                                     <TableCell className="text-muted-foreground">
-                                        {item.type !== 'folder' && item.updatedAt?.toDate ? item.updatedAt.toDate().toLocaleDateString('pt-PT') : '-'}
+                                        {item.type !== 'folder' && (item as File).updatedAt?.toDate ? (item as File).updatedAt.toDate().toLocaleDateString('pt-PT') : (item as Folder).updatedAt ? new Date((item as Folder).updatedAt).toLocaleDateString('pt-PT') : '-'}
                                     </TableCell>
                                     <TableCell className="text-muted-foreground">{item.size}</TableCell>
                                     <TableCell className="text-right">
@@ -302,4 +309,6 @@ export default function DocumentsPage() {
         </div>
     );
 }
+    
+
     

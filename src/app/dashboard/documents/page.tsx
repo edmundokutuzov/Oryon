@@ -6,7 +6,7 @@ import { File as FileIcon, FileText, Folder, MoreVertical, Plus, Search, UploadC
 import { useState, useMemo, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { useUser, useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { useUser, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, serverTimestamp, doc, query, where } from 'firebase/firestore';
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { setDocumentNonBlocking, deleteDocumentNonBlocking } from '@/firebase/non-blocking-updates';
@@ -37,19 +37,27 @@ const getFileIcon = (fileType: string) => {
     return match ? fileTypeIcons[match] : fileTypeIcons.default;
 }
 
-type File = {
+type FileData = {
   id: string;
   title: string;
   type: string;
   size: number;
-  url: string;
+  url?: string;
   owner: string;
   members: string[];
   createdAt: any;
   updatedAt: any;
 };
 
-type Folder = { id: string, name: string, type: 'folder', updatedAt: string, size: string, owner: string };
+type FolderData = { 
+  id: string, 
+  title: string, 
+  type: 'folder', 
+  updatedAt: any, 
+  size: number,
+  owner: string 
+};
+
 
 export default function DocumentsPage() {
     const { toast } = useToast();
@@ -64,65 +72,47 @@ export default function DocumentsPage() {
         );
     }, [firestore, user?.uid]);
     
-    const { data: files, isLoading: areFilesLoading } = useCollection<File>(userFilesQuery);
+    const { data: files, isLoading: areFilesLoading } = useCollection<FileData>(userFilesQuery);
 
-    const [folders, setFolders] = useState<Folder[]>([]);
+    const [folders, setFolders] = useState<FolderData[]>([]);
     const [filter, setFilter] = useState('');
     const [sort, setSort] = useState({ key: 'title', order: 'asc' });
     const uploadInputRef = useRef<HTMLInputElement>(null);
 
-    const filesAndFolders = useMemo(() => {
-        const fileItems = files ? files.map(f => ({ ...f, name: f.title, size: (f.size / (1024*1024)).toFixed(2) + ' MB' })) : [];
-        return [...fileItems, ...folders];
+    const normalizedItems = useMemo(() => {
+        const fileItems: FileData[] = files ? files : [];
+        const folderItems: FileData[] = folders.map(f => ({
+            ...f,
+            members: [],
+            createdAt: f.updatedAt,
+        }));
+        return [...fileItems, ...folderItems];
     }, [files, folders]);
 
     const sortedAndFilteredItems = useMemo(() => {
-    return [...filesAndFolders]
-        .filter(item => item.name.toLowerCase().includes(filter.toLowerCase()))
+    return [...normalizedItems]
+        .filter(item => item.title.toLowerCase().includes(filter.toLowerCase()))
         .sort((a, b) => {
-            const aValue = a[sort.key as keyof typeof a] as any;
-            const bValue = b[sort.key as keyof typeof b] as any;
+            const getSortableValue = (item: FileData, key: keyof FileData | 'size') => {
+                 if (key === 'updatedAt' || key === 'createdAt') {
+                    const value = item[key];
+                    if (!value) return 0;
+                    if (typeof value.toDate === 'function') return value.toDate().getTime(); // Firestore Timestamp
+                    if (typeof value === 'string') return new Date(value).getTime(); // ISO String
+                    return 0;
+                }
+                return item[key as keyof FileData] ?? '';
+            };
 
-            if (sort.key === 'size') {
-                const sizeA = a.type === 'folder' ? -1 : parseFloat(a.size);
-                const sizeB = b.type === 'folder' ? -1 : parseFloat(b.size);
-                 if (sizeA < sizeB) return sort.order === 'asc' ? -1 : 1;
-                if (sizeA > sizeB) return sort.order === 'asc' ? 1 : -1;
-                return 0;
-            }
+            const aValue = getSortableValue(a, sort.key as keyof FileData);
+            const bValue = getSortableValue(b, sort.key as keyof FileData);
             
-            if (sort.key === 'updatedAt' || sort.key === 'createdAt') {
-              const getTimestamp = (item: any) => {
-                  const value = item[sort.key as keyof typeof item];
-                  if (!value) return 0;
-
-                  if (typeof value.toDate === 'function') { // Firebase Timestamp
-                      return value.toDate().getTime();
-                  }
-                  if (typeof value === 'string') { // ISO string
-                      const date = new Date(value);
-                      return isNaN(date.getTime()) ? 0 : date.getTime();
-                  }
-                  return 0;
-              };
-
-              const dateA = getTimestamp(a);
-              const dateB = getTimestamp(b);
-              
-              if (dateA < dateB) return sort.order === 'asc' ? -1 : 1;
-              if (dateA > dateB) return sort.order === 'asc' ? 1 : -1;
-              return 0;
-            }
-            
-            // Generic string/number comparison for other fields like 'title' or 'owner'
-            const valA = a[sort.key as keyof typeof a] ?? '';
-            const valB = b[sort.key as keyof typeof b] ?? '';
-
-            if (valA < valB) return sort.order === 'asc' ? -1 : 1;
-            if (valA > valB) return sort.order === 'asc' ? 1 : -1;
+            if (aValue < bValue) return sort.order === 'asc' ? -1 : 1;
+            if (aValue > bValue) return sort.order === 'asc' ? 1 : -1;
             return 0;
         });
-}, [filesAndFolders, filter, sort]);
+    }, [normalizedItems, filter, sort]);
+
 
     const handleSort = (key: string) => {
         setSort(prev => ({
@@ -153,9 +143,9 @@ export default function DocumentsPage() {
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                     const fileDocRef = doc(collection(firestore, 'docs'));
-                    const newFile: Omit<File, 'id' | 'url'> = {
+                    const newFile: Omit<FileData, 'id' | 'url'> = {
                         title: file.name,
-                        type: file.type,
+                        type: file.type || 'default',
                         size: file.size,
                         owner: user.uid,
                         members: [user.uid],
@@ -205,6 +195,26 @@ export default function DocumentsPage() {
         }
         return <button onClick={handleClick} className="w-full h-full disabled:opacity-50" disabled={comingSoon}>{content}</button>;
     };
+
+    const formatSize = (bytes: number) => {
+        if (bytes === 0) return '0 KB';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    };
+    
+    const formatDate = (date: any) => {
+        if (!date) return '-';
+        if (typeof date.toDate === 'function') { // Firebase Timestamp
+            return date.toDate().toLocaleDateString('pt-PT');
+        }
+        if (typeof date === 'string') { // ISO String
+            return new Date(date).toLocaleDateString('pt-PT');
+        }
+        return '-';
+    };
+
 
     return (
         <div className="p-6 fade-in">
@@ -286,16 +296,16 @@ export default function DocumentsPage() {
                                 <TableRow key={item.id} className="border-b-border/50 hover:bg-muted/50">
                                     <TableCell className="font-medium text-foreground flex items-center gap-3">
                                         {getFileIcon(item.type)}
-                                        {item.name}
+                                        {item.title}
                                     </TableCell>
                                     <TableCell className="text-muted-foreground">{item.owner === user?.uid ? "Eu" : "Outro"}</TableCell>
                                     <TableCell className="text-muted-foreground">
-                                        {item.type !== 'folder' && (item as File).updatedAt?.toDate ? (item as File).updatedAt.toDate().toLocaleDateString('pt-PT') : (item as Folder).updatedAt ? new Date((item as Folder).updatedAt).toLocaleDateString('pt-PT') : '-'}
+                                        {formatDate(item.updatedAt)}
                                     </TableCell>
-                                    <TableCell className="text-muted-foreground">{item.size}</TableCell>
+                                    <TableCell className="text-muted-foreground">{formatSize(item.size)}</TableCell>
                                     <TableCell className="text-right">
                                         <Button variant="ghost" size="icon" onClick={() => toast({title: "Funcionalidade em breve"})}><Share2 className="w-4 h-4 text-primary/80" /></Button>
-                                        <a href={item.type !== 'folder' ? (item as File).url : '#'} download={item.name} target="_blank" rel="noopener noreferrer">
+                                        <a href={item.url} download={item.title} target="_blank" rel="noopener noreferrer">
                                             <Button variant="ghost" size="icon" disabled={item.type === 'folder'}><Download className="w-4 h-4 text-primary/80" /></Button>
                                         </a>
                                         <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)}><Trash2 className="w-4 h-4 text-red-400/80" /></Button>
@@ -309,6 +319,3 @@ export default function DocumentsPage() {
         </div>
     );
 }
-    
-
-    

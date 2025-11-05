@@ -1,3 +1,4 @@
+
 {
   "name": "enterprise-command",
   "version": "0.1.0",
@@ -9,7 +10,8 @@
     "build": "NODE_ENV=production next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "deploy:functions": "firebase deploy --only functions"
   },
   "dependencies": {
     "@genkit-ai/google-genai": "^1.21.0",
@@ -41,6 +43,7 @@
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.1.5",
     "firebase": "^10.12.2",
+    "firebase-admin": "^12.1.1",
     "framer-motion": "^11.2.12",
     "genkit": "^1.21.0",
     "lucide-react": "^0.489.0",
@@ -59,6 +62,8 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "firebase-functions": "^5.0.1",
+    "firebase-functions-test": "^3.3.0",
     "genkit-cli": "^1.21.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
@@ -66,4 +71,3 @@
     "typescript": "^5"
   }
 }
- 

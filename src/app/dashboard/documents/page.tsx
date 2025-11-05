@@ -1,3 +1,4 @@
+
 'use client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -67,11 +68,13 @@ export default function DocumentsPage() {
 
     const userFilesQuery = useMemoFirebase(() => {
         if (!firestore || !user?.uid) return null;
-        
+
+        // Admin can see all documents
         if (user.role === ROLES.ADMIN) {
             return collection(firestore, 'docs');
         }
         
+        // Non-admins only see documents they are members of
         return query(
             collection(firestore, 'docs'),
             where('members', 'array-contains', user.uid)
@@ -86,7 +89,7 @@ export default function DocumentsPage() {
     const uploadInputRef = useRef<HTMLInputElement>(null);
     
     const normalizedItems = useMemo(() => {
-        const fileItems: (FileData & { itemType: 'file' })[] = files ? files.map(f => ({ ...f, itemType: 'file' })) : [];
+        const fileItems = files ? files.map(f => ({ ...f, itemType: 'file' })) : [];
         const folderItems: (FileData & { itemType: 'folder' })[] = folders.map(f => ({
             ...f,
             itemType: 'folder',
@@ -109,24 +112,21 @@ export default function DocumentsPage() {
             .sort((a, b) => {
                 const getSortableValue = (item: any, key: string) => {
                     const value = item[key as keyof typeof item];
-
                     if (key === 'updatedAt' || key === 'createdAt') {
-                        if (!value) return 0;
-                        // Handle Firebase Timestamps
-                        if (typeof value.toDate === 'function') {
+                         if (!value) return 0;
+                         if (typeof value.toDate === 'function') { // Firebase Timestamp
                             return value.toDate().getTime();
-                        }
-                        // Handle ISO strings (from our local folders)
-                        if (typeof value === 'string') {
+                         }
+                         if (typeof value === 'string') { // ISO String from local folders
                             const date = new Date(value);
                             return isNaN(date.getTime()) ? 0 : date.getTime();
-                        }
-                        return 0;
+                         }
+                         return 0;
                     }
                     if (key === 'owner') {
-                         return value || '';
+                        const ownerValue = item.owner || '';
+                        return ownerValue;
                     }
-                    
                     return value ?? '';
                 };
 

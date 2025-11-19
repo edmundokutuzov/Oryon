@@ -1,4 +1,3 @@
-
 'use client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -77,7 +76,7 @@ const translations: any = {
         saveChanges: "Save Changes",
         appearanceTitle: "Appearance",
         appearanceDescription: "Customize the interface's appearance.",
-        theme: "Theme",
+        theme: "Tema",
         dark: "Dark",
         light: "Light",
         fontSize: "Font Size",

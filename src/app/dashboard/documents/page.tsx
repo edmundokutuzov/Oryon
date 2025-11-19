@@ -1,4 +1,3 @@
-
 'use client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -68,10 +67,6 @@ export default function DocumentsPage() {
 
     const userFilesQuery = useMemoFirebase(() => {
         if (!firestore || !user?.uid) return null;
-
-        // ALL users (including admin) will query for documents they are members of.
-        // The security rules will grant the admin broader access if needed for other operations,
-        // but for listing, this is the safest and most scalable approach.
         return query(
             collection(firestore, 'docs'),
             where('members', 'array-contains', user.uid)

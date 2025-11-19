@@ -1,5 +1,3 @@
-
-
 'use client';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Calendar } from '@/components/ui/calendar';
@@ -228,5 +226,3 @@ export default function CalendarPage() {
     </div>
   );
 }
-
-    

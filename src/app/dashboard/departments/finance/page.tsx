@@ -1,4 +1,3 @@
-
 'use client'
 import { getDepartment, getDepartmentMembers, getDepartmentProjects } from "@/lib/data";
 import DepartmentPageLayout from "../_components/department-layout";

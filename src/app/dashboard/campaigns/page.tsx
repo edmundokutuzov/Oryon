@@ -1,3 +1,4 @@
+
 'use client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { campaigns as initialCampaigns } from '@/lib/data';

@@ -2,12 +2,7 @@
 import Link from 'next/link';
 import { Target, Gamepad2, User, Video } from 'lucide-react'; 
 import { cn } from '@/lib/utils';
-
-export type Context = {
-  type: 'campaign' | 'game_operation' | 'user' | 'meeting';
-  id: string;
-  name: string;
-};
+import type { Context } from '@/lib/types';
 
 const contextConfig = {
   campaign: { icon: Target, color: 'bg-green-500/20 text-green-300', path: '/dashboard/campaigns' },

@@ -500,5 +500,3 @@ function VirtualKeyboard({ onKeyPress }: { onKeyPress: (key: string) => void }) 
         </div>
     );
 }
-
-    

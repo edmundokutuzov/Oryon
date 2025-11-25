@@ -7,9 +7,17 @@ import { defineSecret } from "firebase-functions/params";
 import { z } from "zod";
 import Stripe from "stripe";
 import * as logger from "firebase-functions/logger";
+import { DatabaseService } from "./services/DatabaseService";
+
 
 admin.initializeApp();
 const db = admin.firestore();
+
+// ============================================================================
+// ARCHITECTURAL CORE: GLOBAL CONFIGURATION
+// ============================================================================
+const REGION = "europe-west1";
+
 
 // ============================================================================
 // ID & ACCESS MANAGEMENT (IAM) TRIGGERS
@@ -21,24 +29,33 @@ const db = admin.firestore();
  * This function runs BEFORE a user is created in Firebase Auth.
  * If it throws an error, the user creation is cancelled.
  */
-export const beforecreate = beforeUserCreated({ region: "us-central1" }, (event) => {
-  const user = event.data;
-  
-  const disposableDomains = ["tempmail.com", "10minutemail.com", "mailinator.com"];
-  const domain = user.email?.split("@")[1];
+export const beforecreate = beforeUserCreated(
+  { 
+    region: REGION,
+    secrets: [],
+    cpu: 1,
+    memory: "1GiB",
+    minInstances: 1, // Keep hot to ensure fast sign-ups
+    concurrency: 80,
+  }, 
+  (event) => {
+    const user = event.data;
+    
+    const disposableDomains = ["tempmail.com", "10minutemail.com", "mailinator.com"];
+    const domain = user.email?.split("@")[1];
 
-  if (domain && disposableDomains.includes(domain)) {
-    logger.warn(`Blocking registration from disposable email: ${user.email}`);
-    throw new HttpsError("permission-denied", "Temporary email domains are not permitted.");
-  }
-  
-  if (!user.emailVerified) {
-    // This can be enabled to force email verification BEFORE the account is even created.
-    // logger.warn(`Blocking unverified email: ${user.email}`);
-    // throw new HttpsError("permission-denied", "Email address must be verified before signing up.");
-  }
+    if (domain && disposableDomains.includes(domain)) {
+      logger.warn(`Blocking registration from disposable email: ${user.email}`);
+      throw new HttpsError("permission-denied", "Temporary email domains are not permitted.");
+    }
+    
+    if (!user.emailVerified) {
+      // This can be enabled to force email verification BEFORE the account is even created.
+      // logger.warn(`Blocking unverified email: ${user.email}`);
+      // throw new HttpsError("permission-denied", "Email address must be verified before signing up.");
+    }
 
-  logger.info(`User validation passed for: ${user.email}`);
+    logger.info(`User validation passed for: ${user.email}`);
 });
 
 /**
@@ -46,31 +63,39 @@ export const beforecreate = beforeUserCreated({ region: "us-central1" }, (event)
  * This function runs AFTER a user is successfully created in Firebase Auth.
  * It syncs the user to Firestore and assigns a default role via Custom Claims.
  */
-export const oncreate = functions.auth.user().onCreate(async (user) => {
-  logger.info(`New user created: ${user.uid}, Email: ${user.email}. Starting onboarding.`);
-  
-  try {
-    // 1. Assign a default role using Custom Claims.
-    // This is read by Security Rules for immediate, secure access control.
-    await admin.auth().setCustomUserClaims(user.uid, { role: "customer" }); // e.g., 'customer', 'viewer'
+export const oncreate = functions.auth.user().onCreate(
+  {
+    region: REGION,
+    cpu: 1,
+    memory: "1GiB",
+    minInstances: 1, // Keep hot to ensure new users have profiles instantly
+    concurrency: 80,
+  },
+  async (user) => {
+    logger.info(`New user created: ${user.uid}, Email: ${user.email}. Starting onboarding.`);
     
-    // 2. Create the user's profile document in Firestore.
-    const userRef = db.collection("users").doc(user.uid);
-    await userRef.set({
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName || 'Novo Utilizador',
-      role: 'customer', // Also store role here for client-side display convenience.
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      status: "active",
-      accountBalance: 0, // Initialize financial data
-      preferences: { theme: "dark", notifications: true } // Sensible defaults
-    });
+    try {
+      // 1. Assign a default role using Custom Claims.
+      // This is read by Security Rules for immediate, secure access control.
+      await admin.auth().setCustomUserClaims(user.uid, { role: "customer" }); // e.g., 'customer', 'viewer'
+      
+      // 2. Create the user's profile document in Firestore.
+      const userRef = db.collection("users").doc(user.uid);
+      await userRef.set({
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName || 'Novo Utilizador',
+        role: 'customer', // Also store role here for client-side display convenience.
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        status: "active",
+        accountBalance: 0, // Initialize financial data
+        preferences: { theme: "dark", notifications: true } // Sensible defaults
+      });
 
-    logger.info(`Successfully onboarded user ${user.uid}. Assigned 'customer' role.`);
-  } catch (error) {
-    logger.error(`Failed to complete user setup for ${user.uid}`, error);
-  }
+      logger.info(`Successfully onboarded user ${user.uid}. Assigned 'customer' role.`);
+    } catch (error) {
+      logger.error(`Failed to complete user setup for ${user.uid}`, error);
+    }
 });
 
 
@@ -160,10 +185,13 @@ export class OrderService {
   private stripe: Stripe;
   private stockService: StockService;
   private taxService: TaxService;
+  private databaseService: DatabaseService;
+
   private constructor(stripeKey: string) {
     this.stripe = new Stripe(stripeKey, { apiVersion: "2024-06-20", typescript: true });
     this.stockService = StockService.getInstance();
     this.taxService = TaxService.getInstance();
+    this.databaseService = DatabaseService.getInstance();
     logger.info("OrderService Singleton Initialized (Warm Start)");
   }
   public static getInstance(stripeKey: string): OrderService {
@@ -174,14 +202,19 @@ export class OrderService {
   }
   async processNewOrder(orderData: { itemId: string; quantity: number; amount: number; currency: "usd" | "brl" | "eur"; paymentMethodId: string; customerId: string; }) {
     const { itemId, quantity, amount, currency, paymentMethodId, customerId } = orderData;
+    
+    // Performance: Run independent checks in parallel
     const [hasStock, taxAmount] = await Promise.all([
       this.stockService.verifyStock(itemId, quantity),
       this.taxService.calculateTax(amount),
     ]);
+    
     if (!hasStock) {
       throw new HttpsError("failed-precondition", `Item ${itemId} is out of stock.`);
     }
+    
     const totalAmount = amount + taxAmount;
+    
     const paymentIntent = await this.stripe.paymentIntents.create({
       amount: totalAmount,
       currency,
@@ -191,6 +224,15 @@ export class OrderService {
       automatic_payment_methods: { enabled: true, allow_redirects: "never" },
       metadata: { itemId, quantity, tax_amount: taxAmount },
     });
+    
+    // Example of calling another service
+    await this.databaseService.addDocument('orders', {
+      orderId: paymentIntent.id,
+      customerId: customerId,
+      amount: totalAmount,
+      createdAt: new Date().toISOString()
+    });
+
     return { clientSecret: paymentIntent.client_secret, status: paymentIntent.status, totalAmount };
   }
 }
@@ -210,45 +252,62 @@ const PlaceOrderSchema = z.object({
   paymentMethodId: z.string().startsWith("pm_")
 });
 
-export const placeOrder = onCall({ secrets: [stripeApiKey], region: "us-central1", enforceAppCheck: true }, async (request) => {
-  if (!request.auth) {
-    throw new HttpsError("unauthenticated", "Authentication is required.");
-  }
-  const uid = request.auth.uid;
-  const eventId = request.auth.token.jti;
-  if (!eventId) {
-    throw new HttpsError("invalid-argument", "Event ID is missing, cannot ensure idempotency.");
-  }
-  const validation = PlaceOrderSchema.safeParse(request.data);
-  if (!validation.success) {
-    logger.warn("Invalid order data received", { uid, errors: validation.error.flatten() });
-    throw new HttpsError("invalid-argument", "Invalid or corrupt order data provided.");
-  }
-  try {
-    const orderService = OrderService.getInstance(stripeApiKey.value());
-    const result = await withIdempotency(eventId, () => 
-      orderService.processNewOrder({
-        ...validation.data,
-        customerId: uid,
-      })
-    );
-    return { status: "success", orderResult: result };
-  } catch (error) {
-    logger.error("Order processing failed unexpectedly", { uid, error });
-    if (error instanceof HttpsError) {
-      throw error;
+export const placeOrder = onCall(
+  { 
+    secrets: [stripeApiKey], 
+    region: REGION, 
+    enforceAppCheck: true,
+    cpu: 1,
+    memory: "1GiB",
+    minInstances: 1, // Keep hot for fast payments
+    concurrency: 80,
+  }, 
+  async (request) => {
+    if (!request.auth) {
+      throw new HttpsError("unauthenticated", "Authentication is required.");
     }
-    if (error instanceof Stripe.errors.StripeCardError) {
-      throw new HttpsError("aborted", error.message);
+    const uid = request.auth.uid;
+    const eventId = request.auth.token.jti;
+    if (!eventId) {
+      throw new HttpsError("invalid-argument", "Event ID is missing, cannot ensure idempotency.");
     }
-    throw new HttpsError("internal", "The system encountered an unexpected issue and has recovered.");
-  }
+    
+    // Firewall: Zod Validation
+    const validation = PlaceOrderSchema.safeParse(request.data);
+    if (!validation.success) {
+      logger.warn("Invalid order data received", { uid, errors: validation.error.flatten() });
+      throw new HttpsError("invalid-argument", "Invalid or corrupt order data provided.");
+    }
+    
+    try {
+      // Delegation: Call the singleton service
+      const orderService = OrderService.getInstance(stripeApiKey.value());
+      
+      // Idempotency Wrapper
+      const result = await withIdempotency(eventId, () => 
+        orderService.processNewOrder({
+          ...validation.data,
+          customerId: uid,
+        })
+      );
+      
+      return { status: "success", orderResult: result };
+    } catch (error) {
+      logger.error("Order processing failed unexpectedly", { uid, error });
+      if (error instanceof HttpsError) {
+        throw error;
+      }
+      if (error instanceof Stripe.errors.StripeCardError) {
+        throw new HttpsError("aborted", error.message);
+      }
+      throw new HttpsError("internal", "The system encountered an unexpected issue and has recovered.");
+    }
 });
 
 
 const ADMIN_SECRET = "oryon-super-secret-key-2024";
 
-export const setAdminRole = functions.https.onCall(async (data, context) => {
+export const setAdminRole = functions.https.onCall({ region: REGION }, async (data, context) => {
   if (context.auth?.token.admin !== true && data.adminSecret !== ADMIN_SECRET) {
     throw new functions.https.HttpsError("permission-denied", "Only administrators can add other administrators.");
   }
@@ -271,5 +330,6 @@ export const setAdminRole = functions.https.onCall(async (data, context) => {
     throw new functions.https.HttpsError("internal", "An internal error occurred while trying to set the admin role.");
   }
 });
+    
 
     

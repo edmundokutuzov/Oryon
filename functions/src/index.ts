@@ -8,6 +8,70 @@ import Stripe from "stripe";
 import * as logger from "firebase-functions/logger";
 
 admin.initializeApp();
+const db = admin.firestore();
+
+// ============================================================================
+// ARCHITECTURAL CORE: IDEMPOTENCY WRAPPER
+// Ensures that a function is executed only once, even if called multiple times.
+// This is critical for financial transactions to prevent duplicate charges.
+// ============================================================================
+
+/**
+ * A Higher-Order Function that wraps business logic to enforce idempotency.
+ * @param eventId A unique identifier for the request, from context.
+ * @param func The function to execute idempotently.
+ * @returns The result of the function execution.
+ */
+async function withIdempotency<T>(
+  eventId: string,
+  func: () => Promise<T>
+): Promise<T> {
+  const idempotencyRef = db.collection("idempotency_keys").doc(eventId);
+
+  // 1. Check if we've already processed this event.
+  const doc = await idempotencyRef.get();
+  if (doc.exists && doc.data()?.status === "completed") {
+    logger.info(`Idempotency key ${eventId} already processed. Returning cached result.`);
+    return doc.data()?.response as T;
+  }
+  if (doc.exists && doc.data()?.status === "processing") {
+     throw new HttpsError("aborted", "Request is already being processed.");
+  }
+
+
+  // 2. Mark the event as "processing" within a transaction to prevent race conditions.
+  await db.runTransaction(async (transaction) => {
+    const freshDoc = await transaction.get(idempotencyRef);
+    if (freshDoc.exists) {
+        // This check inside the transaction is the key to preventing race conditions.
+        return; 
+    }
+    transaction.set(idempotencyRef, { status: "processing", createdAt: new Date() });
+  });
+
+
+  try {
+    // 3. Execute the actual business logic.
+    const result = await func();
+
+    // 4. Atomically save the result and mark as "completed".
+    await idempotencyRef.set({
+      status: "completed",
+      response: result,
+    }, { merge: true });
+
+    return result;
+  } catch (error) {
+    // 5. If the logic fails, mark it as "failed" so it can be retried if necessary.
+     await idempotencyRef.set({
+      status: "failed",
+      error: error instanceof Error ? error.message : "Unknown error",
+    }, { merge: true });
+    
+    // Re-throw the original error to the client.
+    throw error;
+  }
+}
 
 // ============================================================================
 // ARCHITECTURAL CORE: SHARED SERVICES (SINGLETONS)
@@ -19,7 +83,7 @@ admin.initializeApp();
  * In a real-world scenario, this would connect to a database or inventory API.
  * @class StockService
  */
-class StockService {
+export class StockService {
   private static instance: StockService;
 
   private constructor() {
@@ -54,7 +118,7 @@ class StockService {
  * Can be expanded to handle different regions and tax laws.
  * @class TaxService
  */
-class TaxService {
+export class TaxService {
   private static instance: TaxService;
   private taxRate = 0.17; // 17% VAT for Mozambique (IVA)
 
@@ -88,7 +152,7 @@ class TaxService {
  * other independent services (Stock, Tax, Payment).
  * @class OrderService
  */
-class OrderService {
+export class OrderService {
   private static instance: OrderService;
   private stripe: Stripe;
   private stockService: StockService;
@@ -174,6 +238,11 @@ export const placeOrder = onCall({ secrets: [stripeKey], region: "us-central1", 
     throw new HttpsError("unauthenticated", "Authentication is required.");
   }
   const uid = request.auth.uid;
+  const eventId = request.auth.token.jti; // Using JWT ID for idempotency key
+
+  if(!eventId){
+      throw new HttpsError("invalid-argument", "Event ID is missing, cannot ensure idempotency.");
+  }
 
   // B. Sanitization (Code Firewall)
   const validation = PlaceOrderSchema.safeParse(request.data);
@@ -183,17 +252,21 @@ export const placeOrder = onCall({ secrets: [stripeKey], region: "us-central1", 
   }
 
   try {
-    // C. Delegation to the Orchestration Service (Singleton Pattern)
+    // C. Delegation to the Orchestration Service WITH Idempotency
     const orderService = OrderService.getInstance(stripeKey.value());
-    const result = await orderService.processNewOrder({
-      ...validation.data,
-      customerId: uid,
-    });
+    
+    const result = await withIdempotency(eventId, () => 
+      orderService.processNewOrder({
+        ...validation.data,
+        customerId: uid,
+      })
+    );
+
     return { status: "success", orderResult: result };
   } catch (error) {
     logger.error("Order processing failed unexpectedly", { uid, error });
     if (error instanceof HttpsError) {
-      throw error; // Re-throw known errors (e.g., out of stock)
+      throw error; // Re-throw known errors (e.g., out of stock, idempotency conflict)
     }
     if (error instanceof Stripe.errors.StripeCardError) {
       throw new HttpsError("aborted", error.message); // Client-safe Stripe error
@@ -227,7 +300,7 @@ const PaymentSchema = z.object({
 });
 
 export const createPaymentIntent = onCall(
-  { secrets: [stripeKey], region: "us-central1", enforceAppCheck: true, cors: [/^https:\/\/your-app-domain\.com$/] },
+  { secrets: [stripeKey], region: "us-central1", enforceAppCheck: true },
   async (request) => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "Authentication is required to perform this action.");
@@ -259,6 +332,7 @@ export const createPaymentIntent = onCall(
     }
   }
 );
+
 
 const ADMIN_SECRET = "oryon-super-secret-key-2024";
 

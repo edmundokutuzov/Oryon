@@ -1,7 +1,7 @@
 
 import * as functions from "firebase-functions/v2";
 import * as admin from "firebase-admin";
-import { HttpsError, onCall } from "firebase-functions/v2/https";
+import { HttpsError, onCall } from "firebase-functions/v2/httpshttps";
 import { beforeUserCreated } from "firebase-functions/v2/identity";
 import { defineSecret } from "firebase-functions/params";
 import { z } from "zod";
@@ -16,7 +16,7 @@ const db = admin.firestore();
 // ============================================================================
 // ARCHITECTURAL CORE: GLOBAL CONFIGURATION
 // ============================================================================
-const REGION = "europe-west1";
+const REGION = "africa-south1";
 
 
 // ============================================================================
@@ -331,5 +331,58 @@ export const setAdminRole = functions.https.onCall({ region: REGION }, async (da
   }
 });
     
+const PaymentSchema = z.object({
+    amount: z.number().int().positive().max(1000000), // Em centavos
+    currency: z.enum(["usd", "brl", "eur"]),
+    paymentMethodId: z.string().startsWith("pm_")
+});
 
+export const createPaymentIntent = onCall(
+    { 
+      secrets: [stripeApiKey],
+      region: REGION,
+      enforceAppCheck: true // Segurança endurecida
+    },
+    async (request) => {
+        if (!request.auth) {
+            throw new HttpsError("unauthenticated", "A autenticação é necessária para processar pagamentos.");
+        }
+      
+        const validation = PaymentSchema.safeParse(request.data);
+        if (!validation.success) {
+            logger.warn("Invalid payment data received", { uid: request.auth.uid, errors: validation.error.flatten() });
+            throw new HttpsError("invalid-argument", "Dados de pagamento inválidos ou corrompidos.", validation.error.flatten());
+        }
+  
+      // A chave secreta só é carregada aqui, dentro do escopo da função, quando é necessária.
+      const stripe = new Stripe(stripeApiKey.value(), { apiVersion: "2024-06-20", typescript: true });
+  
+      try {
+        const { amount, currency, paymentMethodId } = validation.data;
+        const customerId = request.auth.uid; // Usar o UID do Firebase como ID do cliente
+
+        // Lógica de negócio real: criar um PaymentIntent no Stripe
+        const paymentIntent = await stripe.paymentIntents.create({
+          amount: amount,
+          currency: currency,
+          payment_method: paymentMethodId,
+          customer: customerId, // Associar ao cliente
+          confirm: true,
+          automatic_payment_methods: { enabled: true, allow_redirects: "never" }
+        });
+  
+        logger.info(`PaymentIntent ${paymentIntent.id} created successfully for user ${customerId}`);
+        
+        // Retorna apenas os dados seguros e necessários para o cliente
+        return { success: true, clientSecret: paymentIntent.client_secret, status: paymentIntent.status };
+
+      } catch (error: any) {
+        logger.error("Stripe API error:", { uid: request.auth.uid, error: error.message });
+        const stripeError = error as Stripe.StripeRawError;
+        // Não vazar o erro completo do Stripe para o cliente.
+        throw new HttpsError("aborted", stripeError.message || "Falha no processamento do pagamento.");
+      }
+    }
+);
     
+```

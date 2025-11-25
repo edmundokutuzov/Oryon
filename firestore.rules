@@ -4,9 +4,97 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    function isAdmin() {
-      return request.auth.token.admin == true;
+    // =====================================================================
+    // HELPER FUNCTIONS: Reusable validation logic.
+    // =====================================================================
+
+    function isSignedIn() {
+      return request.auth != null;
     }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.admin == true;
+    }
+
+    // Validates that the user is not attempting to change immutable fields.
+    function protectedFieldsUnchanged(immutableFields) {
+      return !immutableFields.exists(field, field in request.resource.data &&
+        request.resource.data[field] != resource.data[field]);
+    }
+    
+    // Validates the data types for a given map of fields and their expected types.
+    function hasCorrectDataTypes(data, typeMap) {
+      return data.keys().forall(key, !(key in typeMap) || 
+        (typeMap[key] == 'string' && data[key] is string) ||
+        (typeMap[key] == 'number' && data[key] is number) ||
+        (typeMap[key] == 'bool' && data[key] is bool) ||
+        (typeMap[key] == 'timestamp' && data[key] is timestamp) ||
+        (typeMap[key] == 'map' && data[key] is map) ||
+        (typeMap[key] == 'list' && data[key] is list)
+      );
+    }
+
+    // =====================================================================
+    // COLLECTION: users
+    // Stores public user profiles. Sensitive data should not be here.
+    // =================================a====================================
+
+    match /users/{userId} {
+      // READ: Anyone can read a user's public profile.
+      allow read: if true;
+
+      // LIST: Prevent listing all users to save on reads, unless by an admin.
+      allow list: if isAdmin();
+      
+      // CREATE: A user can create their own profile document.
+      allow create: if isOwner(userId);
+
+      // UPDATE: A user can only update their own profile, and cannot change their role or UID.
+      allow update: if isOwner(userId) && protectedFieldsUnchanged(['uid', 'role', 'email', 'createdAt']);
+      
+      // DELETE: Not allowed from client for data integrity.
+      allow delete: if false;
+    }
+
+    // =====================================================================
+    // COLLECTION: transactions
+    // Immutable log of all financial transactions.
+    // =====================================================================
+    
+    match /transactions/{txId} {
+      // READ: A user can only read their own transactions.
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      
+      // LIST: A user can only query for their own list of transactions.
+      // This rule is critical for cost optimization and security.
+      allow list: if isSignedIn() && request.query.where.size() > 0 && request.query.where[0] == ['userId', '==', request.auth.uid];
+      
+      // WRITE (CREATE, UPDATE, DELETE): NO client-side writes allowed.
+      // All transactions must be created by a trusted backend (Admin SDK).
+      allow write: if false;
+    }
+
+    // =====================================================================
+    // COLLECTION: system_configs
+    // Publicly readable configuration, writable only by admins.
+    // =====================================================================
+
+    match /system_configs/global {
+      // READ: Anyone can read the global configuration.
+      // Useful for settings that the client needs to know.
+      allow read: if true;
+
+      // WRITE: Only administrators can modify the global configuration.
+      allow write: if isAdmin();
+    }
+    
+    // =====================================================================
+    // LEGACY: Keep existing rules for compatibility
+    // =====================================================================
 
     function isDocViewer(docId) {
       return request.auth != null &&
@@ -19,27 +107,15 @@ service cloud.firestore {
     }
 
     function isDocEditor(docId) {
-       // Placeholder for role-based editing logic within the `members` array
       return isDocViewer(docId);
     }
 
     match /docs/{docId} {
       allow get: if isDocViewer(docId) || isAdmin();
-      
-      // Allow list if user is admin OR if the query is securely filtered by member
-      allow list: if request.auth != null && (isAdmin() || (request.query != null && request.query.where[0] == ['members', 'array-contains', request.auth.uid]));
-
+      allow list: if request.auth != null && (isAdmin() || (request.query.where.size() > 0 && request.query.where[0] == ['members', 'array-contains', request.auth.uid]));
       allow create: if request.auth != null;
       allow update: if isDocEditor(docId) || isAdmin();
       allow delete: if isDocOwner(docId) || isAdmin();
-    }
-    
-    match /users/{userId} {
-      allow read: if request.auth != null && (isAdmin() || request.auth.uid == userId);
-      allow list: if isAdmin();
-      allow create: if request.auth.uid == userId;
-      allow update: if request.auth != null && (isAdmin() || request.auth.uid == userId);
-      allow delete: if isAdmin();
     }
   }
 }

@@ -5,8 +5,7 @@ import { FirebaseApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
 import { Auth, User, onAuthStateChanged, getIdTokenResult } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener'
-import { users } from '@/lib/data';
-import { UserRole } from '@/config/roles';
+import { ROLES, UserRole } from '@/config/roles';
 
 // Internal state for user authentication
 interface UserAuthState {
@@ -47,6 +46,14 @@ export interface UserHookResult {
 // React Context
 export const FirebaseContext = createContext<FirebaseContextState | undefined>(undefined);
 
+interface FirebaseProviderProps {
+  children: ReactNode;
+  firebaseApp: FirebaseApp | null;
+  firestore: Firestore | null;
+  auth: Auth | null;
+}
+
+
 /**
  * FirebaseProvider manages and provides Firebase services and user authentication state.
  */
@@ -79,15 +86,8 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
           const idTokenResult = await getIdTokenResult(firebaseUser, true); // Force refresh
           const customClaims = idTokenResult.claims;
 
-          // Determine role from custom claims first, then fall back to mock data
-          let userRole: UserRole | undefined = customClaims.admin ? 'admin' : undefined;
-
-          if (!userRole) {
-            const userProfile = users.find(u => u.email === firebaseUser.email);
-            if(userProfile) {
-                userRole = userProfile.role as UserRole;
-            }
-          }
+          // Determine role from custom claims.
+          const userRole = customClaims.admin ? ROLES.ADMIN : (customClaims.role as UserRole || undefined);
           
           setUserAuthState({ user: {...firebaseUser, role: userRole}, isUserLoading: false, userError: null });
 

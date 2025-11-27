@@ -106,6 +106,7 @@ export default function DocumentsPage() {
                 const getSortableValue = (item: any, key: string) => {
                     const value = item[key as keyof typeof item];
                      if (key === 'owner') {
+                        // Assuming you might want to fetch user names later, for now, use UID
                         const ownerValue = item.owner || '';
                         return ownerValue;
                     }
@@ -167,7 +168,7 @@ export default function DocumentsPage() {
                         type: file.type || 'default',
                         size: file.size,
                         owner: user.uid,
-                        members: [user.uid],
+                        members: [user.uid], // Start with the owner as a member
                         createdAt: serverTimestamp(),
                         updatedAt: serverTimestamp(),
                         url: downloadURL
@@ -177,6 +178,7 @@ export default function DocumentsPage() {
                 });
             }
         );
+        // Reset file input to allow uploading the same file again
         e.target.value = '';
     };
 
